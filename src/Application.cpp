@@ -1,73 +1,38 @@
 #include "Application.h"
 
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
-#include "imgui.h"
-#include "imgui_internal.h"
-
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#include <glad/glad.h>
-#include <stb_image.h>
-
-#include <glm/glm.hpp>
 #include <iostream>
+
+#include "imgui.h"
 
 namespace raytracing {
 
-void Application::Run() {
-    GLFWwindow *window;
+Window* Application::s_Window = nullptr;
 
-    /* Initialize the library */
-    if (!glfwInit()) return;
-
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window) {
-        glfwTerminate();
-        return;
+Application::Application() {
+    if (!s_Window) {
+        s_Window = new Window("Raytracing", 1280, 720);
     }
 
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
+    UI::Init();
+}
 
-    /* Initialize GLAD */
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) return;
+Application::~Application() {
+    delete s_Window;
+    s_Window = nullptr;
+}
 
-    /* Initialize ImGui */
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-    ImGui::StyleColorsDark();
-
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 460 core");
-
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window)) {
-        /* ImGui Frame */
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-        ImGui::ShowDemoWindow();
-        ImGui::Render();
-
-        /* Render here */
+void Application::Run() {
+    while (!s_Window->ShouldClose()) {
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 
-        /* ImGui Render */
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        /* UI */
+        UI::PreRender();
+        ImGui::ShowDemoWindow();
+        UI::Render();
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
+        s_Window->OnUpdate();
     }
-
-    glfwTerminate();
-    return;
 }
 
 }  // namespace raytracing
