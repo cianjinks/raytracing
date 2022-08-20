@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
-project(CMakeGraphicsProject)
+project(raytracing)
 
 # OpenGL
 set(OpenGL_GL_PREFERENCE GLVND)
@@ -40,6 +40,9 @@ set(imgui-source ${imgui-directory}/imconfig.h
 	${imgui-directory}/backends/imgui_impl_opengl3.cpp
 )
 
+# pch
+set(pch src/PCH.h)
+
 # Subprojects
 add_subdirectory(dependencies/glad)
 add_subdirectory(dependencies/glfw)
@@ -49,14 +52,15 @@ add_subdirectory(dependencies/glm)
 # Set `source` variable to all .h and .cpp files in `src`
 file(GLOB_RECURSE source CONFIGURE_DEPENDS "src/*.h" "src/*.cpp")
 
-add_executable(CMakeGraphicsProject ${source} ${imgui-source})
-target_link_libraries(CMakeGraphicsProject ${OPENGL_LIBRARIES} glad glfw stb_image glm)
-target_include_directories(CMakeGraphicsProject PRIVATE ${imgui-directory})
+add_executable(raytracing ${source} ${imgui-source})
+target_link_libraries(raytracing ${OPENGL_LIBRARIES} glad glfw stb_image glm)
+target_include_directories(raytracing PRIVATE ${imgui-directory})
+target_precompile_headers(raytracing PRIVATE ${pch})
 
 # Visual Studio Startup Project
 if(WIN32)
-	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT CMakeGraphicsProject)
+	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT raytracing)
 endif()
 
 # Symlink Resources
-add_custom_command(TARGET CMakeGraphicsProject PRE_BUILD COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:CMakeGraphicsProject>/resources)
+add_custom_command(TARGET raytracing PRE_BUILD COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:raytracing>/resources)

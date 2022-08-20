@@ -1,38 +1,38 @@
-#include "imgui.h"
-#include "imgui_internal.h"
+#include "Application.h"
+
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
+#include "imgui.h"
+#include "imgui_internal.h"
 
-#include <glad/glad.h>
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-
-#include <glm/glm.hpp>
+#include <glad/glad.h>
 #include <stb_image.h>
 
+#include <glm/glm.hpp>
 #include <iostream>
 
-int main(void)
-{
+namespace raytracing {
+
+void Application::Run() {
     GLFWwindow *window;
 
     /* Initialize the library */
-    if (!glfwInit())
-        return -1;
+    if (!glfwInit()) return;
 
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
-    {
+    if (!window) {
         glfwTerminate();
-        return -1;
+        return;
     }
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
     /* Initialize GLAD */
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-        return -1;
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) return;
 
     /* Initialize ImGui */
     IMGUI_CHECKVERSION();
@@ -44,8 +44,7 @@ int main(void)
     ImGui_ImplOpenGL3_Init("#version 460 core");
 
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         /* ImGui Frame */
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -68,5 +67,7 @@ int main(void)
     }
 
     glfwTerminate();
-    return 0;
+    return;
 }
+
+}  // namespace raytracing
