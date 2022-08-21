@@ -9,11 +9,12 @@ namespace raytracing {
 Window* Application::s_Window = nullptr;
 
 Application::Application() {
+    Log::Init();
     if (!s_Window) {
         s_Window = new Window("Raytracing", 1280, 720);
     }
-
     UI::Init();
+    RT_LOG("Application Initialised");
 }
 
 Application::~Application() {
@@ -23,7 +24,7 @@ Application::~Application() {
 
 void Application::Run() {
     while (!s_Window->ShouldClose()) {
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 
         /* UI */

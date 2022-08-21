@@ -6,19 +6,19 @@ Window::Window(std::string name, int32_t width, int32_t height)
     : Name(name), Width(width), Height(height) {
     /* Initialize the library */
     if (!glfwInit()) {
-        /* TODO: Assert! */
+        RT_ASSERT(false, "Failed to initialise GLFW!");
     }
 
     m_Window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
     if (!m_Window) {
         glfwTerminate();
-        /* TODO: Assert! */
+        RT_ASSERT(false, "Failed to initialise GLFW window!");
     }
 
     glfwMakeContextCurrent(m_Window);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        /* TODO: Assert! */
+        RT_ASSERT(false, "Failed to initialise GLAD!");
     }
 }
 

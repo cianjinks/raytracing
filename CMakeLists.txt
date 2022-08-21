@@ -12,6 +12,10 @@ if (UNIX)
 	set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 endif()
 
+# Define DEBUG and RELEASE flags
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DRT_DEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DRT_RELEASE")
+
 # C++ Standard
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -46,6 +50,7 @@ set(pch src/PCH.h)
 # Subprojects
 add_subdirectory(dependencies/glad)
 add_subdirectory(dependencies/glfw)
+add_subdirectory(dependencies/spdlog)
 add_subdirectory(dependencies/stb_image)
 add_subdirectory(dependencies/glm)
 
@@ -53,7 +58,7 @@ add_subdirectory(dependencies/glm)
 file(GLOB_RECURSE source CONFIGURE_DEPENDS "src/*.h" "src/*.cpp")
 
 add_executable(raytracing ${source} ${imgui-source})
-target_link_libraries(raytracing ${OPENGL_LIBRARIES} glad glfw stb_image glm)
+target_link_libraries(raytracing ${OPENGL_LIBRARIES} glad glfw stb_image glm spdlog)
 target_include_directories(raytracing PRIVATE ${imgui-directory})
 target_precompile_headers(raytracing PRIVATE ${pch})
 
