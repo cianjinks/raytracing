@@ -1,7 +1,5 @@
 #include "ImageView.h"
 
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
 #include <glm/glm.hpp>
@@ -21,18 +19,13 @@ ImageView::ImageView(uint32_t window_width, uint32_t window_height,
       m_ImageHeight(image_height),
       m_FImageWidth(image_width),
       m_FImageHeight(image_height) {
-    /* Init GLAD. */
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        RT_ASSERT(false, "Failed to initialise GLAD!");
-    }
-
     // clang-format off
     float vertices[] = {
-        // Pos                                 // Texture Coord
-        0.0f,           m_FWindowHeight, 0.0f, 0.0f, 1.0f,  // Top Left
-        0.0f,           0.0f,            0.0f, 0.0f, 0.0f,  // Bottom Left
-        m_FWindowWidth, 0.0f,            0.0f, 1.0f, 0.0f,  // Bottom Right
-        m_FWindowWidth, m_FWindowHeight, 0.0f, 1.0f, 1.0f,  // Top Right
+        // Pos                               // Texture Coord
+        -(m_FImageWidth / 2.0f),  (m_FImageHeight / 2.0f), 0.0f, 0.0f, 1.0f,  // Top Left
+        -(m_FImageWidth / 2.0f), -(m_FImageHeight / 2.0f), 0.0f, 0.0f, 0.0f,  // Bottom Left
+         (m_FImageWidth / 2.0f), -(m_FImageHeight / 2.0f), 0.0f, 1.0f, 0.0f,  // Bottom Right
+         (m_FImageWidth / 2.0f),  (m_FImageHeight / 2.0f), 0.0f, 1.0f, 1.0f,  // Top Right
     };
     // clang-format on
 
@@ -67,8 +60,7 @@ ImageView::ImageView(uint32_t window_width, uint32_t window_height,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    GLuint programID;
-    programID = glCreateProgram();
+    GLuint m_ShaderProgramID = glCreateProgram();
 
     const char *vert_src = R"(
         #version 430 core
@@ -90,7 +82,7 @@ ImageView::ImageView(uint32_t window_width, uint32_t window_height,
     GLuint vert_obj = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vert_obj, 1, &vert_src, nullptr);
     glCompileShader(vert_obj);
-    glAttachShader(programID, vert_obj);
+    glAttachShader(m_ShaderProgramID, vert_obj);
     glDeleteShader(vert_obj);
 
     const char *frag_src = R"(
@@ -111,18 +103,16 @@ ImageView::ImageView(uint32_t window_width, uint32_t window_height,
     GLuint frag_obj = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(frag_obj, 1, &frag_src, nullptr);
     glCompileShader(frag_obj);
-    glAttachShader(programID, frag_obj);
+    glAttachShader(m_ShaderProgramID, frag_obj);
     glDeleteShader(frag_obj);
 
-    glLinkProgram(programID);
-    glValidateProgram(programID);
-    glUseProgram(programID);
+    glLinkProgram(m_ShaderProgramID);
+    glValidateProgram(m_ShaderProgramID);
+    glUseProgram(m_ShaderProgramID);
 
-    glm::mat4 ortho =
-        glm::ortho(0.0f, m_FWindowWidth, 0.0f, m_FWindowHeight, -1.0f, 1.0f);
-
-    GLint loc = glGetUniformLocation(programID, "u_ProjectionMatrix");
-    glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(ortho));
+    m_Camera = new Camera(m_FWindowWidth, m_FWindowHeight);
+    m_CameraUniformID =
+        glGetUniformLocation(m_ShaderProgramID, "u_ProjectionMatrix");
 
     m_Image = new Image(m_ImageWidth, m_ImageHeight);
     m_Image->Randomize();
@@ -130,15 +120,23 @@ ImageView::ImageView(uint32_t window_width, uint32_t window_height,
     RT_LOG("Image View Initialised");
 }
 
-ImageView::~ImageView() { delete m_Image; }
+ImageView::~ImageView() {
+    delete m_Camera;
+    delete m_Image;
+}
 
 void ImageView::OnUpdate() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    glUniformMatrix4fv(m_CameraUniformID, 1, GL_FALSE,
+                       glm::value_ptr(m_Camera->GetProjectionView()));
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, m_ImageWidth, m_ImageHeight, 0,
                  GL_RGB, GL_UNSIGNED_BYTE, m_Image->GetData());
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    m_Camera->OnUpdate();
 }
 
 }  // namespace raytracing

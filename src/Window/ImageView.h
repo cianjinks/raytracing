@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Camera.h"
 #include "Image.h"
 
 /**
@@ -23,6 +24,10 @@ class ImageView {
     float m_FImageHeight;
 
     Image* m_Image;
+    Camera* m_Camera;
+
+    uint32_t m_ShaderProgramID;
+    uint32_t m_CameraUniformID;
 
    public:
     ImageView(uint32_t window_width, uint32_t window_height,
