@@ -40,6 +40,8 @@ class ImageView {
 
     void ResizeWindow(uint32_t width, uint32_t height);
     // void ResizeImage(uint32_t width, uint32_t height);
+
+    Image* GetImage() const { return m_Image; }
 };
 
 }  // namespace raytracing

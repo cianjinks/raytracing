@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Render/RenderDevice.h"
 #include "Window/UI.h"
 #include "Window/Window.h"
 
@@ -20,6 +21,7 @@ class Application {
    private:
     static Window* s_Window;
     static ImageView* s_ImageView;
+    RenderDeviceManager* m_DeviceManager;
 
    public:
     Application(ApplicationInfo app_info);
@@ -27,6 +29,7 @@ class Application {
 
     void Setup();
     void Run();
+    void UI();
 
     static Window* GetWindow() { return s_Window; }
     static ImageView* GetImageView() { return s_ImageView; }

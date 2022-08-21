@@ -3,7 +3,6 @@
 #include <iostream>
 
 #include "imgui.h"
-
 namespace raytracing {
 
 Window* Application::s_Window = nullptr;
@@ -20,6 +19,7 @@ Application::Application(ApplicationInfo app_info) : AppInfo(app_info) {
         s_ImageView = new ImageView(AppInfo.WindowWidth, AppInfo.WindowHeight,
                                     AppInfo.ImageWidth, AppInfo.ImageHeight);
     }
+    m_DeviceManager = new RenderDeviceManager();
     UI::Init();
     RT_LOG("Application Initialised");
 }
@@ -29,26 +29,32 @@ Application::~Application() {
     s_ImageView = nullptr;
     delete s_Window;
     s_Window = nullptr;
+    delete m_DeviceManager;
+    m_DeviceManager = nullptr;
 }
 
 void Application::Run() {
     while (!s_Window->ShouldClose()) {
         s_ImageView->OnUpdate();
 
-        /* UI */
         UI::PreRender();
-        ImGui::ShowDemoWindow();
+        UI();
         UI::Render();
 
         s_Window->OnUpdate();
     }
 }
 
+void Application::UI() {
+    ImGui::Begin("Controls");
+    m_DeviceManager->UI();
+    ImGui::End();
+}
+
 void Application::OnEvent(Event& event) {
     if (UI::WantInput()) {
         return;
     }
-
     s_ImageView->OnEvent(event);
 }
 
