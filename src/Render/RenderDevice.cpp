@@ -8,8 +8,6 @@ namespace raytracing {
 
 RenderDevice::RenderDevice(std::string name) : Name(name) {}
 
-RenderDevice::~RenderDevice() {}
-
 RenderDeviceManager::RenderDeviceManager() { SetupRenderDevices(); }
 
 RenderDeviceManager::~RenderDeviceManager() { ClearRenderDevices(); }

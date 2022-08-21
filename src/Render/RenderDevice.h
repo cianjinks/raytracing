@@ -10,7 +10,7 @@ class RenderDevice {
 
    public:
     RenderDevice(std::string name);
-    ~RenderDevice();
+    virtual ~RenderDevice() = default;
 
     virtual void Execute(Image* image) = 0;
     virtual void SettingsUI() = 0;

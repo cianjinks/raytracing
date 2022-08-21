@@ -133,7 +133,7 @@ void ImageView::OnUpdate() {
                        glm::value_ptr(m_Camera->GetProjectionView()));
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, m_ImageWidth, m_ImageHeight, 0,
-                 GL_RGB, GL_UNSIGNED_BYTE, m_Image->GetData());
+                 GL_RGB, GL_UNSIGNED_BYTE, (uint8_t *)m_Image->GetData());
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     m_Camera->OnUpdate();

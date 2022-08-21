@@ -5,6 +5,9 @@
 namespace raytracing {
 
 class CPUDevice : public RenderDevice {
+   private:
+    int m_CircleRadius = 25.0f;
+
    public:
     CPUDevice();
     ~CPUDevice();
