@@ -14,6 +14,7 @@ Application::Application(ApplicationInfo app_info) : AppInfo(app_info) {
     if (!s_Window) {
         s_Window = new Window(AppInfo.Name.c_str(), AppInfo.WindowWidth,
                               AppInfo.WindowHeight);
+        s_Window->SetEventCallback([this](Event& event) { OnEvent(event); });
     }
     if (!s_ImageView) {
         s_ImageView = new ImageView(AppInfo.WindowWidth, AppInfo.WindowHeight,
@@ -41,6 +42,14 @@ void Application::Run() {
 
         s_Window->OnUpdate();
     }
+}
+
+void Application::OnEvent(Event& event) {
+    if (UI::WantInput()) {
+        return;
+    }
+
+    s_ImageView->OnEvent(event);
 }
 
 }  // namespace raytracing

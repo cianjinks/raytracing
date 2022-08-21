@@ -30,6 +30,9 @@ class Application {
 
     static Window* GetWindow() { return s_Window; }
     static ImageView* GetImageView() { return s_ImageView; }
+
+   private:
+    void OnEvent(Event& event);
 };
 
 }  // namespace raytracing

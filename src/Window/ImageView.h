@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Camera.h"
+#include "Event.h"
 #include "Image.h"
 
 /**
@@ -35,6 +36,10 @@ class ImageView {
     ~ImageView();
 
     void OnUpdate();
+    void OnEvent(Event& event);
+
+    void ResizeWindow(uint32_t width, uint32_t height);
+    // void ResizeImage(uint32_t width, uint32_t height);
 };
 
 }  // namespace raytracing

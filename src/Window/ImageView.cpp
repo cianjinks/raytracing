@@ -139,4 +139,25 @@ void ImageView::OnUpdate() {
     m_Camera->OnUpdate();
 }
 
+void ImageView::OnEvent(Event &event) {
+    EventType type = event.GetEventType();
+    switch (type) {
+        case EventType::WINDOW_RESIZE: {
+            WindowResizeEvent &resize_event =
+                static_cast<WindowResizeEvent &>(event);
+            ResizeWindow(resize_event.GetWidth(), resize_event.GetHeight());
+            break;
+        }
+    }
+    m_Camera->OnEvent(event);
+}
+
+void ImageView::ResizeWindow(uint32_t width, uint32_t height) {
+    m_WindowWidth = width;
+    m_WindowHeight = height;
+    m_FWindowWidth = (float)width;
+    m_FWindowHeight = (float)height;
+    glViewport(0, 0, m_WindowWidth, m_WindowHeight);
+}
+
 }  // namespace raytracing

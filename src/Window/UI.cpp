@@ -31,4 +31,9 @@ void UI::Render() {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+bool UI::WantInput() {
+    ImGuiIO& io = ImGui::GetIO();
+    return (io.WantCaptureMouse || io.WantCaptureKeyboard);
+}
+
 }  // namespace raytracing
