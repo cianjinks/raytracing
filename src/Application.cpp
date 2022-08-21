@@ -7,25 +7,32 @@
 namespace raytracing {
 
 Window* Application::s_Window = nullptr;
+ImageView* Application::s_ImageView = nullptr;
 
-Application::Application() {
+Application::Application(ApplicationInfo app_info) : AppInfo(app_info) {
     Log::Init();
     if (!s_Window) {
-        s_Window = new Window("Raytracing", 1280, 720);
+        s_Window = new Window(AppInfo.Name.c_str(), AppInfo.WindowWidth,
+                              AppInfo.WindowHeight);
+    }
+    if (!s_ImageView) {
+        s_ImageView = new ImageView(AppInfo.WindowWidth, AppInfo.WindowHeight,
+                                    AppInfo.ImageWidth, AppInfo.ImageHeight);
     }
     UI::Init();
     RT_LOG("Application Initialised");
 }
 
 Application::~Application() {
+    delete s_ImageView;
+    s_ImageView = nullptr;
     delete s_Window;
     s_Window = nullptr;
 }
 
 void Application::Run() {
     while (!s_Window->ShouldClose()) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+        s_ImageView->OnUpdate();
 
         /* UI */
         UI::PreRender();

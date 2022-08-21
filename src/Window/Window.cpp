@@ -4,7 +4,6 @@ namespace raytracing {
 
 Window::Window(std::string name, int32_t width, int32_t height)
     : Name(name), Width(width), Height(height) {
-    /* Initialize the library */
     if (!glfwInit()) {
         RT_ASSERT(false, "Failed to initialise GLFW!");
     }
@@ -17,9 +16,7 @@ Window::Window(std::string name, int32_t width, int32_t height)
 
     glfwMakeContextCurrent(m_Window);
 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        RT_ASSERT(false, "Failed to initialise GLAD!");
-    }
+    RT_LOG("Window Initialised");
 }
 
 Window::~Window() { glfwTerminate(); }
