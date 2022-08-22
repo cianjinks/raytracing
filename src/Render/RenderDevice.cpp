@@ -31,7 +31,23 @@ void RenderDeviceManager::ClearRenderDevices() {
 
 void RenderDeviceManager::UI() {
     ImGui::Text("Devices");
-    if (ImGui::BeginCombo("Choose Device", m_CurrentDevice->Name.c_str())) {
+    DeviceComboUI();
+    m_CurrentDevice->GetKernels().DeviceComboUI();
+    ImGui::Separator();
+    ImGui::Text("Device Settings");
+    m_CurrentDevice->SettingsUI();
+    ImGui::Separator();
+    ImGui::Text("Kernel Settings");
+    m_CurrentDevice->GetCurrentKernel()->UI();
+    ImGui::Separator();
+    ImGui::Text("Execution");
+    if (ImGui::Button("Execute")) {
+        m_CurrentDevice->Execute(Application::GetImageView()->GetImage());
+    }
+}
+
+void RenderDeviceManager::DeviceComboUI() {
+    if (ImGui::BeginCombo("Device", m_CurrentDevice->Name.c_str())) {
         for (int r = 0; r < m_DeviceList.size(); r++) {
             RenderDevice* rd = m_DeviceList[r];
             const bool is_selected = (r == m_CurrentDeviceIndex);
@@ -44,14 +60,6 @@ void RenderDeviceManager::UI() {
             }
         }
         ImGui::EndCombo();
-    }
-    ImGui::Separator();
-    ImGui::Text("Settings");
-    m_CurrentDevice->SettingsUI();
-    ImGui::Separator();
-    ImGui::Text("Execution");
-    if (ImGui::Button("Execute")) {
-        m_CurrentDevice->Execute(Application::GetImageView()->GetImage());
     }
 }
 

@@ -26,7 +26,8 @@ class Image {
 
     void Randomize(); /* Randomize every pixel. */
 
-    void PerPixel(std::function<Pixel(uint32_t x, uint32_t y)> func);
+    void PerPixel(
+        std::function<Pixel(Image* image, uint32_t x, uint32_t y)> func);
 
     Pixel* GetData() { return m_Data; }
     uint32_t GetWidth() { return m_Width; }
