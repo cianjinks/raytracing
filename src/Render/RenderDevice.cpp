@@ -34,15 +34,24 @@ void RenderDeviceManager::UI() {
     DeviceComboUI();
     m_CurrentDevice->GetKernels().DeviceComboUI();
     ImGui::Separator();
+
     ImGui::Text("Device Settings");
     m_CurrentDevice->SettingsUI();
     ImGui::Separator();
+
     ImGui::Text("Kernel Settings");
     m_CurrentDevice->GetCurrentKernel()->UI();
     ImGui::Separator();
+
     ImGui::Text("Execution");
-    if (ImGui::Button("Execute")) {
+    ImGui::Checkbox("Live", &m_LiveExecToggle);
+    if (m_LiveExecToggle) {
         m_CurrentDevice->Execute(Application::GetImageView()->GetImage());
+    } else {
+        ImGui::SameLine();
+        if (ImGui::Button("Execute")) {
+            m_CurrentDevice->Execute(Application::GetImageView()->GetImage());
+        }
     }
 }
 

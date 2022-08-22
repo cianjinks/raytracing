@@ -29,11 +29,14 @@ class RenderDeviceManager {
     RenderDevice* m_CurrentDevice = nullptr;
     uint32_t m_CurrentDeviceIndex = 0;
 
+    bool m_LiveExecToggle = false;
+
    public:
     RenderDeviceManager();
     ~RenderDeviceManager();
 
-    /* UI for device selection, settings, execution options. */
+    /* UI for device selection, kernel selection, settings, execution options.
+     */
     void UI();
 
     RenderDevice* GetCurrentDevice() const { return m_CurrentDevice; }
