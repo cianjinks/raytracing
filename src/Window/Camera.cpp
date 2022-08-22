@@ -100,6 +100,8 @@ void Camera::Center(float distance) {
     m_Position.x = 0.0f;
     m_Position.y = 0.0f;
     m_Distance = distance;
+    m_Distance = std::min(m_Distance, m_MaxDistance);
+    m_Distance = std::max(m_Distance, m_MinDistance);
 }
 
 void Camera::Resize(float width, float height) {

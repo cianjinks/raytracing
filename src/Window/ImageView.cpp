@@ -168,7 +168,7 @@ void ImageView::OnEvent(Event &event) {
 void ImageView::UI() {
     ImGui::Separator();
     ImGui::Text("Image Settings");
-    ImGui::Text("Z: Center Image");
+    ImGui::Text("Z: Frame Image");
 
     int image_dim[2] = {(int)m_ImageWidth, (int)m_ImageHeight};
     // ImGui::SliderInt("Image Width", &image_dim[0], 0, (int)m_WindowWidth);
