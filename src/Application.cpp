@@ -48,6 +48,7 @@ void Application::Run() {
 void Application::UI() {
     ImGui::Begin("Controls");
     m_DeviceManager->UI();
+    s_ImageView->UI();
     ImGui::End();
 }
 

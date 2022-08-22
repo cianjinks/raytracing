@@ -7,6 +7,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
+#include "imgui.h"
+
 namespace raytracing {
 
 ImageView::ImageView(uint32_t window_width, uint32_t window_height,
@@ -38,7 +40,8 @@ ImageView::ImageView(uint32_t window_width, uint32_t window_height,
     GLuint vboID;
     glGenBuffers(1, &vboID);
     glBindBuffer(GL_ARRAY_BUFFER, vboID);
-    glBufferData(GL_ARRAY_BUFFER, 20 * sizeof(float), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 20 * sizeof(float), vertices,
+                 GL_DYNAMIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
                           (void *)0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
@@ -152,12 +155,48 @@ void ImageView::OnEvent(Event &event) {
     m_Camera->OnEvent(event);
 }
 
+void ImageView::UI() {
+    ImGui::Separator();
+    ImGui::Text("Image Settings");
+    int image_dim[2] = {(int)m_ImageWidth, (int)m_ImageHeight};
+    // ImGui::SliderInt("Image Width", &image_dim[0], 0, (int)m_WindowWidth);
+    // ImGui::SliderInt("Image Height", &image_dim[1], 0, (int)m_WindowHeight);
+    ImGui::InputInt2("Image Dimension", image_dim);
+    if ((uint32_t)image_dim[0] != m_ImageWidth ||
+        (uint32_t)image_dim[1] != m_ImageHeight) {
+        ResizeImage(image_dim[0], image_dim[1]);
+    }
+}
+
 void ImageView::ResizeWindow(uint32_t width, uint32_t height) {
     m_WindowWidth = width;
     m_WindowHeight = height;
     m_FWindowWidth = (float)width;
     m_FWindowHeight = (float)height;
     glViewport(0, 0, m_WindowWidth, m_WindowHeight);
+}
+
+void ImageView::ResizeImage(uint32_t width, uint32_t height) {
+    m_ImageWidth = width;
+    m_ImageHeight = height;
+    m_FImageWidth = (float)width;
+    m_FImageHeight = (float)height;
+
+    // clang-format off
+    float vertices[] = {
+        // Pos                               // Texture Coord
+        -(m_FImageWidth / 2.0f),  (m_FImageHeight / 2.0f), 0.0f, 0.0f, 1.0f,  // Top Left
+        -(m_FImageWidth / 2.0f), -(m_FImageHeight / 2.0f), 0.0f, 0.0f, 0.0f,  // Bottom Left
+         (m_FImageWidth / 2.0f), -(m_FImageHeight / 2.0f), 0.0f, 1.0f, 0.0f,  // Bottom Right
+         (m_FImageWidth / 2.0f),  (m_FImageHeight / 2.0f), 0.0f, 1.0f, 1.0f,  // Top Right
+    };
+    // clang-format on
+
+    /* TODO: VBO is never unbound so we can do this. Probably not good though.
+     */
+    glBufferSubData(GL_ARRAY_BUFFER, 0, 20 * sizeof(float), vertices);
+
+    m_Image->Resize(width, height);
 }
 
 }  // namespace raytracing

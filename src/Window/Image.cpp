@@ -10,6 +10,15 @@ Image::Image(uint32_t width, uint32_t height)
 
 Image::~Image() { delete[] m_Data; }
 
+void Image::Resize(uint32_t width, uint32_t height) {
+    m_Width = width;
+    m_Height = height;
+    m_PixelCount = width * height;
+    delete[] m_Data;
+    m_Data = new Pixel[m_PixelCount];
+    Randomize();
+}
+
 void Image::Fill(Pixel pixel) {
     for (uint32_t p = 0; p < m_PixelCount; p++) {
         m_Data[p] = pixel;

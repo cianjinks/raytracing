@@ -21,6 +21,8 @@ class Image {
     Image(uint32_t width, uint32_t height);
     ~Image();
 
+    void Resize(uint32_t width, uint32_t height);
+
     void Fill(Pixel pixel);
     void Fill(Pixel pixel, float percentage);
 
