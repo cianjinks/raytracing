@@ -46,13 +46,17 @@ void RenderDeviceManager::UI() {
     ImGui::Text("Execution");
     ImGui::Checkbox("Live", &m_LiveExecToggle);
     if (m_LiveExecToggle) {
-        m_CurrentDevice->Execute(Application::GetImageView()->GetImage());
+        m_LastExecutionTime =
+            m_CurrentDevice->Execute(Application::GetImageView()->GetImage());
     } else {
         ImGui::SameLine();
         if (ImGui::Button("Execute")) {
-            m_CurrentDevice->Execute(Application::GetImageView()->GetImage());
+            m_LastExecutionTime = m_CurrentDevice->Execute(
+                Application::GetImageView()->GetImage());
         }
     }
+    ImGui::SameLine();
+    ImGui::Text("%.3fms", m_LastExecutionTime);
 }
 
 void RenderDeviceManager::DeviceComboUI() {

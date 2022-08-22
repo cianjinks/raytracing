@@ -5,10 +5,13 @@
 
 namespace raytracing {
 
-class LearnKernel : public Kernel {
+class ColorTestKernel : public Kernel {
+   private:
+    int m_Color[3] = {0, 0, 0};
+
    public:
-    LearnKernel();
-    ~LearnKernel();
+    ColorTestKernel();
+    ~ColorTestKernel();
 
     Pixel Exec(Image* image, uint32_t x, uint32_t y) override;
     void UI() override;

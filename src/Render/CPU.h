@@ -9,7 +9,7 @@ class CPUDevice : public RenderDevice {
     CPUDevice();
     ~CPUDevice();
 
-    void Execute(Image* image) override;
+    float Execute(Image* image) override;
     void SettingsUI() override;
 };
 

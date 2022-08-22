@@ -1,0 +1,39 @@
+#include "Timer.h"
+
+namespace raytracing {
+
+float Timer::s_ElapsedTime = 0;
+bool Timer::s_MismatchFlag = false;
+std::chrono::_V2::system_clock::time_point Timer::s_Start =
+    std::chrono::_V2::system_clock::time_point::min();
+std::chrono::_V2::system_clock::time_point Timer::s_End =
+    std::chrono::_V2::system_clock::time_point::min();
+
+void Timer::Start() {
+    if (!s_MismatchFlag) {
+        s_MismatchFlag = true;
+        s_Start = std::chrono::high_resolution_clock::now();
+    } else {
+        RT_ASSERT(false,
+                  "Mismatch between Timer::Start() and Timer::End() calls");
+    }
+}
+
+void Timer::End() {
+    if (s_MismatchFlag) {
+        s_MismatchFlag = false;
+
+        s_End = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+            s_End - s_Start);
+        s_ElapsedTime = std::chrono::duration<float>(duration).count();
+
+    } else {
+        RT_ASSERT(false,
+                  "Mismatch between Timer::Start() and Timer::End() calls");
+    }
+}
+
+float Timer::GetElapsedTimeMS() { return s_ElapsedTime; }
+
+}  // namespace raytracing

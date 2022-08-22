@@ -16,7 +16,8 @@ class RenderDevice {
     RenderDevice(std::string name);
     virtual ~RenderDevice() = default;
 
-    virtual void Execute(Image* image) = 0;
+    /* Returns execution time in ms. */
+    virtual float Execute(Image* image) = 0;
     virtual void SettingsUI() = 0;
 
     KernelLibrary& GetKernels() { return m_Kernels; }
@@ -29,6 +30,7 @@ class RenderDeviceManager {
     RenderDevice* m_CurrentDevice = nullptr;
     uint32_t m_CurrentDeviceIndex = 0;
 
+    float m_LastExecutionTime = 0.0f;
     bool m_LiveExecToggle = false;
 
    public:

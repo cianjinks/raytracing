@@ -19,3 +19,4 @@
 
 #include "Util/Assert.h"
 #include "Util/Log.h"
+#include "Util/Timer.h"
