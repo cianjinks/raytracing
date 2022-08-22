@@ -34,6 +34,7 @@ class Image {
     Pixel* GetData() { return m_Data; }
     uint32_t GetWidth() { return m_Width; }
     uint32_t GetHeight() { return m_Height; }
+    float GetAspectRatio() { return float(m_Width) / float(m_Height); }
     uint32_t GetPixelCount() { return m_PixelCount; }
 };
 
