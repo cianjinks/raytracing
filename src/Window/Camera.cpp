@@ -96,6 +96,12 @@ void Camera::Zoom(float delta) {
     m_Distance = std::max(m_Distance, m_MinDistance);
 }
 
+void Camera::Center(float distance) {
+    m_Position.x = 0.0f;
+    m_Position.y = 0.0f;
+    m_Distance = distance;
+}
+
 void Camera::Resize(float width, float height) {
     m_Width = width;
     m_Height = height;

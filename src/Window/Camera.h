@@ -37,6 +37,7 @@ class Camera {
     void KeyPan(float x, float y);
     void MousePan();
     void Zoom(float delta);
+    void Center(float distance);
     void Resize(float width, float height);
 
     glm::mat4 GetProjectionView() { return m_ProjectionMatrix * m_ViewMatrix; }

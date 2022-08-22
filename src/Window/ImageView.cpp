@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
+#include "Input.h"
 #include "imgui.h"
 
 namespace raytracing {
@@ -151,6 +152,15 @@ void ImageView::OnEvent(Event &event) {
             ResizeWindow(resize_event.GetWidth(), resize_event.GetHeight());
             break;
         }
+        case EventType::KEY_PRESS: {
+            KeyEvent &key_event = static_cast<KeyEvent &>(event);
+            int key = key_event.GetKey();
+            if (key == GLFW_KEY_Z) {
+                /* Center image based on height. */
+                m_Camera->Center(m_FImageHeight / m_FWindowHeight);
+            }
+            break;
+        }
     }
     m_Camera->OnEvent(event);
 }
@@ -158,6 +168,8 @@ void ImageView::OnEvent(Event &event) {
 void ImageView::UI() {
     ImGui::Separator();
     ImGui::Text("Image Settings");
+    ImGui::Text("Z: Center Image");
+
     int image_dim[2] = {(int)m_ImageWidth, (int)m_ImageHeight};
     // ImGui::SliderInt("Image Width", &image_dim[0], 0, (int)m_WindowWidth);
     // ImGui::SliderInt("Image Height", &image_dim[1], 0, (int)m_WindowHeight);
