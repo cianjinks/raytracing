@@ -13,7 +13,8 @@ bool Intersection::RaySphere(const Ray& ray, const Sphere& sphere) {
     return discriminant >= 0;
 }
 
-bool Intersection::RaySphere(const Ray& ray, const Sphere& sphere, float& r_t) {
+bool Intersection::RaySphere(const Ray& ray, const Sphere& sphere, float& r_t1,
+                             float& r_t2) {
     glm::vec3 op = ray.origin - sphere.position;
     float a = glm::dot(ray.direction, ray.direction);
     float b = 2 * glm::dot(ray.direction, op);
@@ -24,7 +25,8 @@ bool Intersection::RaySphere(const Ray& ray, const Sphere& sphere, float& r_t) {
 
     float t1 = (-b + glm::sqrt(discriminant)) / (2 * a);
     float t2 = (-b - glm::sqrt(discriminant)) / (2 * a);
-    r_t = glm::min(t1, t2);
+    r_t1 = glm::min(t1, t2);
+    r_t2 = glm::max(t1, t2);
     return true;
 }
 

@@ -1,13 +1,23 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 namespace raytracing {
 
 /* TODO: Create ImageFormat. */
 
 struct Pixel {
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
+    uint8_t r = 0;
+    uint8_t g = 0;
+    uint8_t b = 0;
+
+    Pixel() {}
+    Pixel(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
+    Pixel(glm::vec3 c) {
+        r = (uint8_t)(c.x * 255.0f);
+        g = (uint8_t)(c.y * 255.0f);
+        b = (uint8_t)(c.z * 255.0f);
+    }
 };
 
 class Image {

@@ -1,14 +1,17 @@
 #include "Learn.h"
 
-#include "Math/Intersection.h"
-#include "Math/Object.h"
 #include "imgui.h"
 
 namespace raytracing {
 
-LearnKernel::LearnKernel() : Kernel("Learn") { RT_LOG("Learn Kernel Init"); }
+LearnKernel::LearnKernel() : Kernel("Learn") {
+    m_Scene = new Scene();
+    m_Scene->Add(new Sphere({0, 0, 0}, 1.0f));
+    m_Scene->Add(new Sphere({0, -101, 0}, 100.0f));
+    RT_LOG("Learn Kernel Init");
+}
 
-LearnKernel::~LearnKernel() {}
+LearnKernel::~LearnKernel() { delete m_Scene; }
 
 Pixel LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
     float u = ((float(x) * (2.0f * image->GetAspectRatio())) /
@@ -16,24 +19,19 @@ Pixel LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
               image->GetAspectRatio();
     float v = ((float(y) * 2.0f) / float(image->GetHeight())) - 1.0f;
 
-    Sphere sphere;
-    sphere.position = {0, 0, 0};
-    sphere.radius = 1.0f;
-
     Ray ray;
     ray.origin = m_CameraPosition;
-    ray.direction =
-        m_CameraDirection +
-        glm::vec3(u, v, 0.0f);  // glm::vec3(u, v, 0.0f) - m_CameraPosition;
+    ray.direction = m_CameraDirection + glm::vec3(u, v, 0.0f);
 
-    if (Intersection::RaySphere(ray, sphere)) {
-        return {255, 0, 0};
+    HitResult result;
+    if (m_Scene->Hit(ray, 0, Constant::Infinity, result)) {
+        return {glm::abs(result.normal)};
     }
     return {0, 0, 255};
 }
 
 void LearnKernel::UI() {
-    ImGui::SliderFloat("Camera Z", &m_CameraPosition.z, 0.0f, -5.0f);
+    ImGui::SliderFloat("Camera Z", &m_CameraPosition.z, 0.0f, -10.0f);
 }
 
 }  // namespace raytracing

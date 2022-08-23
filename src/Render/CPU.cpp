@@ -16,7 +16,6 @@ CPUDevice::CPUDevice() : RenderDevice("CPU") {
 CPUDevice::~CPUDevice() {}
 
 float CPUDevice::Execute(Image* image) {
-    RT_LOG("CPU Execute!");
     Timer::Start();
     image->PerPixel([this](Image* image, uint32_t x, uint32_t y) {
         return m_Kernels.GetCurrentKernel()->Exec(image, x, y);
