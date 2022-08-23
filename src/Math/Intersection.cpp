@@ -3,19 +3,29 @@
 namespace raytracing {
 
 bool Intersection::RaySphere(const Ray& ray, const Sphere& sphere) {
-    // b^2 - 4ac < 0 -> 0 solutions
-    glm::vec3 d = ray.direction * ray.direction;
-    float a = d.x + d.y + d.z;
-    glm::vec3 od = ray.origin * ray.direction;
-    float b = 2 * (od.x + od.y + od.z);
-    glm::vec3 o = ray.origin * ray.origin;
-    float c = o.x + o.y + o.z - (sphere.radius * sphere.radius);
+    glm::vec3 op = ray.origin - sphere.position;
+    float a = glm::dot(ray.direction, ray.direction);
+    float b = 2 * glm::dot(ray.direction, op);
+    float c = glm::dot(op, op) - (sphere.radius * sphere.radius);
 
+    // b^2 - 4ac < 0 -> 0 solutions
     float discriminant = (b * b) - (4 * a * c);
     return discriminant >= 0;
 }
 
-bool Intersection::RaySphere(const Ray& ray, const Sphere& sphere,
-                             glm::vec3& r_hit) {}
+bool Intersection::RaySphere(const Ray& ray, const Sphere& sphere, float& r_t) {
+    glm::vec3 op = ray.origin - sphere.position;
+    float a = glm::dot(ray.direction, ray.direction);
+    float b = 2 * glm::dot(ray.direction, op);
+    float c = glm::dot(op, op) - (sphere.radius * sphere.radius);
+
+    float discriminant = (b * b) - (4 * a * c);
+    if (discriminant < 0) return false;
+
+    float t1 = (-b + glm::sqrt(discriminant)) / (2 * a);
+    float t2 = (-b - glm::sqrt(discriminant)) / (2 * a);
+    r_t = glm::min(t1, t2);
+    return true;
+}
 
 }  // namespace raytracing

@@ -27,9 +27,9 @@ Pixel LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
         glm::vec3(u, v, 0.0f);  // glm::vec3(u, v, 0.0f) - m_CameraPosition;
 
     if (Intersection::RaySphere(ray, sphere)) {
-        return Pixel{255, 0, 0};
+        return {255, 0, 0};
     }
-    return Pixel{0, 0, 255};
+    return {0, 0, 255};
 }
 
 void LearnKernel::UI() {
