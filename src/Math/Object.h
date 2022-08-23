@@ -4,6 +4,16 @@
 
 namespace raytracing {
 
+class Camera {
+   public:
+    glm::vec3 position;
+    glm::vec3 direction;
+
+    Camera(glm::vec3 position, glm::vec3 direction)
+        : position(position), direction(direction) {}
+    ~Camera() = default;
+};
+
 class Ray {
    public:
     glm::vec3 origin;
@@ -26,27 +36,38 @@ class Hittable {
                      HitResult& hit) = 0;
 };
 
-class Scene : public Hittable {
-   private:
-    std::vector<Hittable*> m_Objects;
-
+class Object : public Hittable {
    public:
-    Scene();
-    ~Scene();
+    std::string name;
+    glm::vec3 position;
 
-    void Add(Hittable* object);
-    void Remove(Hittable* object);
-
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
+    Object(std::string name, glm::vec3 position)
+        : name(name), position(position) {}
+    virtual ~Object() = default;
 };
 
-class Sphere : public Hittable {
+class Scene : public Object {
+   private:
+    std::vector<Object*> m_Objects;
+
    public:
-    glm::vec3 position;
+    Scene(std::string name, glm::vec3 position);
+    ~Scene();
+
+    void Add(Object* object);
+    void Remove(Object* object);
+
+    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
+
+    std::vector<Object*>& GetObjects() { return m_Objects; }
+};
+
+class Sphere : public Object {
+   public:
     float radius;
 
-    Sphere(glm::vec3 position, float radius)
-        : position(position), radius(radius) {}
+    Sphere(std::string name, glm::vec3 position, float radius)
+        : Object(name, position), radius(radius) {}
     ~Sphere() = default;
 
     bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;

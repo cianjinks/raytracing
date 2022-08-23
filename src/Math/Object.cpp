@@ -6,18 +6,18 @@ namespace raytracing {
 
 glm::vec3 Ray::At(float t) const { return origin + (direction * t); }
 
-Scene::Scene() {}
+Scene::Scene(std::string name, glm::vec3 position) : Object(name, position) {}
 
 Scene::~Scene() {
-    for (Hittable* object : m_Objects) {
+    for (Object* object : m_Objects) {
         delete object;
     }
     m_Objects.clear();
 }
 
-void Scene::Add(Hittable* object) { m_Objects.emplace_back(object); }
+void Scene::Add(Object* object) { m_Objects.emplace_back(object); }
 
-void Scene::Remove(Hittable* object) {
+void Scene::Remove(Object* object) {
     m_Objects.erase(std::find(m_Objects.begin(), m_Objects.end(), object));
 }
 
