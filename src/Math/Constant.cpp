@@ -1,6 +1,7 @@
 #include "Constant.h"
 
 namespace raytracing {
-float Constant::Infinity = std::numeric_limits<float>::infinity();
-;
+float Constant::FInfinity = std::numeric_limits<float>::infinity();
+float Constant::FMax = std::numeric_limits<float>::max();
+float Constant::FMin = std::numeric_limits<float>::min();
 }

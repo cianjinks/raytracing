@@ -4,7 +4,9 @@ namespace raytracing {
 
 class Constant {
    public:
-    static float Infinity;
+    static float FInfinity;
+    static float FMax;
+    static float FMin;
 };
 
 }  // namespace raytracing
