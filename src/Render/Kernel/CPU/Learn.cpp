@@ -7,6 +7,7 @@ namespace raytracing {
 LearnKernel::LearnKernel() : Kernel("Learn") {
     m_Camera = new Camera({0.0f, 0.0f, -2.0f}, {0.0f, 0.0f, 1.0f});
     m_Scene = new Scene("Test Scene", {0, 0, 0});
+    m_Scene->Add(new Box("Box", {5, 0, 0}, {1, 1, 1}));
     m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, 1.0f));
     m_Scene->Add(new Sphere("Sphere 2", {0, -101, 0}, 100.0f));
     RT_LOG("Learn Kernel Init");
@@ -35,7 +36,10 @@ Pixel LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
 }
 
 void LearnKernel::UI() {
-    ImGui::SliderFloat3("Camera", &m_Camera->position.x, 0.0f, -10.0f);
+    ImGui::SliderFloat3("Camera Position", &m_Camera->position.x, -10.0f,
+                        10.0f);
+    ImGui::SliderFloat3("Camera Direction", &m_Camera->direction.x, -1.0f,
+                        1.0f);
     for (Object* object : m_Scene->GetObjects()) {
         ImGui::SliderFloat3(object->name.c_str(), &object->position.x, -10.0f,
                             10.0f);

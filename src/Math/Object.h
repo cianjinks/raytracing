@@ -4,16 +4,6 @@
 
 namespace raytracing {
 
-class Camera {
-   public:
-    glm::vec3 position;
-    glm::vec3 direction;
-
-    Camera(glm::vec3 position, glm::vec3 direction)
-        : position(position), direction(direction) {}
-    ~Camera() = default;
-};
-
 class Ray {
    public:
     glm::vec3 origin;
@@ -46,6 +36,17 @@ class Object : public Hittable {
     virtual ~Object() = default;
 };
 
+/* Camera doesn't need to be object / hittable. */
+class Camera {
+   public:
+    glm::vec3 position;
+    glm::vec3 direction;
+
+    Camera(glm::vec3 position, glm::vec3 direction)
+        : position(position), direction(direction) {}
+    ~Camera() = default;
+};
+
 class Scene : public Object {
    private:
     std::vector<Object*> m_Objects;
@@ -69,6 +70,17 @@ class Sphere : public Object {
     Sphere(std::string name, glm::vec3 position, float radius)
         : Object(name, position), radius(radius) {}
     ~Sphere() = default;
+
+    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
+};
+
+class Box : public Object {
+   public:
+    glm::vec3 size;
+
+    Box(std::string name, glm::vec3 position, glm::vec3 size)
+        : Object(name, position), size(size) {}
+    ~Box() = default;
 
     bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
 };
