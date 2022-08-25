@@ -97,4 +97,32 @@ class Plane : public Object {
     bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
 };
 
+class Cylinder : public Object {
+   public:
+    glm::vec3 capA;
+    glm::vec3 capB;
+    float radius;
+
+    Cylinder(std::string name, glm::vec3 capA, glm::vec3 capB, float radius)
+        : Object(name, {0, 0, 0}), capA(capA), capB(capB) {}
+    ~Cylinder() = default;
+
+    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
+};
+
+class Torus : public Object {
+   public:
+    float large_radius;
+    float small_radius;
+
+    Torus(std::string name, glm::vec3 position, float large_radius,
+          float small_radius)
+        : Object(name, position),
+          large_radius(large_radius),
+          small_radius(small_radius) {}
+    ~Torus() = default;
+
+    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
+};
+
 }  // namespace raytracing

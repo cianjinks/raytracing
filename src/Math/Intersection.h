@@ -15,6 +15,10 @@ class Intersection {
                        HitResult& hit);
     static bool RayPlane(const Ray& ray, const Plane& plane, float t_min,
                          float t_max, HitResult& hit);
+    static bool RayCylinder(const Ray& ray, const Cylinder& cylinder,
+                            float t_min, float t_max, HitResult& hit);
+    static bool RayTorus(const Ray& ray, const Torus& torus, float t_min,
+                         float t_max, HitResult& result);
 
     static bool ClipT(float t_min, float t_max, float t1, float t2, float& r_t);
     static glm::vec3 EnsureNormal(const Ray& ray, glm::vec3 normal);

@@ -5,11 +5,11 @@
 namespace raytracing {
 
 LearnKernel::LearnKernel() : Kernel("Learn") {
-    m_Camera = new Camera({0.0f, 0.0f, -3.0f}, {0.0f, 0.0f, 1.0f});
+    m_Camera = new Camera({0.0f, 0.0f, -5.0f}, {0.0f, 0.0f, 1.0f});
     m_Scene = new Scene("Test Scene", {0, 0, 0});
-    m_Scene->Add(new Box("Box", {5, 0, 0}, {1, 5, 1}));
     m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, 1.0f));
-    m_Scene->Add(new Plane("Plane", {0, 0, 0}, {0, 1, 0}));
+    m_Scene->Add(new Box("Box", {5, 0, 0}, {1, 5, 1}));
+    m_Scene->Add(new Plane("Plane", {0, -1, 0}, {0, 1, 0}));
     RT_LOG("Learn Kernel Init");
 }
 

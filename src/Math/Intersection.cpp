@@ -76,6 +76,18 @@ bool Intersection::RayPlane(const Ray& ray, const Plane& plane, float t_min,
     return true;
 }
 
+bool Intersection::RayCylinder(const Ray& ray, const Cylinder& cylinder,
+                               float t_min, float t_max, HitResult& hit) {
+    /* TODO. */
+    return false;
+}
+
+bool Intersection::RayTorus(const Ray& ray, const Torus& torus, float t_min,
+                            float t_max, HitResult& hit) {
+    /* TODO. */
+    return false;
+}
+
 /* Discard if t values not between t_min and t_max. */
 bool Intersection::ClipT(float t_min, float t_max, float t1, float t2,
                          float& r_t) {

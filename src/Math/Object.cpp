@@ -47,4 +47,12 @@ bool Plane::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
     return Intersection::RayPlane(ray, *this, t_min, t_max, hit);
 }
 
+bool Cylinder::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
+    return Intersection::RayCylinder(ray, *this, t_min, t_max, hit);
+}
+
+bool Torus::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
+    return Intersection::RayTorus(ray, *this, t_min, t_max, hit);
+}
+
 }  // namespace raytracing
