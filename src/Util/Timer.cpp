@@ -24,9 +24,9 @@ void Timer::End() {
         s_MismatchFlag = false;
 
         s_End = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-            s_End - s_Start);
-        s_ElapsedTime = std::chrono::duration<float>(duration).count();
+        s_ElapsedTime =
+            std::chrono::duration<float, std::ratio<1, 1000>>(s_End - s_Start)
+                .count();
 
     } else {
         RT_ASSERT(false,
