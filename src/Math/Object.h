@@ -85,4 +85,16 @@ class Box : public Object {
     bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
 };
 
+class Plane : public Object {
+   public:
+    glm::vec3 normal;
+
+    /* Object::position will be treated as a point on the plane. */
+    Plane(std::string name, glm::vec3 position, glm::vec3 normal)
+        : Object(name, position), normal(normal) {}
+    ~Plane() = default;
+
+    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
+};
+
 }  // namespace raytracing

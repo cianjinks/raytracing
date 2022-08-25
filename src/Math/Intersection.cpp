@@ -59,6 +59,23 @@ bool Intersection::RayBox(const Ray& ray, const Box& box, float t_min,
     return true;
 }
 
+bool Intersection::RayPlane(const Ray& ray, const Plane& plane, float t_min,
+                            float t_max, HitResult& hit) {
+    float nd = glm::dot(plane.normal, ray.direction);
+    float no = glm::dot(plane.normal, ray.origin);
+    float np = glm::dot(plane.normal, plane.position);
+    if (nd == 0.0f) return false;
+
+    float t = (np - no) / nd;
+    if (t < t_min || t_max < t) return false;
+
+    hit.t = t;
+    hit.position = ray.At(hit.t);
+    hit.normal = plane.normal;
+    hit.normal = EnsureNormal(ray, hit.normal);
+    return true;
+}
+
 /* Discard if t values not between t_min and t_max. */
 bool Intersection::ClipT(float t_min, float t_max, float t1, float t2,
                          float& r_t) {
