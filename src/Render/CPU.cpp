@@ -17,13 +17,17 @@ CPUDevice::~CPUDevice() {}
 
 float CPUDevice::Execute(Image* image) {
     Timer::Start();
-    image->PerPixel([this](Image* image, uint32_t x, uint32_t y) {
-        return m_Kernels.GetCurrentKernel()->Exec(image, x, y);
-    });
+    image->PerSample(
+        [this](Image* image, uint32_t x, uint32_t y, uint32_t s) {
+            return m_Kernels.GetCurrentKernel()->Exec(image, x, y);
+        },
+        m_NumSamples);
     Timer::End();
     return Timer::GetElapsedTimeMS();
 }
 
-void CPUDevice::SettingsUI() { ImGui::Text("CPU device settings go here."); }
+void CPUDevice::SettingsUI() {
+    ImGui::SliderInt("Samples", (int*)&m_NumSamples, 1, 100);
+}
 
 }  // namespace raytracing

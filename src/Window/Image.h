@@ -6,6 +6,8 @@ namespace raytracing {
 
 /* TODO: Create ImageFormat. */
 
+using Color = glm::vec3; /* TODO: Temporary wrapper for code clarity. */
+
 struct Pixel {
     uint8_t r = 0;
     uint8_t g = 0;
@@ -14,9 +16,9 @@ struct Pixel {
     Pixel() {}
     Pixel(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
     Pixel(glm::vec3 c) {
-        r = (uint8_t)(c.x * 255.0f);
-        g = (uint8_t)(c.y * 255.0f);
-        b = (uint8_t)(c.z * 255.0f);
+        r = (uint8_t)(glm::clamp(c.x, 0.0f, 0.999f) * 255.0f);
+        g = (uint8_t)(glm::clamp(c.y, 0.0f, 0.999f) * 255.0f);
+        b = (uint8_t)(glm::clamp(c.z, 0.0f, 0.999f) * 255.0f);
     }
 };
 
@@ -39,7 +41,12 @@ class Image {
     void Randomize(); /* Randomize every pixel. */
 
     void PerPixel(
-        std::function<Pixel(Image* image, uint32_t x, uint32_t y)> func);
+        std::function<Color(Image* image, uint32_t x, uint32_t y)> func);
+
+    void PerSample(
+        std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)>
+            func,
+        uint32_t max_samples);
 
     Pixel* GetData() { return m_Data; }
     uint32_t GetWidth() { return m_Width; }

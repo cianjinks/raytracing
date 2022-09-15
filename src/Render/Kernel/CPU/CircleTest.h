@@ -13,7 +13,7 @@ class CircleTestKernel : public Kernel {
     CircleTestKernel();
     ~CircleTestKernel();
 
-    Pixel Exec(Image* image, uint32_t x, uint32_t y) override;
+    Color Exec(Image* image, uint32_t x, uint32_t y) override;
     void UI() override;
 };
 

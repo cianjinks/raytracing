@@ -18,7 +18,7 @@ class LearnKernel : public Kernel {
     LearnKernel();
     ~LearnKernel();
 
-    Pixel Exec(Image* image, uint32_t x, uint32_t y) override;
+    Color Exec(Image* image, uint32_t x, uint32_t y) override;
     void UI() override;
 };
 

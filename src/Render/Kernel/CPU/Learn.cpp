@@ -18,7 +18,7 @@ LearnKernel::~LearnKernel() {
     delete m_Camera;
 }
 
-Pixel LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
+Color LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
     float u = ((float(x) * (2.0f * image->GetAspectRatio())) /
                float(image->GetWidth())) -
               image->GetAspectRatio();
@@ -32,7 +32,7 @@ Pixel LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
     if (m_Scene->Hit(ray, Constant::FMin, Constant::FInfinity, result)) {
         return {glm::abs(result.normal)};
     }
-    return {0, 0, 255};
+    return {0.5, 0.7, 1.0};
 }
 
 void LearnKernel::UI() {

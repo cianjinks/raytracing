@@ -10,10 +10,12 @@ ColorTestKernel::ColorTestKernel() : Kernel("Color Test") {
 
 ColorTestKernel::~ColorTestKernel() {}
 
-Pixel ColorTestKernel::Exec(Image* image, uint32_t x, uint32_t y) {
-    return Pixel{(uint8_t)m_Color[0], (uint8_t)m_Color[1], (uint8_t)m_Color[2]};
+Color ColorTestKernel::Exec(Image* image, uint32_t x, uint32_t y) {
+    return m_Color;
 }
 
-void ColorTestKernel::UI() { ImGui::SliderInt3("Color", m_Color, 0, 255); }
+void ColorTestKernel::UI() {
+    ImGui::SliderFloat3("Color", &m_Color[0], 0.0f, 1.0f);
+}
 
 }  // namespace raytracing

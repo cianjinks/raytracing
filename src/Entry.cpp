@@ -5,8 +5,8 @@ int main(void) {
     info.Name = "raytracing";
     info.WindowWidth = 1280;
     info.WindowHeight = 720;
-    info.ImageWidth = 320;
-    info.ImageHeight = 180;
+    info.ImageWidth = 320 * 2;
+    info.ImageHeight = 180 * 2;
 
     raytracing::Application *app = new raytracing::Application(info);
     app->Run();
