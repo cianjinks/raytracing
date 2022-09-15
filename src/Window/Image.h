@@ -16,9 +16,9 @@ struct Pixel {
     Pixel() {}
     Pixel(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
     Pixel(glm::vec3 c) {
-        r = (uint8_t)(glm::clamp(c.x, 0.0f, 0.999f) * 255.0f);
-        g = (uint8_t)(glm::clamp(c.y, 0.0f, 0.999f) * 255.0f);
-        b = (uint8_t)(glm::clamp(c.z, 0.0f, 0.999f) * 255.0f);
+        r = (uint8_t)(glm::clamp(c.x, 0.0f, 0.999f) * 256.0f);
+        g = (uint8_t)(glm::clamp(c.y, 0.0f, 0.999f) * 256.0f);
+        b = (uint8_t)(glm::clamp(c.z, 0.0f, 0.999f) * 256.0f);
     }
 };
 

@@ -58,12 +58,13 @@ void Image::PerSample(
     uint32_t max_samples) {
     for (uint32_t w = 0; w < m_Width; w++) {
         for (uint32_t h = 0; h < m_Height; h++) {
-            uint64_t index = (m_Width * h) + w;
             Color color = {0.0f, 0.0f, 0.0f};
             for (uint32_t s = 0; s < max_samples; s++) {
                 color += func(this, w, h, s);
             }
-            color *= 1.0f / max_samples;
+            color *= (1.0f / max_samples);
+
+            uint64_t index = (m_Width * h) + w;
             m_Data[index] = Pixel(color);
         }
     }

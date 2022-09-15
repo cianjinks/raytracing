@@ -19,10 +19,12 @@ LearnKernel::~LearnKernel() {
 }
 
 Color LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
-    float u = ((float(x) * (2.0f * image->GetAspectRatio())) /
-               float(image->GetWidth())) -
-              image->GetAspectRatio();
-    float v = ((float(y) * 2.0f) / float(image->GetHeight())) - 1.0f;
+    float fx = float(x) + Random::Float(0.0f, 1.0f);
+    float fy = float(y) + Random::Float(0.0f, 1.0f);
+    float u =
+        ((fx * (2.0f * image->GetAspectRatio())) / float(image->GetWidth())) -
+        image->GetAspectRatio();
+    float v = ((fy * 2.0f) / float(image->GetHeight())) - 1.0f;
 
     Ray ray;
     ray.origin = m_Camera->position;
@@ -30,7 +32,7 @@ Color LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
 
     HitResult result;
     if (m_Scene->Hit(ray, Constant::FMin, Constant::FInfinity, result)) {
-        return {glm::abs(result.normal)};
+        return glm::abs(result.normal);
     }
     return {0.5, 0.7, 1.0};
 }

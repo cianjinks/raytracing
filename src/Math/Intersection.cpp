@@ -23,7 +23,7 @@ bool Intersection::RaySphere(const Ray& ray, const Sphere& sphere, float t_min,
 
     hit.t = t;
     hit.position = ray.At(hit.t);
-    hit.normal = (sphere.position - hit.position) / sphere.radius;
+    hit.normal = (hit.position - sphere.position) / sphere.radius;
     hit.normal = EnsureNormal(ray, hit.normal);
 
     return true;
