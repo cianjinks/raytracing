@@ -25,4 +25,19 @@ float Random::Float(float min, float max) {
     static std::uniform_real_distribution<float> distribution(min, max);
     return distribution(s_Generator);
 }
+
+glm::vec3 Random::Vec3() { return glm::vec3(Float(), Float(), Float()); }
+
+glm::vec3 Random::Vec3(float min, float max) {
+    return glm::vec3(Float(min, max), Float(min, max), Float(min, max));
+}
+
+glm::vec3 Random::InSphere() {
+    while (true) {
+        glm::vec3 p = Vec3(-1, 1);
+        float l = glm::length(p);
+        if ((l * l) >= 1) continue;
+        return p;
+    }
+}
 }  // namespace raytracing

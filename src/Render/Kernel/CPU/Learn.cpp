@@ -5,10 +5,10 @@
 namespace raytracing {
 
 LearnKernel::LearnKernel() : Kernel("Learn") {
-    m_Camera = new Camera({0.0f, 0.0f, -5.0f}, {0.0f, 0.0f, 1.0f});
+    m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f});
     m_Scene = new Scene("Test Scene", {0, 0, 0});
     m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, 1.0f));
-    m_Scene->Add(new Box("Box", {5, 0, 0}, {1, 5, 1}));
+    // m_Scene->Add(new Box("Box", {5, 0, 0}, {1, 5, 1}));
     m_Scene->Add(new Plane("Plane", {0, -1, 0}, {0, 1, 0}));
     RT_LOG("Learn Kernel Init");
 }
@@ -19,6 +19,7 @@ LearnKernel::~LearnKernel() {
 }
 
 Color LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
+    /* Slight variation across samples for anti-aliasing. */
     float fx = float(x) + Random::Float(0.0f, 1.0f);
     float fy = float(y) + Random::Float(0.0f, 1.0f);
     float u =
@@ -30,14 +31,11 @@ Color LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
     ray.origin = m_Camera->position;
     ray.direction = m_Camera->direction + glm::vec3(u, v, 0.0f);
 
-    HitResult result;
-    if (m_Scene->Hit(ray, Constant::FMin, Constant::FInfinity, result)) {
-        return glm::abs(result.normal);
-    }
-    return {0.5, 0.7, 1.0};
+    return RayColor(ray, m_MaxBounces);
 }
 
 void LearnKernel::UI() {
+    ImGui::SliderInt("Max Bounces", (int*)&m_MaxBounces, 0, 50);
     ImGui::SliderFloat3("Camera Position", &m_Camera->position.x, -10.0f,
                         10.0f);
     ImGui::SliderFloat3("Camera Direction", &m_Camera->direction.x, -1.0f,
@@ -46,6 +44,24 @@ void LearnKernel::UI() {
         ImGui::SliderFloat3(object->name.c_str(), &object->position.x, -10.0f,
                             10.0f);
     }
+}
+
+Color LearnKernel::RayColor(const Ray& ray, int depth) {
+    HitResult result;
+
+    if (depth <= 0) return {0.0f, 0.0f, 0.0f};
+
+    if (m_Scene->Hit(ray, Constant::FMin, Constant::FInfinity, result)) {
+        Ray bounce_ray;
+        bounce_ray.origin = result.position;
+        glm::vec3 target = result.position + result.normal + Random::InSphere();
+        bounce_ray.direction = target - result.position;
+        return 0.5f * RayColor(bounce_ray, depth - 1);
+    }
+
+    glm::vec3 unit = glm::normalize(ray.direction);
+    float t = 0.5f * (unit.y + 1.0f);
+    return (1.0f - t) * Color(1.0f) + t * Color(0.5f, 0.7f, 1.0f);
 }
 
 }  // namespace raytracing

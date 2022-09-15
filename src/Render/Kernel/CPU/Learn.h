@@ -13,6 +13,7 @@ class LearnKernel : public Kernel {
    private:
     Scene* m_Scene;
     Camera* m_Camera;
+    uint32_t m_MaxBounces = 25;
 
    public:
     LearnKernel();
@@ -20,6 +21,9 @@ class LearnKernel : public Kernel {
 
     Color Exec(Image* image, uint32_t x, uint32_t y) override;
     void UI() override;
+
+   private:
+    Color RayColor(const Ray& ray, int depth);
 };
 
 }  // namespace raytracing
