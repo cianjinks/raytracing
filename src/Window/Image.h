@@ -47,6 +47,11 @@ class Image {
         std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)>
             func,
         uint32_t max_samples);
+    void PerSampleSection(
+        std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)>
+            func,
+        uint32_t max_samples, uint32_t sx, uint32_t sy, uint32_t swidth,
+        uint32_t sheight);
 
     Pixel* GetData() { return m_Data; }
     uint32_t GetWidth() { return m_Width; }

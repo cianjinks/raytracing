@@ -60,6 +60,13 @@ void RenderDeviceManager::UI() {
         }
     }
 
+    ImGui::SameLine();
+    if (ImGui::Button("Clear")) {
+        if (!m_CurrentDevice->Executing) {
+            Application::GetImageView()->GetImage()->Randomize();
+        }
+    }
+
     if (m_CurrentDevice->Executing && disabled) {
         ImGui::PopItemFlag();
         ImGui::PopStyleVar();

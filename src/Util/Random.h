@@ -6,10 +6,9 @@
 namespace raytracing {
 
 class Random {
-   private:
-    static std::mt19937 s_Generator;
-
    public:
+    static std::mt19937* Generator();
+
     /* Generate a uniform random double in the range [0, 1). */
     static double Double();
     /* Generate a uniform random double in the range [min, max). */
