@@ -15,15 +15,19 @@ CPUDevice::CPUDevice() : RenderDevice("CPU") {
 
 CPUDevice::~CPUDevice() {}
 
-float CPUDevice::Execute(Image* image) {
-    Timer::Start();
+void CPUDevice::Execute(Image* image) {
+    std::thread t(&CPUDevice::ExecuteThreaded, this, image);
+    t.detach();
+}
+
+void CPUDevice::ExecuteThreaded(Image* image) {
+    ExecutionRunning = true;
     image->PerSample(
         [this](Image* image, uint32_t x, uint32_t y, uint32_t s) {
             return m_Kernels.GetCurrentKernel()->Exec(image, x, y);
         },
         m_NumSamples);
-    Timer::End();
-    return Timer::GetElapsedTimeMS();
+    ExecutionRunning = false;
 }
 
 void CPUDevice::SettingsUI() {

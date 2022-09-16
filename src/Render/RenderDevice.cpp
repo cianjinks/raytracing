@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "CPU.h"
 #include "imgui.h"
+#include "imgui_internal.h"
 
 namespace raytracing {
 
@@ -44,19 +45,25 @@ void RenderDeviceManager::UI() {
     ImGui::Separator();
 
     ImGui::Text("Execution");
-    ImGui::Checkbox("Live", &m_LiveExecToggle);
-    if (m_LiveExecToggle) {
-        m_LastExecutionTime =
+
+    bool disabled = false;
+    if (m_CurrentDevice->ExecutionRunning) {
+        ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+        ImGui::PushStyleVar(ImGuiStyleVar_Alpha,
+                            ImGui::GetStyle().Alpha * 0.5f);
+        disabled = true;
+    }
+
+    if (ImGui::Button("Execute")) {
+        if (!m_CurrentDevice->ExecutionRunning) {
             m_CurrentDevice->Execute(Application::GetImageView()->GetImage());
-    } else {
-        ImGui::SameLine();
-        if (ImGui::Button("Execute")) {
-            m_LastExecutionTime = m_CurrentDevice->Execute(
-                Application::GetImageView()->GetImage());
         }
     }
-    ImGui::SameLine();
-    ImGui::Text("%.3fms", m_LastExecutionTime);
+
+    if (m_CurrentDevice->ExecutionRunning && disabled) {
+        ImGui::PopItemFlag();
+        ImGui::PopStyleVar();
+    }
 }
 
 void RenderDeviceManager::DeviceComboUI() {

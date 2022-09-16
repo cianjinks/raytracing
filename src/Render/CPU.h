@@ -6,14 +6,16 @@ namespace raytracing {
 
 class CPUDevice : public RenderDevice {
    private:
-    uint32_t m_NumSamples = 20;
+    uint32_t m_NumSamples = 1;
 
    public:
     CPUDevice();
     ~CPUDevice();
 
-    float Execute(Image* image) override;
+    void Execute(Image* image) override;
     void SettingsUI() override;
+
+    void ExecuteThreaded(Image* image);
 };
 
 }  // namespace raytracing

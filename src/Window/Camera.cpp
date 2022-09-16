@@ -45,6 +45,8 @@ void Camera::OnEvent(Event &event) {
             }
             break;
         }
+        default:
+            break;
     }
 }
 

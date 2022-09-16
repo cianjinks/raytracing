@@ -161,6 +161,8 @@ void ImageView::OnEvent(Event &event) {
             }
             break;
         }
+        default:
+            break;
     }
     m_Camera->OnEvent(event);
 }

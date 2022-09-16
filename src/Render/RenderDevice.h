@@ -9,6 +9,9 @@ class RenderDevice {
    public:
     std::string Name;
 
+    /* Render device communicates execution status to the device manager. */
+    bool ExecutionRunning = false;
+
    protected:
     KernelLibrary m_Kernels;
 
@@ -16,8 +19,7 @@ class RenderDevice {
     RenderDevice(std::string name);
     virtual ~RenderDevice() = default;
 
-    /* Returns execution time in ms. */
-    virtual float Execute(Image* image) = 0;
+    virtual void Execute(Image* image) = 0;
     virtual void SettingsUI() = 0;
 
     KernelLibrary& GetKernels() { return m_Kernels; }
@@ -29,9 +31,6 @@ class RenderDeviceManager {
     std::vector<RenderDevice*> m_DeviceList;
     RenderDevice* m_CurrentDevice = nullptr;
     uint32_t m_CurrentDeviceIndex = 0;
-
-    float m_LastExecutionTime = 0.0f;
-    bool m_LiveExecToggle = false;
 
    public:
     RenderDeviceManager();
