@@ -16,21 +16,29 @@ CPUDevice::CPUDevice() : RenderDevice("CPU") {
 CPUDevice::~CPUDevice() {}
 
 void CPUDevice::Execute(Image* image) {
-    std::thread t(&CPUDevice::ExecuteThreaded, this, image);
-    t.detach();
+    if (m_Multithreaded) {
+        std::thread t(&CPUDevice::ExecuteThreaded, this, image);
+        t.detach();
+    } else {
+        UpdateImage(image);
+    }
 }
 
-void CPUDevice::ExecuteThreaded(Image* image) {
-    ExecutionRunning = true;
+/* TODO: Divide image into sections based on thread count. */
+void CPUDevice::ExecuteThreaded(Image* image) { UpdateImage(image); }
+
+void CPUDevice::UpdateImage(Image* image) {
+    Executing = true;
     image->PerSample(
         [this](Image* image, uint32_t x, uint32_t y, uint32_t s) {
             return m_Kernels.GetCurrentKernel()->Exec(image, x, y);
         },
         m_NumSamples);
-    ExecutionRunning = false;
+    Executing = false;
 }
 
 void CPUDevice::SettingsUI() {
+    ImGui::Checkbox("Multithreaded", &m_Multithreaded);
     ImGui::SliderInt("Samples", (int*)&m_NumSamples, 1, 100);
 }
 

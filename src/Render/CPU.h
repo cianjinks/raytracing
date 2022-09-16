@@ -7,6 +7,7 @@ namespace raytracing {
 class CPUDevice : public RenderDevice {
    private:
     uint32_t m_NumSamples = 1;
+    bool m_Multithreaded = true;
 
    public:
     CPUDevice();
@@ -16,6 +17,7 @@ class CPUDevice : public RenderDevice {
     void SettingsUI() override;
 
     void ExecuteThreaded(Image* image);
+    void UpdateImage(Image* image);
 };
 
 }  // namespace raytracing

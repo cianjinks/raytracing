@@ -47,7 +47,7 @@ void RenderDeviceManager::UI() {
     ImGui::Text("Execution");
 
     bool disabled = false;
-    if (m_CurrentDevice->ExecutionRunning) {
+    if (m_CurrentDevice->Executing) {
         ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
         ImGui::PushStyleVar(ImGuiStyleVar_Alpha,
                             ImGui::GetStyle().Alpha * 0.5f);
@@ -55,12 +55,12 @@ void RenderDeviceManager::UI() {
     }
 
     if (ImGui::Button("Execute")) {
-        if (!m_CurrentDevice->ExecutionRunning) {
+        if (!m_CurrentDevice->Executing) {
             m_CurrentDevice->Execute(Application::GetImageView()->GetImage());
         }
     }
 
-    if (m_CurrentDevice->ExecutionRunning && disabled) {
+    if (m_CurrentDevice->Executing && disabled) {
         ImGui::PopItemFlag();
         ImGui::PopStyleVar();
     }
