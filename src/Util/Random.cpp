@@ -6,30 +6,29 @@ namespace raytracing {
 
 /* https://stackoverflow.com/questions/21237905/how-do-i-generate-thread-safe-uniform-random-numbers
  */
-std::mt19937* Random::Generator() {
-    static thread_local std::mt19937* generator = nullptr;
-    if (!generator) generator = new std::mt19937();
+std::mt19937& Random::Generator() {
+    static thread_local std::mt19937 generator;
     return generator;
 }
 
 double Random::Double() {
     static std::uniform_real_distribution<double> distribution(0.0, 1.0);
-    return distribution(*Generator());
+    return distribution(Generator());
 }
 
 double Random::Double(double min, double max) {
     static std::uniform_real_distribution<double> distribution(min, max);
-    return distribution(*Generator());
+    return distribution(Generator());
 }
 
 float Random::Float() {
     static std::uniform_real_distribution<float> distribution(0.0, 1.0);
-    return distribution(*Generator());
+    return distribution(Generator());
 }
 
 float Random::Float(float min, float max) {
     static std::uniform_real_distribution<float> distribution(min, max);
-    return distribution(*Generator());
+    return distribution(Generator());
 }
 
 glm::vec3 Random::Vec3() { return glm::vec3(Float(), Float(), Float()); }
