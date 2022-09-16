@@ -15,6 +15,7 @@ class Timer {
     static void Start();
     static void End();
     static float GetElapsedTimeMS();
+    static float GetElapsedTimeS();
 };
 
 }  // namespace raytracing

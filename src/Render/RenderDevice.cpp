@@ -64,6 +64,11 @@ void RenderDeviceManager::UI() {
         ImGui::PopItemFlag();
         ImGui::PopStyleVar();
     }
+
+    if (!m_CurrentDevice->Executing && m_CurrentDevice->ExecutionTime != 0.0f) {
+        ImGui::SameLine();
+        ImGui::Text("%.3fs", m_CurrentDevice->ExecutionTime);
+    }
 }
 
 void RenderDeviceManager::DeviceComboUI() {

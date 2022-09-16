@@ -24,9 +24,7 @@ void Timer::End() {
         s_MismatchFlag = false;
 
         s_End = std::chrono::high_resolution_clock::now();
-        s_ElapsedTime =
-            std::chrono::duration<float, std::ratio<1, 1000>>(s_End - s_Start)
-                .count();
+        s_ElapsedTime = std::chrono::duration<float>(s_End - s_Start).count();
 
     } else {
         RT_ASSERT(false,
@@ -34,6 +32,7 @@ void Timer::End() {
     }
 }
 
-float Timer::GetElapsedTimeMS() { return s_ElapsedTime; }
+float Timer::GetElapsedTimeMS() { return s_ElapsedTime * (1.0f / 1000.0f); }
+float Timer::GetElapsedTimeS() { return s_ElapsedTime; }
 
 }  // namespace raytracing

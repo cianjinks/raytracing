@@ -9,9 +9,10 @@ class RenderDevice {
    public:
     std::string Name;
 
-    /* Render devices can run concurrent tasks. Use this flag to communicate
+    /* Render devices can run concurrent tasks. Use these flags to communicate
      * status to device manager. */
     bool Executing = false;
+    float ExecutionTime = 0.0f;
 
    protected:
     KernelLibrary m_Kernels;

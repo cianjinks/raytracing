@@ -29,11 +29,14 @@ void CPUDevice::ExecuteThreaded(Image* image) { UpdateImage(image); }
 
 void CPUDevice::UpdateImage(Image* image) {
     Executing = true;
+    Timer::Start();
     image->PerSample(
         [this](Image* image, uint32_t x, uint32_t y, uint32_t s) {
             return m_Kernels.GetCurrentKernel()->Exec(image, x, y);
         },
         m_NumSamples);
+    Timer::End();
+    ExecutionTime = Timer::GetElapsedTimeS();
     Executing = false;
 }
 
