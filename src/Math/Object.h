@@ -12,10 +12,13 @@ class Ray {
     glm::vec3 At(float t) const;
 };
 
+class Material;
+
 class HitResult {
    public:
     glm::vec3 position;
     glm::vec3 normal;
+    S<Material> material;
     float t;
 };
 
@@ -30,9 +33,10 @@ class Object : public Hittable {
    public:
     std::string name;
     glm::vec3 position;
+    S<Material> material;
 
-    Object(std::string name, glm::vec3 position)
-        : name(name), position(position) {}
+    Object(std::string name, glm::vec3 position, S<Material> material)
+        : name(name), position(position), material(material) {}
     virtual ~Object() = default;
 };
 
@@ -67,8 +71,8 @@ class Sphere : public Object {
    public:
     float radius;
 
-    Sphere(std::string name, glm::vec3 position, float radius)
-        : Object(name, position), radius(radius) {}
+    Sphere(std::string name, glm::vec3 position, S<Material> material, float radius)
+        : Object(name, position, material), radius(radius) {}
     ~Sphere() = default;
 
     bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
@@ -78,8 +82,8 @@ class Box : public Object {
    public:
     glm::vec3 size;
 
-    Box(std::string name, glm::vec3 position, glm::vec3 size)
-        : Object(name, position), size(size) {}
+    Box(std::string name, glm::vec3 position, S<Material> material, glm::vec3 size)
+        : Object(name, position, material), size(size) {}
     ~Box() = default;
 
     bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
@@ -90,8 +94,8 @@ class Plane : public Object {
     glm::vec3 normal;
 
     /* Object::position will be treated as a point on the plane. */
-    Plane(std::string name, glm::vec3 position, glm::vec3 normal)
-        : Object(name, position), normal(normal) {}
+    Plane(std::string name, glm::vec3 position, S<Material> material, glm::vec3 normal)
+        : Object(name, position, material), normal(normal) {}
     ~Plane() = default;
 
     bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
@@ -103,8 +107,8 @@ class Cylinder : public Object {
     glm::vec3 capB;
     float radius;
 
-    Cylinder(std::string name, glm::vec3 capA, glm::vec3 capB, float radius)
-        : Object(name, {0, 0, 0}), capA(capA), capB(capB) {}
+    Cylinder(std::string name, S<Material> material, glm::vec3 capA, glm::vec3 capB, float radius)
+        : Object(name, {0, 0, 0}, material), capA(capA), capB(capB) {}
     ~Cylinder() = default;
 
     bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
@@ -115,9 +119,8 @@ class Torus : public Object {
     float large_radius;
     float small_radius;
 
-    Torus(std::string name, glm::vec3 position, float large_radius,
-          float small_radius)
-        : Object(name, position),
+    Torus(std::string name, glm::vec3 position, S<Material> material, float large_radius, float small_radius)
+        : Object(name, position, material),
           large_radius(large_radius),
           small_radius(small_radius) {}
     ~Torus() = default;

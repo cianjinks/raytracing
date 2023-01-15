@@ -6,7 +6,7 @@ namespace raytracing {
 
 glm::vec3 Ray::At(float t) const { return origin + (direction * t); }
 
-Scene::Scene(std::string name, glm::vec3 position) : Object(name, position) {}
+Scene::Scene(std::string name, glm::vec3 position) : Object(name, position, nullptr) {}
 
 Scene::~Scene() {
     for (Object* object : m_Objects) {
@@ -36,22 +36,27 @@ bool Scene::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
 }
 
 bool Sphere::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
+    hit.material = material;
     return Intersection::RaySphere(ray, *this, t_min, t_max, hit);
 }
 
 bool Box::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
+    hit.material = material;
     return Intersection::RayBox(ray, *this, t_min, t_max, hit);
 }
 
 bool Plane::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
+    hit.material = material;
     return Intersection::RayPlane(ray, *this, t_min, t_max, hit);
 }
 
 bool Cylinder::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
+    hit.material = material;
     return Intersection::RayCylinder(ray, *this, t_min, t_max, hit);
 }
 
 bool Torus::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
+    hit.material = material;
     return Intersection::RayTorus(ray, *this, t_min, t_max, hit);
 }
 

@@ -45,4 +45,12 @@ glm::vec3 Random::InSphere() {
         return p;
     }
 }
+
+glm::vec3 Random::InHemisphere(const glm::vec3& normal) {
+    glm::vec3 in_sphere = InSphere();
+    if (glm::dot(in_sphere, normal) > 0.0f)
+        return in_sphere;
+    else
+        return -in_sphere;
+}
 }  // namespace raytracing

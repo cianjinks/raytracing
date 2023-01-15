@@ -62,7 +62,7 @@ void Image::PerSample(
             for (uint32_t s = 0; s < max_samples; s++) {
                 color += func(this, w, h, s);
             }
-            color *= (1.0f / max_samples);
+            color = glm::sqrt(color * (1.0f / max_samples));
 
             uint64_t index = (m_Width * h) + w;
             m_Data[index] = Pixel(color);
@@ -80,7 +80,7 @@ void Image::PerSampleSection(
             for (uint32_t s = 0; s < max_samples; s++) {
                 color += func(this, w, h, s);
             }
-            color *= (1.0f / max_samples);
+            color = glm::sqrt(color * (1.0f / max_samples));
 
             uint64_t index = (m_Width * h) + w;
             m_Data[index] = Pixel(color);

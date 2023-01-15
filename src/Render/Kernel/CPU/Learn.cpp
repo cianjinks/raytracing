@@ -7,9 +7,9 @@ namespace raytracing {
 LearnKernel::LearnKernel() : Kernel("Learn") {
     m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f});
     m_Scene = new Scene("Test Scene", {0, 0, 0});
-    m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, 1.0f));
+    m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, nullptr, 1.0f));
     // m_Scene->Add(new Box("Box", {5, 0, 0}, {1, 5, 1}));
-    m_Scene->Add(new Plane("Plane", {0, -1, 0}, {0, 1, 0}));
+    m_Scene->Add(new Plane("Plane", {0, -1, 0}, nullptr, {0, 1, 0}));
     RT_LOG("Learn Kernel Init");
 }
 
@@ -54,7 +54,9 @@ Color LearnKernel::RayColor(const Ray& ray, int depth) {
     if (m_Scene->Hit(ray, Constant::FMin, Constant::FInfinity, result)) {
         Ray bounce_ray;
         bounce_ray.origin = result.position;
-        glm::vec3 target = result.position + result.normal + Random::InSphere();
+        /* 2 different formulas for diffuse reflection. */
+        // glm::vec3 target = result.position + Random::InHemisphere(result.normal);
+        glm::vec3 target = result.position + result.normal + glm::normalize(Random::InSphere());
         bounce_ray.direction = target - result.position;
         return 0.5f * RayColor(bounce_ray, depth - 1);
     }

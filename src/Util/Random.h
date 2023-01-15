@@ -19,6 +19,8 @@ class Random {
     static glm::vec3 Vec3(float min, float max);
     /* Generate a uniform random point in a sphere. */
     static glm::vec3 InSphere();
+    /* Generate a uniform random point in a hemisphere around a normal. */
+    static glm::vec3 InHemisphere(const glm::vec3& normal);
 };
 
 }  // namespace raytracing

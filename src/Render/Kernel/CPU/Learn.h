@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 
 #include "Math/Constant.h"
+#include "Math/Material.h"
 #include "Math/Object.h"
 #include "Render/Kernel/Kernel.h"
 #include "Window/Image.h"
@@ -13,7 +14,7 @@ class LearnKernel : public Kernel {
    private:
     Scene* m_Scene;
     Camera* m_Camera;
-    uint32_t m_MaxBounces = 5;
+    uint32_t m_MaxBounces = 25;
 
    public:
     LearnKernel();

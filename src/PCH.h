@@ -20,5 +20,6 @@
 
 #include "Util/Assert.h"
 #include "Util/Log.h"
+#include "Util/Mem.h"
 #include "Util/Random.h"
 #include "Util/Timer.h"

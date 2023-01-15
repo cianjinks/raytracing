@@ -6,7 +6,7 @@ namespace raytracing {
 
 class CPUDevice : public RenderDevice {
    private:
-    uint32_t m_NumSamples = 1;
+    uint32_t m_NumSamples = 25;
     bool m_Multithreaded = true;
     uint32_t m_NumTilesX = 4;
     uint32_t m_NumTilesY = 4;
