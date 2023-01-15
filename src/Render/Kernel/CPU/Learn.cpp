@@ -7,9 +7,9 @@ namespace raytracing {
 LearnKernel::LearnKernel() : Kernel("Learn") {
     m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f});
     m_Scene = new Scene("Test Scene", {0, 0, 0});
-    m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, CreateS<Lambertian>(glm::vec3(0.7f, 0.3f, 0.3f)), 1.0f));
-    m_Scene->Add(new Sphere("Sphere 2", {-2.0, 0, 0}, CreateS<Metal>(glm::vec3(0.8f, 0.8f, 0.8f)), 1.0f));
-    m_Scene->Add(new Sphere("Sphere 3", {2.0, 0, 0}, CreateS<Metal>(glm::vec3(0.8f, 0.6f, 0.2f)), 1.0f));
+    m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f));
+    m_Scene->Add(new Sphere("Sphere 2", {-2.0, 0, 0}, CreateS<Dielectric>(1.5f), 1.0f));
+    m_Scene->Add(new Sphere("Sphere 3", {2.0, 0, 0}, CreateS<Metal>(glm::vec3(0.8f, 0.6f, 0.2f), 0.0f), 1.0f));
     // m_Scene->Add(new Box("Box", {5, 0, 0}, {1, 5, 1}));
     m_Scene->Add(new Plane("Plane", {0, -1, 0}, CreateS<Lambertian>(glm::vec3(0.8f, 0.8f, 0.0f)), {0, 1, 0}));
     RT_LOG("Learn Kernel Init");
