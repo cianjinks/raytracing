@@ -8,6 +8,7 @@
 
 namespace raytracing {
 
+/* A material represents a scattering function for when a ray hits a surface. */
 class Material {
    public:
     virtual bool scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const = 0;
@@ -18,6 +19,14 @@ class Lambertian : public Material {
     glm::vec3 albedo;
 
     Lambertian(const glm::vec3 albedo) : albedo(albedo) {}
+    virtual bool scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const override;
+};
+
+class Metal : public Material {
+   public:
+    glm::vec3 albedo;
+
+    Metal(const glm::vec3 albedo) : albedo(albedo) {}
     virtual bool scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const override;
 };
 

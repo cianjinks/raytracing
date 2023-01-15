@@ -9,6 +9,7 @@ namespace raytracing {
 /* Class for extra math utility functions. */
 class Math {
    public:
-    static bool V3NearZero(const glm::vec3 vec);
+    static glm::vec3 V3Reflect(const glm::vec3& vec, const glm::vec3& normal);
+    static bool V3NearZero(const glm::vec3& vec);
 };
 }  // namespace raytracing
