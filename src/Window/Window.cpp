@@ -8,6 +8,10 @@ Window::Window(std::string name, int32_t width, int32_t height)
         RT_ASSERT(false, "Failed to initialise GLFW!");
     }
 
+    glfwSetErrorCallback([](int error, const char* msg) {
+        RT_ERROR("[GLFW Error] [{0}] {1}", error, msg);
+    });
+
     m_Window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
     if (!m_Window) {
         glfwTerminate();

@@ -6,6 +6,7 @@
         if (!(condition)) {                                           \
             RT_ERROR("Assertion '{0}' failed at {1}:{2}", #condition, \
                      __FILE__, __LINE__);                             \
+            RT_ERROR("{}", #message);                                 \
             std::terminate();                                         \
         }                                                             \
     } while (false)
