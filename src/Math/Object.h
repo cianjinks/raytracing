@@ -45,9 +45,10 @@ class Camera {
    public:
     glm::vec3 position;
     glm::vec3 direction;
+    glm::vec3 up;
 
-    Camera(glm::vec3 position, glm::vec3 direction)
-        : position(position), direction(direction) {}
+    Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
+        : position(position), direction(direction), up(up) {}
     ~Camera() = default;
 };
 
