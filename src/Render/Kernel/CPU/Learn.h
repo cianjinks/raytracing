@@ -26,6 +26,8 @@ class LearnKernel : public Kernel {
 
    private:
     Color RayColor(const Ray& ray, int depth);
+
+    void RandomizeScene();
 };
 
 }  // namespace raytracing
