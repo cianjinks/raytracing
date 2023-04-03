@@ -5,7 +5,7 @@
 namespace raytracing {
 
 LearnKernel::LearnKernel() : Kernel("Learn") {
-    m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f});
+    m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, 2.0f, 2.5f);
     m_Scene = new Scene("Test Scene", {0, 0, 0});
     m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f));
     m_Scene->Add(new Sphere("Sphere 2", {-2.0, 0, 0}, CreateS<Dielectric>(1.5f), 1.0f));
@@ -29,13 +29,23 @@ Color LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
         image->GetAspectRatio();
     float t = ((fy * 2.0f) / float(image->GetHeight())) - 1.0f;
 
-    glm::vec3 u = glm::normalize(glm::cross(m_Camera->direction, m_Camera->up));
-    glm::vec3 v = glm::cross(u, m_Camera->direction);
-    glm::vec3 lower_left = m_Camera->position - (u / 4.0f) - (v / 4.0f) + glm::normalize(m_Camera->direction);
+    glm::vec3 u = glm::normalize(glm::cross(glm::normalize(m_Camera->direction), m_Camera->up));
+    glm::vec3 v = glm::cross(u, glm::normalize(m_Camera->direction));
+
+    /* Camera lens calculations. */
+    glm::vec3 cd = m_Camera->direction;
+    glm::vec3 offset = glm::vec3(0.0f);
+    if (m_UseLens) {
+        cd = m_Camera->direction * m_Camera->focus_dist;
+        glm::vec3 rd = (m_Camera->aperture / 2.0f) * Random::InUnitDisk();
+        offset = (u * rd.x) + (v * rd.y);
+        s = s * m_Camera->focus_dist;
+        t = t * m_Camera->focus_dist;
+    }
 
     Ray ray;
-    ray.origin = m_Camera->position;
-    ray.direction = glm::normalize(m_Camera->direction) + (u * s) + (v * t);
+    ray.origin = m_Camera->position + offset;
+    ray.direction = cd + (u * s) + (v * t) - offset;
 
     return RayColor(ray, m_MaxBounces);
 }
@@ -44,6 +54,9 @@ void LearnKernel::UI() {
     ImGui::SliderInt("Max Bounces", (int*)&m_MaxBounces, 0, 50);
     ImGui::InputFloat3("Camera Position", &m_Camera->position.x);
     ImGui::InputFloat3("Camera Direction", &m_Camera->direction.x);
+    ImGui::Checkbox("Camera Lens", &m_UseLens);
+    ImGui::InputFloat("Camera Aperture", &m_Camera->aperture);
+    ImGui::InputFloat("Camera Focus Distance", &m_Camera->focus_dist);
     for (Object* object : m_Scene->GetObjects()) {
         ImGui::SliderFloat3(object->name.c_str(), &object->position.x, -10.0f,
                             10.0f);

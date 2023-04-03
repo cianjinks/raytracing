@@ -47,8 +47,11 @@ class Camera {
     glm::vec3 direction;
     glm::vec3 up;
 
-    Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
-        : position(position), direction(direction), up(up) {}
+    float aperture;
+    float focus_dist;
+
+    Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up, float aperture, float focus_dist)
+        : position(position), direction(direction), up(up), aperture(aperture), focus_dist(focus_dist) {}
     ~Camera() = default;
 };
 

@@ -53,4 +53,13 @@ glm::vec3 Random::InHemisphere(const glm::vec3& normal) {
     else
         return -in_sphere;
 }
+
+glm::vec3 Random::InUnitDisk() {
+    while (true) {
+        glm::vec3 p = glm::vec3(Float(-1, 1), Float(-1, 1), 0);
+        float l = glm::length(p);
+        if ((l * l) >= 1) continue;
+        return p;
+    }
+}
 }  // namespace raytracing

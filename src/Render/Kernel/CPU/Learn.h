@@ -14,7 +14,8 @@ class LearnKernel : public Kernel {
    private:
     Scene* m_Scene;
     Camera* m_Camera;
-    uint32_t m_MaxBounces = 25;
+    bool m_UseLens = false;
+    uint32_t m_MaxBounces = 10;
 
    public:
     LearnKernel();
