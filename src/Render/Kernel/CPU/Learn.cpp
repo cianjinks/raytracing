@@ -5,14 +5,14 @@
 namespace raytracing {
 
 LearnKernel::LearnKernel() : Kernel("Learn") {
-    // m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, 2.0f, 2.5f);
+    // m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, 90.0f, 2.0f, 2.5f);
     // m_Scene = new Scene("Test Scene", {0, 0, 0});
     // m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f));
     // m_Scene->Add(new Sphere("Sphere 2", {-2.0, 0, 0}, CreateS<Dielectric>(1.5f), 1.0f));
     // m_Scene->Add(new Sphere("Sphere 3", {2.0, 0, 0}, CreateS<Metal>(glm::vec3(0.8f, 0.6f, 0.2f), 0.0f), 1.0f));
     // m_Scene->Add(new Box("Box", {5, 0, 0}, CreateS<Lambertian>(glm::vec3(0.5f, 0.5f, 0.5f)), {1, 1, 1}));
     // m_Scene->Add(new Plane("Plane", {0, -1, 0}, CreateS<Lambertian>(glm::vec3(0.8f, 0.8f, 0.0f)), {0, 1, 0}));
-    m_Camera = new Camera({3.25f, 0.5f, 0.75f}, {-3.25f, -0.5f, -0.75f}, {0.0f, 1.0f, 0.0f}, 0.25f, 2.5f);
+    m_Camera = new Camera({13.0f, 2.0f, 3.0f}, {-13.0f, -2.0f, -3.0f}, {0.0f, 1.0f, 0.0f}, 20.0f, 0.1f, 10.0f);
     m_Scene = new Scene("Test Scene", {0, 0, 0});
     RandomizeScene();
     RT_LOG("Learn Kernel Init");
@@ -25,7 +25,8 @@ LearnKernel::~LearnKernel() {
 
 void LearnKernel::RandomizeScene() {
     S<Lambertian> ground_material = CreateS<Lambertian>(glm::vec3(0.5f));
-    m_Scene->Add(new Plane("Ground", {0, 0, 0}, CreateS<Lambertian>(glm::vec3(0.5f)), {0, 1, 0}));
+    // m_Scene->Add(new Plane("Ground", {0, 0, 0}, CreateS<Lambertian>(glm::vec3(0.5f)), {0, 1, 0}));
+    m_Scene->Add(new Sphere("Ground", {0, -1000.0f, 0}, CreateS<Lambertian>(glm::vec3(0.5f)), 1000.0f));
 
     for (int a = -11; a < 11; a++) {
         for (int b = -11; b < 11; b++) {
@@ -67,28 +68,38 @@ Color LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
     /* Slight variation across samples for anti-aliasing. */
     float fx = float(x) + Random::Float(0.0f, 1.0f);
     float fy = float(y) + Random::Float(0.0f, 1.0f);
-    float s =
-        ((fx * (2.0f * image->GetAspectRatio())) / float(image->GetWidth())) -
-        image->GetAspectRatio();
-    float t = ((fy * 2.0f) / float(image->GetHeight())) - 1.0f;
+    float s = ((fx * 2.0f) / float(image->GetWidth())) - 1.0f;  /* -1 -> 1 */
+    float t = ((fy * 2.0f) / float(image->GetHeight())) - 1.0f; /* -1 -> 1 */
 
-    glm::vec3 u = glm::normalize(glm::cross(glm::normalize(m_Camera->direction), m_Camera->up));
+    float view_plane_height = 2.0f * glm::tan(glm::radians(m_Camera->vfov) / 2.0f);
+    float view_plane_width = image->GetAspectRatio() * view_plane_height;
+
+    glm::vec3 u = glm::cross(glm::normalize(m_Camera->direction), m_Camera->up);
     glm::vec3 v = glm::cross(u, glm::normalize(m_Camera->direction));
+
+    glm::vec3 vertical = view_plane_height * v;
+    glm::vec3 horizontal = view_plane_width * u;
 
     /* Camera lens calculations. */
     glm::vec3 cd = glm::normalize(m_Camera->direction);
     glm::vec3 offset = glm::vec3(0.0f);
     if (m_UseLens) {
-        cd = cd * m_Camera->focus_dist;
-        glm::vec3 rd = (m_Camera->aperture / 2.0f) * Random::InUnitDisk();
-        offset = (u * rd.x) + (v * rd.y);
-        s = s * m_Camera->focus_dist;
-        t = t * m_Camera->focus_dist;
+        /* Offset camera position by point in a random disk oriented along camera view plane. */
+        /* This simulates shooting rays from a circular lens. */
+        glm::vec3 random_disk = (m_Camera->aperture / 2.0f) * Random::InUnitDisk();
+        offset = (u * random_disk.x) + (v * random_disk.y);
+
+        /* Scale camera direction by focus_dist to push view plane farther away. */
+        /* We also need to scale vertical / horizontal otherwise the view will be zoomed. */
+        vertical = m_Camera->focus_dist * vertical;
+        horizontal = m_Camera->focus_dist * horizontal;
+        cd = m_Camera->focus_dist * cd;
     }
 
     Ray ray;
     ray.origin = m_Camera->position + offset;
-    ray.direction = cd + (u * s) + (v * t) - offset;
+    /* Half vertical and horizontal because m_Camera->direction is in the centre of the view plane, but they were calculated with the full width and height. */
+    ray.direction = cd + ((horizontal / 2.0f) * s) + ((vertical / 2.0f) * t) - offset;
 
     return RayColor(ray, m_MaxBounces);
 }
@@ -97,6 +108,7 @@ void LearnKernel::UI() {
     ImGui::SliderInt("Max Bounces", (int*)&m_MaxBounces, 0, 50);
     ImGui::InputFloat3("Camera Position", &m_Camera->position.x);
     ImGui::InputFloat3("Camera Direction", &m_Camera->direction.x);
+    ImGui::InputFloat("Camera Vertical FOV", &m_Camera->vfov);
     ImGui::Checkbox("Camera Lens", &m_UseLens);
     ImGui::InputFloat("Camera Aperture", &m_Camera->aperture);
     ImGui::InputFloat("Camera Focus Distance", &m_Camera->focus_dist);
