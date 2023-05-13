@@ -8,13 +8,28 @@ LearnKernel::LearnKernel() : Kernel("Learn") {
     // m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, 90.0f, 2.0f, 2.5f);
     // m_Scene = new Scene("Test Scene", {0, 0, 0});
     // m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f));
-    // m_Scene->Add(new Sphere("Sphere 2", {-2.0, 0, 0}, CreateS<Dielectric>(1.5f), 1.0f));
-    // m_Scene->Add(new Sphere("Sphere 3", {2.0, 0, 0}, CreateS<Metal>(glm::vec3(0.8f, 0.6f, 0.2f), 0.0f), 1.0f));
-    // m_Scene->Add(new Box("Box", {5, 0, 0}, CreateS<Lambertian>(glm::vec3(0.5f, 0.5f, 0.5f)), {1, 1, 1}));
-    // m_Scene->Add(new Plane("Plane", {0, -1, 0}, CreateS<Lambertian>(glm::vec3(0.8f, 0.8f, 0.0f)), {0, 1, 0}));
+    // m_Scene->Add(new Sphere("Sphere 2", {2.0, 0, 0}, CreateS<Metal>(glm::vec3(0.8), 0.3f), 1.0f));
+    // m_Scene->Add(new Sphere("Sphere 3", {-2.0, 0, 0}, CreateS<Metal>(glm::vec3(0.8f, 0.6f, 0.2f), 1.0f), 1.0f));
+    // // m_Scene->Add(new Box("Box", {5, 0, 0}, CreateS<Lambertian>(glm::vec3(0.5f)), {1, 1, 1}));
+    // m_Scene->Add(new Plane("Plane", {0, -1, 0}, CreateS<Lambertian>(glm::vec3(0.8, 0.8, 0.0f)), {0, 1, 0}));
+
     m_Camera = new Camera({13.0f, 2.0f, 3.0f}, {-13.0f, -2.0f, -3.0f}, {0.0f, 1.0f, 0.0f}, 20.0f, 0.1f, 10.0f);
     m_Scene = new Scene("Test Scene", {0, 0, 0});
     RandomizeScene();
+
+    // m_Camera = new Camera({2.0f, 4.0f, 5.0f}, {-2.0f, -4.0f, -5.0f}, {0.0f, 1.0f, 0.0f}, 90.0f, 2.0f, 2.5f);
+    // m_Scene = new Scene("Test Scene", {0, 0, 0});
+    // m_Scene->Add(new Sphere("Ground", {0, -1000.0f, 0}, CreateS<Lambertian>(glm::vec3(0.5f)), 1000.0f));
+    // m_Scene->Add(new Sphere("Red Sphere", {1.5f, 1.0f, -1.5f}, CreateS<Lambertian>(glm::vec3(0.5f, 0.0f, 0.0f)), 1.0f));
+    // m_Scene->Add(new Sphere("Green Sphere", {-1.5f, 1.0f, 1.5f}, CreateS<Lambertian>(glm::vec3(0.0f, 0.5f, 0.0f)), 1.0f));
+    // m_Scene->Add(new Sphere("Metal Sphere", {1.5f, 1.0f, 1.5f}, CreateS<Metal>(glm::vec3(0.6f), 0.5f), 1.0f));
+    // m_Scene->Add(new Sphere("Purple Sphere", {-1.5f, 1.0f, -1.5f}, CreateS<Lambertian>(glm::vec3(0.0f, 0.5f, 0.5f)), 1.0f));
+
+    // m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, 90.0f, 2.0f, 2.5f);
+    // m_Scene = new Scene("Test Scene", {0, 0, 0});
+    // m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f));
+    // m_Scene->Add(new Sphere("Ground", {0, -1001.0f, 0}, CreateS<Lambertian>(glm::vec3(1.0f)), 1000.0f));
+
     RT_LOG("Learn Kernel Init");
 }
 
@@ -39,17 +54,18 @@ void LearnKernel::RandomizeScene() {
                     // diffuse
                     auto albedo = Random::Vec3() * Random::Vec3();
                     sphere_material = CreateS<Lambertian>(albedo);
+                    m_Scene->Add(new Sphere("Sphere", center, sphere_material, 0.2f));
                 } else if (choose_mat < 0.95f) {
                     // metal
                     auto albedo = Random::Vec3(0.5f, 1.0f);
                     auto fuzz = Random::Float(0.0f, 0.5f);
                     sphere_material = CreateS<Metal>(albedo, fuzz);
-
+                    m_Scene->Add(new Sphere("Sphere", center, sphere_material, 0.2f));
                 } else {
                     // glass
                     sphere_material = CreateS<Dielectric>(1.5);
+                    m_Scene->Add(new Sphere("Sphere", center, sphere_material, 0.2f));
                 }
-                m_Scene->Add(new Sphere("Sphere", center, sphere_material, 0.2f));
             }
         }
     }
@@ -66,8 +82,8 @@ void LearnKernel::RandomizeScene() {
 
 Color LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
     /* Slight variation across samples for anti-aliasing. */
-    float fx = float(x) + Random::Float(0.0f, 1.0f);
-    float fy = float(y) + Random::Float(0.0f, 1.0f);
+    float fx = float(x) + Random::Float(-1.0f, 1.0f);
+    float fy = float(y) + Random::Float(-1.0f, 1.0f);
     float s = ((fx * 2.0f) / float(image->GetWidth())) - 1.0f;  /* -1 -> 1 */
     float t = ((fy * 2.0f) / float(image->GetHeight())) - 1.0f; /* -1 -> 1 */
 
@@ -123,7 +139,7 @@ Color LearnKernel::RayColor(const Ray& ray, int depth) {
 
     if (depth <= 0) return {0.0f, 0.0f, 0.0f};
 
-    if (m_Scene->Hit(ray, Constant::FMin, Constant::FInfinity, result)) {
+    if (m_Scene->Hit(ray, 0.001, Constant::FInfinity, result)) {
         Ray scattered;
         glm::vec3 attenuation;
         if (result.material->scatter(ray, result, attenuation, scattered)) {

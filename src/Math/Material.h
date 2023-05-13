@@ -38,7 +38,7 @@ class Dielectric : public Material {
     Dielectric(float ior) : ior(ior) {}
     virtual bool scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const override;
 
-private:
+   private:
     static float reflectance(float cosine, float ref_idx);
 };
 

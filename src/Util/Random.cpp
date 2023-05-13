@@ -7,28 +7,39 @@ namespace raytracing {
 /* https://stackoverflow.com/questions/21237905/how-do-i-generate-thread-safe-uniform-random-numbers
  */
 std::mt19937& Random::Generator() {
-    static thread_local std::mt19937 generator;
+    static thread_local std::random_device rd;
+    static thread_local std::mt19937 generator(rd());
     return generator;
 }
 
+std::uniform_real_distribution<double>& Random::DoubleDist() {
+    static thread_local std::uniform_real_distribution<double> distribution(0.0, 1.0);
+    return distribution;
+}
+
+std::uniform_real_distribution<float>& Random::FloatDist() {
+    static thread_local std::uniform_real_distribution<float> distribution(0.0, 1.0);
+    return distribution;
+}
+
 double Random::Double() {
-    static std::uniform_real_distribution<double> distribution(0.0, 1.0);
-    return distribution(Generator());
+    return DoubleDist()(Generator());
 }
 
 double Random::Double(double min, double max) {
-    static std::uniform_real_distribution<double> distribution(min, max);
-    return distribution(Generator());
+    double val = DoubleDist()(Generator());
+    val = std::fmod(val, max - min) + min;
+    return val;
 }
 
 float Random::Float() {
-    static std::uniform_real_distribution<float> distribution(0.0, 1.0);
-    return distribution(Generator());
+    return FloatDist()(Generator());
 }
 
 float Random::Float(float min, float max) {
-    static std::uniform_real_distribution<float> distribution(min, max);
-    return distribution(Generator());
+    float val = FloatDist()(Generator());
+    val = std::fmod(val, max - min) + min;
+    return val;
 }
 
 glm::vec3 Random::Vec3() { return glm::vec3(Float(), Float(), Float()); }
@@ -40,8 +51,8 @@ glm::vec3 Random::Vec3(float min, float max) {
 glm::vec3 Random::InSphere() {
     while (true) {
         glm::vec3 p = Vec3(-1, 1);
-        float l = glm::length(p);
-        if ((l * l) >= 1) continue;
+        float l = p.x * p.x + p.y * p.y + p.z * p.z;
+        if (l >= 1) continue;
         return p;
     }
 }

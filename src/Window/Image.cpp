@@ -53,39 +53,34 @@ void Image::PerPixel(
     }
 }
 
-void Image::PerSample(
-    std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)> func,
-    uint32_t max_samples) {
+void Image::PerSample(std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)> func,
+                      uint32_t max_samples) {
     for (uint32_t w = 0; w < m_Width; w++) {
         for (uint32_t h = 0; h < m_Height; h++) {
-            Color color = {0.0f, 0.0f, 0.0f};
-            for (uint32_t s = 0; s < max_samples; s++) {
-                color += func(this, w, h, s);
-            }
-            color = glm::sqrt(color * (1.0f / max_samples));
-
-            uint64_t index = (m_Width * h) + w;
-            m_Data[index] = Pixel(color);
+            SetPixelSampled(func, max_samples, w, h);
         }
     }
 }
 
-void Image::PerSampleSection(
-    std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)> func,
-    uint32_t max_samples, uint32_t sx, uint32_t sy, uint32_t swidth,
-    uint32_t sheight) {
+void Image::PerSampleSection(std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)> func,
+                             uint32_t max_samples, uint32_t sx, uint32_t sy, uint32_t swidth,
+                             uint32_t sheight) {
     for (uint32_t w = sx; w < sx + swidth; w++) {
         for (uint32_t h = sy; h < sy + sheight; h++) {
-            Color color = {0.0f, 0.0f, 0.0f};
-            for (uint32_t s = 0; s < max_samples; s++) {
-                color += func(this, w, h, s);
-            }
-            color = glm::sqrt(color * (1.0f / max_samples));
-
-            uint64_t index = (m_Width * h) + w;
-            m_Data[index] = Pixel(color);
+            SetPixelSampled(func, max_samples, w, h);
         }
     }
 }
 
+void Image::SetPixelSampled(std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)> func,
+                            uint32_t max_samples, uint32_t w, uint32_t h) {
+    Color color = {0.0f, 0.0f, 0.0f};
+    for (uint32_t s = 0; s < max_samples; s++) {
+        color += func(this, w, h, s);
+    }
+    color = glm::sqrt(color * (1.0f / max_samples));
+
+    uint64_t index = (m_Width * h) + w;
+    m_Data[index] = Pixel(color);
+}
 }  // namespace raytracing

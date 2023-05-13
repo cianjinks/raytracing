@@ -15,7 +15,7 @@ struct Pixel {
 
     Pixel() {}
     Pixel(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
-    Pixel(glm::vec3 c) {
+    Pixel(Color c) {
         r = (uint8_t)(glm::clamp(c.x, 0.0f, 0.999f) * 256.0f);
         g = (uint8_t)(glm::clamp(c.y, 0.0f, 0.999f) * 256.0f);
         b = (uint8_t)(glm::clamp(c.z, 0.0f, 0.999f) * 256.0f);
@@ -47,11 +47,17 @@ class Image {
         std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)>
             func,
         uint32_t max_samples);
+
     void PerSampleSection(
         std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)>
             func,
         uint32_t max_samples, uint32_t sx, uint32_t sy, uint32_t swidth,
         uint32_t sheight);
+
+    void SetPixelSampled(
+        std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)>
+            func,
+        uint32_t max_samples, uint32_t w, uint32_t h);
 
     Pixel* GetData() { return m_Data; }
     uint32_t GetWidth() { return m_Width; }
