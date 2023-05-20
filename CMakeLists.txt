@@ -53,12 +53,14 @@ add_subdirectory(dependencies/glfw)
 add_subdirectory(dependencies/spdlog)
 add_subdirectory(dependencies/stb_image)
 add_subdirectory(dependencies/glm)
+option(TRACY_ENABLE "" ON)
+add_subdirectory(dependencies/tracy)
 
 # Set `source` variable to all .h and .cpp files in `src`
 file(GLOB_RECURSE source CONFIGURE_DEPENDS "src/*.h" "src/*.cpp")
 
 add_executable(raytracing ${source} ${imgui-source})
-target_link_libraries(raytracing ${OPENGL_LIBRARIES} glad glfw stb_image glm spdlog)
+target_link_libraries(raytracing ${OPENGL_LIBRARIES} glad glfw stb_image glm spdlog TracyClient)
 target_include_directories(raytracing PRIVATE ${imgui-directory})
 target_precompile_headers(raytracing PRIVATE ${pch})
 
