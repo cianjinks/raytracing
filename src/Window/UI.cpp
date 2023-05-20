@@ -9,6 +9,7 @@
 namespace raytracing {
 
 void UI::Init() {
+    RT_PROFILE_FUNC;
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -20,6 +21,7 @@ void UI::Init() {
 }
 
 void UI::PreRender() {
+    RT_PROFILE_FUNC;
     /* ImGui Frame */
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -27,11 +29,13 @@ void UI::PreRender() {
 }
 
 void UI::Render() {
+    RT_PROFILE_FUNC;
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 bool UI::WantInput() {
+    RT_PROFILE_FUNC;
     ImGuiIO& io = ImGui::GetIO();
     return (io.WantCaptureMouse || io.WantCaptureKeyboard);
 }

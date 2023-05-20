@@ -22,6 +22,8 @@ void Scene::Remove(Object* object) {
 }
 
 bool Scene::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
+    RT_PROFILE_FUNC;
+
     HitResult temp_hr;
     bool any_hit = false;
     float closest = t_max;

@@ -16,7 +16,7 @@ class Log {
     static std::shared_ptr<spdlog::logger> s_Logger;
 };
 
-#ifdef RT_DEBUG
+#ifdef RT_ENABLE_LOGGING
 #define RT_LOG(...) ::raytracing::Log::GetLogger()->trace(__VA_ARGS__)
 #define RT_WARN(...) ::raytracing::Log::GetLogger()->warn(__VA_ARGS__)
 #define RT_ERROR(...) ::raytracing::Log::GetLogger()->error(__VA_ARGS__)

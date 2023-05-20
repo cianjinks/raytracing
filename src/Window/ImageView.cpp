@@ -22,6 +22,8 @@ ImageView::ImageView(uint32_t window_width, uint32_t window_height,
       m_ImageHeight(image_height),
       m_FImageWidth(image_width),
       m_FImageHeight(image_height) {
+    RT_PROFILE_FUNC_N("ImageView Init");
+
     // clang-format off
     float vertices[] = {
         // Pos                               // Texture Coord
@@ -130,6 +132,8 @@ ImageView::~ImageView() {
 }
 
 void ImageView::OnUpdate() {
+    RT_PROFILE_FUNC;
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -144,6 +148,8 @@ void ImageView::OnUpdate() {
 }
 
 void ImageView::OnEvent(Event &event) {
+    RT_PROFILE_FUNC;
+
     EventType type = event.GetEventType();
     switch (type) {
         case EventType::WINDOW_RESIZE: {
@@ -168,6 +174,8 @@ void ImageView::OnEvent(Event &event) {
 }
 
 void ImageView::UI() {
+    RT_PROFILE_FUNC;
+
     ImGui::Separator();
     ImGui::Text("Image Settings");
     ImGui::Text("Z: Frame Image");

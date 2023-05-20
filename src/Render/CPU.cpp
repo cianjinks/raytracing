@@ -16,6 +16,8 @@ CPUDevice::CPUDevice() : RenderDevice("CPU") {
 CPUDevice::~CPUDevice() {}
 
 void CPUDevice::Execute(Image* image) {
+    RT_PROFILE_FUNC;
+
     if (m_Multithreaded) {
         std::thread t(&CPUDevice::ExecuteThreaded, this, image);
         t.detach();
@@ -26,6 +28,8 @@ void CPUDevice::Execute(Image* image) {
 
 /* TODO: Handle odd image dimensions / tiles. */
 void CPUDevice::ExecuteThreaded(Image* image) {
+    RT_PROFILE_FUNC;
+
     Executing = true;
     Timer::Start();
 
@@ -57,6 +61,8 @@ void CPUDevice::ExecuteThreaded(Image* image) {
 }
 
 void CPUDevice::UpdateImage(Image* image) {
+    RT_PROFILE_FUNC;
+
     Executing = true;
     Timer::Start();
 

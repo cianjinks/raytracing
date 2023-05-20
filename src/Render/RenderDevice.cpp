@@ -14,6 +14,8 @@ RenderDeviceManager::RenderDeviceManager() { SetupRenderDevices(); }
 RenderDeviceManager::~RenderDeviceManager() { ClearRenderDevices(); }
 
 void RenderDeviceManager::SetupRenderDevices() {
+    RT_PROFILE_FUNC;
+
     /* Add more here. */
     RenderDevice* cpu = new CPUDevice();
     m_DeviceList.emplace_back(cpu);
@@ -31,6 +33,8 @@ void RenderDeviceManager::ClearRenderDevices() {
 }
 
 void RenderDeviceManager::UI() {
+    RT_PROFILE_FUNC;
+
     ImGui::Text("Devices");
     DeviceComboUI();
     m_CurrentDevice->GetKernels().DeviceComboUI();

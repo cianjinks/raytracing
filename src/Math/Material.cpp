@@ -3,6 +3,8 @@
 namespace raytracing {
 
 bool Lambertian::scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const {
+    RT_PROFILE_FUNC;
+
     scattered.origin = hit.position;
 
     /* 2 different formulas for diffuse reflection. */
@@ -20,6 +22,8 @@ bool Lambertian::scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenu
 
 /* Just reflect across normal. */
 bool Metal::scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const {
+    RT_PROFILE_FUNC;
+
     scattered.origin = hit.position;
     scattered.direction = Math::V3Reflect(glm::normalize(ray.direction), hit.normal) + (fuzz * Random::InSphere());
     attenuation = albedo;
@@ -27,6 +31,8 @@ bool Metal::scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation
 }
 
 bool Dielectric::scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const {
+    RT_PROFILE_FUNC;
+
     attenuation = glm::vec3(1.0f);
 
     bool face_test = glm::dot(ray.direction, hit.normal) < 0;

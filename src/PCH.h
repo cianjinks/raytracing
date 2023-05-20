@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "Util/Assert.h"
+#include "Util/Instrumentation.h"
 #include "Util/Log.h"
 #include "Util/Mem.h"
 #include "Util/Random.h"

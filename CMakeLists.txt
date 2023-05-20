@@ -53,8 +53,11 @@ add_subdirectory(dependencies/glfw)
 add_subdirectory(dependencies/spdlog)
 add_subdirectory(dependencies/stb_image)
 add_subdirectory(dependencies/glm)
-option(TRACY_ENABLE "" ON)
 add_subdirectory(dependencies/tracy)
+
+# Options
+# add_compile_definitions(RT_ENABLE_INSTRUMENTATION)
+add_compile_definitions(RT_ENABLE_LOGGING)
 
 # Set `source` variable to all .h and .cpp files in `src`
 file(GLOB_RECURSE source CONFIGURE_DEPENDS "src/*.h" "src/*.cpp")

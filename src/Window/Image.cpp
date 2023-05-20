@@ -11,6 +11,7 @@ Image::Image(uint32_t width, uint32_t height)
 Image::~Image() { delete[] m_Data; }
 
 void Image::Resize(uint32_t width, uint32_t height) {
+    RT_PROFILE_FUNC;
     m_Width = width;
     m_Height = height;
     m_PixelCount = width * height;
@@ -20,12 +21,14 @@ void Image::Resize(uint32_t width, uint32_t height) {
 }
 
 void Image::Fill(Pixel pixel) {
+    RT_PROFILE_FUNC;
     for (uint32_t p = 0; p < m_PixelCount; p++) {
         m_Data[p] = pixel;
     }
 }
 
 void Image::Fill(Pixel pixel, float percentage) {
+    RT_PROFILE_FUNC;
     uint32_t amount = (uint32_t)(((float)m_PixelCount) * percentage);
     for (uint32_t p = 0; p < amount; p++) {
         m_Data[p] = pixel;
@@ -33,6 +36,7 @@ void Image::Fill(Pixel pixel, float percentage) {
 }
 
 void Image::Randomize() {
+    RT_PROFILE_FUNC;
     uint8_t v = std::rand() % 256;
     for (uint32_t p = 0; p < m_PixelCount; p++) {
         m_Data[p].r = v;
@@ -44,6 +48,7 @@ void Image::Randomize() {
 
 void Image::PerPixel(
     std::function<Color(Image* image, uint32_t x, uint32_t y)> func) {
+    RT_PROFILE_FUNC;
     for (uint32_t w = 0; w < m_Width; w++) {
         for (uint32_t h = 0; h < m_Height; h++) {
             uint64_t index = (m_Width * h) + w;
@@ -55,6 +60,7 @@ void Image::PerPixel(
 
 void Image::PerSample(std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)> func,
                       uint32_t max_samples) {
+    RT_PROFILE_FUNC;
     for (uint32_t w = 0; w < m_Width; w++) {
         for (uint32_t h = 0; h < m_Height; h++) {
             SetPixelSampled(func, max_samples, w, h);
@@ -65,6 +71,7 @@ void Image::PerSample(std::function<Color(Image* image, uint32_t x, uint32_t y, 
 void Image::PerSampleSection(std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)> func,
                              uint32_t max_samples, uint32_t sx, uint32_t sy, uint32_t swidth,
                              uint32_t sheight) {
+    RT_PROFILE_FUNC;
     for (uint32_t w = sx; w < sx + swidth; w++) {
         for (uint32_t h = sy; h < sy + sheight; h++) {
             SetPixelSampled(func, max_samples, w, h);
@@ -74,6 +81,7 @@ void Image::PerSampleSection(std::function<Color(Image* image, uint32_t x, uint3
 
 void Image::SetPixelSampled(std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)> func,
                             uint32_t max_samples, uint32_t w, uint32_t h) {
+    RT_PROFILE_FUNC;
     Color color = {0.0f, 0.0f, 0.0f};
     for (uint32_t s = 0; s < max_samples; s++) {
         color += func(this, w, h, s);

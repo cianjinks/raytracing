@@ -9,6 +9,8 @@ Window* Application::s_Window = nullptr;
 ImageView* Application::s_ImageView = nullptr;
 
 Application::Application(ApplicationInfo app_info) : AppInfo(app_info) {
+    RT_PROFILE_FUNC_N("Application Init");
+
     Log::Init();
     if (!s_Window) {
         s_Window = new Window(AppInfo.Name.c_str(), AppInfo.WindowWidth,
@@ -34,6 +36,8 @@ Application::~Application() {
 }
 
 void Application::Run() {
+    RT_PROFILE_FUNC;
+
     while (!s_Window->ShouldClose()) {
         s_ImageView->OnUpdate();
 
@@ -46,6 +50,8 @@ void Application::Run() {
 }
 
 void Application::UI() {
+    RT_PROFILE_FUNC;
+
     ImGui::Begin("Controls");
     m_DeviceManager->UI();
     s_ImageView->UI();
@@ -53,6 +59,8 @@ void Application::UI() {
 }
 
 void Application::OnEvent(Event& event) {
+    RT_PROFILE_FUNC;
+
     if (UI::WantInput()) {
         return;
     }

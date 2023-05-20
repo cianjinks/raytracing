@@ -4,6 +4,8 @@ namespace raytracing {
 
 Window::Window(std::string name, int32_t width, int32_t height)
     : Name(name), Width(width), Height(height) {
+    RT_PROFILE_FUNC_N("Window Init");
+
     if (!glfwInit()) {
         RT_ASSERT(false, "Failed to initialise GLFW!");
     }
@@ -119,6 +121,7 @@ Window::Window(std::string name, int32_t width, int32_t height)
 Window::~Window() { glfwTerminate(); }
 
 void Window::OnUpdate() {
+    RT_PROFILE_FUNC_N("Window Swap");
     glfwSwapBuffers(m_Window);
     glfwPollEvents();
 }

@@ -5,6 +5,8 @@
 namespace raytracing {
 
 LearnKernel::LearnKernel() : Kernel("Learn") {
+    RT_PROFILE_FUNC_N("Learn Kernel Init");
+
     // m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, 90.0f, 2.0f, 2.5f);
     // m_Scene = new Scene("Test Scene", {0, 0, 0});
     // m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f));
@@ -81,6 +83,8 @@ void LearnKernel::RandomizeScene() {
 }
 
 Color LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
+    RT_PROFILE_FUNC;
+
     /* Slight variation across samples for anti-aliasing. */
     float fx = float(x) + Random::Float(-1.0f, 1.0f);
     float fy = float(y) + Random::Float(-1.0f, 1.0f);
@@ -121,6 +125,8 @@ Color LearnKernel::Exec(Image* image, uint32_t x, uint32_t y) {
 }
 
 void LearnKernel::UI() {
+    RT_PROFILE_FUNC;
+
     ImGui::SliderInt("Max Bounces", (int*)&m_MaxBounces, 0, 50);
     ImGui::InputFloat3("Camera Position", &m_Camera->position.x);
     ImGui::InputFloat3("Camera Direction", &m_Camera->direction.x);
@@ -135,6 +141,8 @@ void LearnKernel::UI() {
 }
 
 Color LearnKernel::RayColor(const Ray& ray, int depth) {
+    RT_PROFILE_FUNC;
+
     HitResult result;
 
     if (depth <= 0) return {0.0f, 0.0f, 0.0f};
