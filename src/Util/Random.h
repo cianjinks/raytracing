@@ -26,6 +26,8 @@ class Random {
     static std::mt19937& Generator();
     static std::uniform_real_distribution<double>& DoubleDist();
     static std::uniform_real_distribution<float>& FloatDist();
+    static std::uniform_real_distribution<double> DoubleDist(double min, double max);
+    static std::uniform_real_distribution<float> FloatDist(float min, float max);
 };
 
 }  // namespace raytracing

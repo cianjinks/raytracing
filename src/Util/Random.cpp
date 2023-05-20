@@ -2,6 +2,8 @@
 
 #include <random>
 
+#include "Math/Constant.h"
+
 namespace raytracing {
 
 /* https://stackoverflow.com/questions/21237905/how-do-i-generate-thread-safe-uniform-random-numbers
@@ -22,12 +24,20 @@ std::uniform_real_distribution<float>& Random::FloatDist() {
     return distribution;
 }
 
+std::uniform_real_distribution<double> Random::DoubleDist(double min, double max) {
+    return std::uniform_real_distribution<double>(min, max);
+}
+
+std::uniform_real_distribution<float> Random::FloatDist(float min, float max) {
+    return std::uniform_real_distribution<float>(min, max);
+}
+
 double Random::Double() {
     return DoubleDist()(Generator());
 }
 
 double Random::Double(double min, double max) {
-    double val = DoubleDist()(Generator());
+    double val = DoubleDist(min, max)(Generator());
     val = std::fmod(val, max - min) + min;
     return val;
 }
@@ -37,7 +47,7 @@ float Random::Float() {
 }
 
 float Random::Float(float min, float max) {
-    float val = FloatDist()(Generator());
+    float val = FloatDist(min, max)(Generator());
     val = std::fmod(val, max - min) + min;
     return val;
 }

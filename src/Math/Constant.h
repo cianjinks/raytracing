@@ -8,6 +8,9 @@ class Constant {
     static float FMax;
     static float FMin;
     static float FLowest;
+
+    static double DMax;
+    static double DMin;
 };
 
 }  // namespace raytracing
