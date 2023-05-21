@@ -4,3 +4,6 @@
 [submodule "dependencies/tracy"]
 	path = dependencies/tracy
 	url = https://github.com/wolfpld/tracy
+[submodule "dependencies/nfd"]
+	path = dependencies/nfd
+	url = https://github.com/btzy/nativefiledialog-extended
