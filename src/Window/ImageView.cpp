@@ -1,6 +1,7 @@
 #include "ImageView.h"
 
 #include <glad/glad.h>
+#include <nfd.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -187,6 +188,13 @@ void ImageView::UI() {
     if ((uint32_t)image_dim[0] != m_ImageWidth ||
         (uint32_t)image_dim[1] != m_ImageHeight) {
         ResizeImage(image_dim[0], image_dim[1]);
+    }
+    if (ImGui::Button("Save Image")) {
+        nfdchar_t *path;
+        nfdresult_t result = NFD_OpenDialog(&path, nullptr, 0, NULL);
+        if (result == NFD_OKAY) {
+            NFD_FreePath(path);
+        }
     }
 }
 

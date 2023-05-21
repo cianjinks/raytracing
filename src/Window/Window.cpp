@@ -26,6 +26,10 @@ Window::Window(std::string name, int32_t width, int32_t height)
         RT_ASSERT(false, "Failed to initialise GLAD!");
     }
 
+    if (NFD_Init() != NFD_OKAY) {
+        RT_ASSERT(false, "Failed to initialise Native File Dialog!");
+    }
+
     glfwSwapInterval(1);
 
     glfwSetWindowUserPointer(m_Window, &m_EventCallback);
@@ -118,7 +122,10 @@ Window::Window(std::string name, int32_t width, int32_t height)
     RT_LOG("Window Initialised");
 }
 
-Window::~Window() { glfwTerminate(); }
+Window::~Window() {
+    NFD_Quit();
+    glfwTerminate();
+}
 
 void Window::OnUpdate() {
     RT_PROFILE_FUNC_N("Window Swap");

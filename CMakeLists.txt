@@ -54,6 +54,7 @@ add_subdirectory(dependencies/spdlog)
 add_subdirectory(dependencies/stb_image)
 add_subdirectory(dependencies/glm)
 add_subdirectory(dependencies/tracy)
+add_subdirectory(dependencies/nfd)
 
 # Options
 # add_compile_definitions(RT_ENABLE_INSTRUMENTATION)
@@ -63,7 +64,7 @@ add_compile_definitions(RT_ENABLE_LOGGING)
 file(GLOB_RECURSE source CONFIGURE_DEPENDS "src/*.h" "src/*.cpp")
 
 add_executable(raytracing ${source} ${imgui-source})
-target_link_libraries(raytracing ${OPENGL_LIBRARIES} glad glfw stb_image glm spdlog TracyClient)
+target_link_libraries(raytracing PRIVATE ${OPENGL_LIBRARIES} glad glfw stb_image glm spdlog TracyClient nfd)
 target_include_directories(raytracing PRIVATE ${imgui-directory})
 target_precompile_headers(raytracing PRIVATE ${pch})
 

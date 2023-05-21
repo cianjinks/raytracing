@@ -3,6 +3,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <nfd.h>
 
 #include "Event.h"
 #include "ImageView.h"
