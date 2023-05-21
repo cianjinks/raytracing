@@ -1,5 +1,7 @@
 #include "Image.h"
 
+#include <stb_image_write.h>
+
 namespace raytracing {
 
 Image::Image(uint32_t width, uint32_t height)
@@ -9,6 +11,17 @@ Image::Image(uint32_t width, uint32_t height)
 }
 
 Image::~Image() { delete[] m_Data; }
+
+void Image::Save(const char* filepath) {
+    stbi_flip_vertically_on_write(true);
+    int stride_in_bytes = m_Width * sizeof(Pixel); /* Size of a row in bytes. */
+    int result = stbi_write_png(filepath, (int)m_Width, (int)m_Height, 3, m_Data, stride_in_bytes);
+    if (result) {
+        RT_LOG("Image has been saved to: {}", filepath);
+    } else {
+        RT_ERROR("Failed to save image to: {}", filepath);
+    }
+}
 
 void Image::Resize(uint32_t width, uint32_t height) {
     RT_PROFILE_FUNC;

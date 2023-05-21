@@ -191,9 +191,13 @@ void ImageView::UI() {
     }
     if (ImGui::Button("Save Image")) {
         nfdchar_t *path;
-        nfdresult_t result = NFD_OpenDialog(&path, nullptr, 0, NULL);
+        nfdfilteritem_t filterItem[1] = {{"Portable Network Graphics", "png"}};
+        nfdresult_t result = NFD_SaveDialog(&path, filterItem, 1, nullptr, "image.png");
         if (result == NFD_OKAY) {
+            m_Image->Save(path);
             NFD_FreePath(path);
+        } else if (result != NFD_CANCEL) {
+            RT_ERROR("Native File Dialog Error: {}", NFD_GetError());
         }
     }
 }
