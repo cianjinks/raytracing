@@ -21,12 +21,15 @@ class LearnKernel : public Kernel {
     LearnKernel();
     ~LearnKernel();
 
-    Color Exec(Image* image, uint32_t x, uint32_t y) override;
+    Color Exec(Image* image, uint32_t x, uint32_t y, uint32_t s) override;
     void UI() override;
 
    private:
-    Color RayColor(const Ray& ray, int depth);
+    Color RayColor(const Ray& ray, uint32_t depth, uint32_t& seed);
 
+    void FirstScene();
+    void TestMaterialScene();
+    void TestLensScene();
     void RandomizeScene();
 };
 

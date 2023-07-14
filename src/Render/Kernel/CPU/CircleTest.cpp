@@ -10,7 +10,7 @@ CircleTestKernel::CircleTestKernel() : Kernel("Circle Test") {
 
 CircleTestKernel::~CircleTestKernel() {}
 
-Color CircleTestKernel::Exec(Image* image, uint32_t x, uint32_t y) {
+Color CircleTestKernel::Exec(Image* image, uint32_t x, uint32_t y, uint32_t s) {
     x -= image->GetWidth() / 2;
     y -= image->GetHeight() / 2;
     if (std::sqrt((x * x) + (y * y)) <= (uint32_t)m_CircleRadius) {

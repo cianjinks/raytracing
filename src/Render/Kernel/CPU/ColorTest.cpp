@@ -10,7 +10,7 @@ ColorTestKernel::ColorTestKernel() : Kernel("Color Test") {
 
 ColorTestKernel::~ColorTestKernel() {}
 
-Color ColorTestKernel::Exec(Image* image, uint32_t x, uint32_t y) {
+Color ColorTestKernel::Exec(Image* image, uint32_t x, uint32_t y, uint32_t s) {
     return m_Color;
 }
 

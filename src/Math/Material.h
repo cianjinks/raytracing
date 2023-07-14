@@ -11,7 +11,7 @@ namespace raytracing {
 /* A material represents a scattering function for when a ray hits a surface. */
 class Material {
    public:
-    virtual bool scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const = 0;
+    virtual bool scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const = 0;
 };
 
 class Lambertian : public Material {
@@ -19,7 +19,7 @@ class Lambertian : public Material {
     glm::vec3 albedo;
 
     Lambertian(const glm::vec3 albedo) : albedo(albedo) {}
-    virtual bool scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const override;
+    virtual bool scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const override;
 };
 
 class Metal : public Material {
@@ -28,7 +28,7 @@ class Metal : public Material {
     float fuzz;
 
     Metal(const glm::vec3 albedo, float fuzz) : albedo(albedo), fuzz(fuzz < 1.0f ? fuzz : 1.0f) {}
-    virtual bool scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const override;
+    virtual bool scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const override;
 };
 
 class Dielectric : public Material {
@@ -36,7 +36,7 @@ class Dielectric : public Material {
     float ior;
 
     Dielectric(float ior) : ior(ior) {}
-    virtual bool scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const override;
+    virtual bool scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const override;
 
    private:
     static float reflectance(float cosine, float ref_idx);

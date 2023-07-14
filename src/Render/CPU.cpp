@@ -43,7 +43,7 @@ void CPUDevice::ExecuteThreaded(Image* image) {
             threads.push_back(std::thread(
                 &Image::PerSampleSection, image,
                 [this](Image* image, uint32_t x, uint32_t y, uint32_t s) {
-                    return m_Kernels.GetCurrentKernel()->Exec(image, x, y);
+                    return m_Kernels.GetCurrentKernel()->Exec(image, x, y, s);
                 },
                 m_NumSamples, x, y, tile_width, tile_height));
         }
@@ -68,7 +68,7 @@ void CPUDevice::UpdateImage(Image* image) {
 
     image->PerSample(
         [this](Image* image, uint32_t x, uint32_t y, uint32_t s) {
-            return m_Kernels.GetCurrentKernel()->Exec(image, x, y);
+            return m_Kernels.GetCurrentKernel()->Exec(image, x, y, s);
         },
         m_NumSamples);
 

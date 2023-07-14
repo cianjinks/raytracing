@@ -13,7 +13,7 @@ class ColorTestKernel : public Kernel {
     ColorTestKernel();
     ~ColorTestKernel();
 
-    Color Exec(Image* image, uint32_t x, uint32_t y) override;
+    Color Exec(Image* image, uint32_t x, uint32_t y, uint32_t s) override;
     void UI() override;
 };
 

@@ -2,14 +2,14 @@
 
 namespace raytracing {
 
-bool Lambertian::scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const {
+bool Lambertian::scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const {
     RT_PROFILE_FUNC;
 
     scattered.origin = hit.position;
 
     /* 2 different formulas for diffuse reflection. */
-    glm::vec3 target = Random::InHemisphere(hit.normal);
-    // glm::vec3 target = hit.normal + glm::normalize(Random::InSphere());
+    glm::vec3 target = FastRandom::InHemisphere(seed, hit.normal);
+    // glm::vec3 target = hit.normal + glm::normalize(FastRandom::InSphere(seed));
 
     if (Math::V3NearZero(target)) {
         target = hit.normal;
@@ -21,16 +21,16 @@ bool Lambertian::scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenu
 }
 
 /* Just reflect across normal. */
-bool Metal::scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const {
+bool Metal::scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const {
     RT_PROFILE_FUNC;
 
     scattered.origin = hit.position;
-    scattered.direction = Math::V3Reflect(glm::normalize(ray.direction), hit.normal) + (fuzz * Random::InSphere());
+    scattered.direction = Math::V3Reflect(glm::normalize(ray.direction), hit.normal) + (fuzz * FastRandom::InSphere(seed));
     attenuation = albedo;
     return glm::dot(scattered.direction, hit.normal) > 0;
 }
 
-bool Dielectric::scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const {
+bool Dielectric::scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const {
     RT_PROFILE_FUNC;
 
     attenuation = glm::vec3(1.0f);
@@ -45,7 +45,7 @@ bool Dielectric::scatter(const Ray& ray, const HitResult& hit, glm::vec3& attenu
     bool cannot_refract = refraction_ratio * sin_theta > 1.0f;
     glm::vec3 direction;
 
-    if (cannot_refract || reflectance(cos_theta, refraction_ratio) > Random::Float()) {
+    if (cannot_refract || reflectance(cos_theta, refraction_ratio) > FastRandom::Float(seed)) {
         scattered.direction = Math::V3Reflect(norm_direction, hit.normal);
     } else {
         scattered.direction = Math::V3Refract(norm_direction, hit.normal, refraction_ratio);

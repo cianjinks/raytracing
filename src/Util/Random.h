@@ -5,6 +5,21 @@
 
 namespace raytracing {
 
+class FastRandom {
+   public:
+    static float Float(uint32_t& seed);
+    static float Float(uint32_t& seed, float min, float max);
+    static glm::vec3 Vec3(uint32_t& seed);
+    static glm::vec3 Vec3(uint32_t& seed, float min, float max);
+
+    static glm::vec3 InSphere(uint32_t& seed);
+    static glm::vec3 InHemisphere(uint32_t& seed, const glm::vec3& normal);
+    static glm::vec3 InUnitDisk(uint32_t& seed);
+
+   private:
+    static inline uint32_t PCGHash(uint32_t input);
+};
+
 class Random {
    public:
     /* Generate a uniform random double in the range [0, 1). */
