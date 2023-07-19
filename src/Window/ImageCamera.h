@@ -12,7 +12,7 @@
 
 namespace raytracing {
 
-class Camera {
+class ImageCamera {
    private:
     float m_Width;
     float m_Height;
@@ -27,8 +27,8 @@ class Camera {
     glm::mat4 m_ViewMatrix;
 
    public:
-    Camera(float width, float height);
-    ~Camera();
+    ImageCamera(float width, float height);
+    ~ImageCamera();
 
     void OnUpdate();
     void OnEvent(Event& event);

@@ -21,7 +21,7 @@ Application::Application(ApplicationInfo app_info) : AppInfo(app_info) {
         s_ImageView = new ImageView(AppInfo.WindowWidth, AppInfo.WindowHeight,
                                     AppInfo.ImageWidth, AppInfo.ImageHeight);
     }
-    m_DeviceManager = new RenderDeviceManager();
+    m_DeviceManager = new RenderDeviceManager(s_ImageView->GetImage());
     UI::Init();
     RT_LOG("Application Initialised");
 }
@@ -39,12 +39,11 @@ void Application::Run() {
     RT_PROFILE_FUNC;
 
     while (!s_Window->ShouldClose()) {
+        m_DeviceManager->OnUpdate();
         s_ImageView->OnUpdate();
-
         UI::PreRender();
         UI();
         UI::Render();
-
         s_Window->OnUpdate();
     }
 }

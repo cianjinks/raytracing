@@ -48,13 +48,15 @@ class Image {
     void PerSample(
         std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)>
             func,
-        uint32_t max_samples);
+        uint32_t max_samples,
+        std::atomic<bool>& stop);
 
     void PerSampleSection(
         std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)>
             func,
         uint32_t max_samples, uint32_t sx, uint32_t sy, uint32_t swidth,
-        uint32_t sheight);
+        uint32_t sheight,
+        std::atomic<bool>& stop);
 
     void SetPixelSampled(
         std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)>

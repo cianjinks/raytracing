@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Camera.h"
 #include "Event.h"
 #include "Image.h"
+#include "ImageCamera.h"
 
 /**
  * @brief ImageView
@@ -25,7 +25,7 @@ class ImageView {
     float m_FImageHeight;
 
     Image* m_Image;
-    Camera* m_Camera;
+    ImageCamera* m_Camera;
 
     uint32_t m_ShaderProgramID;
     uint32_t m_CameraUniformID;

@@ -9,9 +9,6 @@ class RenderDevice {
    public:
     std::string Name;
 
-    /* Render devices can run concurrent tasks. Use these flags to communicate
-     * status to device manager. */
-    bool Executing = false;
     float ExecutionTime = 0.0f;
 
    protected:
@@ -21,7 +18,7 @@ class RenderDevice {
     RenderDevice(std::string name);
     virtual ~RenderDevice() = default;
 
-    virtual void Execute(Image* image) = 0;
+    virtual void OnUpdate(Image* image) = 0;
     virtual void SettingsUI() = 0;
 
     KernelLibrary& GetKernels() { return m_Kernels; }
@@ -34,12 +31,13 @@ class RenderDeviceManager {
     RenderDevice* m_CurrentDevice = nullptr;
     uint32_t m_CurrentDeviceIndex = 0;
 
+    Image* m_Image = nullptr;
+
    public:
-    RenderDeviceManager();
+    RenderDeviceManager(Image* image);
     ~RenderDeviceManager();
 
-    /* UI for device selection, kernel selection, settings, execution options.
-     */
+    void OnUpdate();
     void UI();
 
     RenderDevice* GetCurrentDevice() const { return m_CurrentDevice; }

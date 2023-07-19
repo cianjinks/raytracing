@@ -117,7 +117,7 @@ ImageView::ImageView(uint32_t window_width, uint32_t window_height,
     glValidateProgram(m_ShaderProgramID);
     glUseProgram(m_ShaderProgramID);
 
-    m_Camera = new Camera(m_FWindowWidth, m_FWindowHeight);
+    m_Camera = new ImageCamera(m_FWindowWidth, m_FWindowHeight);
     m_CameraUniformID =
         glGetUniformLocation(m_ShaderProgramID, "u_ProjectionMatrix");
 
@@ -177,7 +177,6 @@ void ImageView::OnEvent(Event &event) {
 void ImageView::UI() {
     RT_PROFILE_FUNC;
 
-    ImGui::Separator();
     ImGui::Text("Image Settings");
     ImGui::Text("Z: Frame Image");
 

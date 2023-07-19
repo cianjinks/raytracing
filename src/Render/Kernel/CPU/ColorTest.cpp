@@ -15,7 +15,7 @@ Color ColorTestKernel::Exec(Image* image, uint32_t x, uint32_t y, uint32_t s) {
 }
 
 void ColorTestKernel::UI() {
-    ImGui::SliderFloat3("Color", &m_Color[0], 0.0f, 1.0f);
+    ImGui::ColorEdit3("Color", &m_Color[0]);
 }
 
 }  // namespace raytracing

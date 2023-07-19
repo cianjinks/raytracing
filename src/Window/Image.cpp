@@ -72,22 +72,26 @@ void Image::PerPixel(
 }
 
 void Image::PerSample(std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)> func,
-                      uint32_t max_samples) {
+                      uint32_t max_samples, std::atomic<bool>& stop) {
     RT_PROFILE_FUNC;
     for (uint32_t w = 0; w < m_Width; w++) {
         for (uint32_t h = 0; h < m_Height; h++) {
-            SetPixelSampled(func, max_samples, w, h);
+            if (!stop) {
+                SetPixelSampled(func, max_samples, w, h);
+            }
         }
     }
 }
 
 void Image::PerSampleSection(std::function<Color(Image* image, uint32_t x, uint32_t y, uint32_t s)> func,
                              uint32_t max_samples, uint32_t sx, uint32_t sy, uint32_t swidth,
-                             uint32_t sheight) {
+                             uint32_t sheight, std::atomic<bool>& stop) {
     RT_PROFILE_FUNC;
     for (uint32_t w = sx; w < sx + swidth; w++) {
         for (uint32_t h = sy; h < sy + sheight; h++) {
-            SetPixelSampled(func, max_samples, w, h);
+            if (!stop) {
+                SetPixelSampled(func, max_samples, w, h);
+            }
         }
     }
 }
