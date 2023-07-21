@@ -23,11 +23,6 @@ CPUDevice::~CPUDevice() {
 void CPUDevice::OnUpdate(Image* image) {
     RT_PROFILE_FUNC;
 
-    if (!m_ThreadPool->IsRunning()) {
-        Timer::End();
-        ExecutionTime = Timer::GetElapsedTimeS();
-    }
-
     if (m_RealTimeExecution) {
         Execute(image);
     }
@@ -42,7 +37,7 @@ void CPUDevice::Execute(Image* image) {
     // });
 
     if (!m_ThreadPool->IsRunning()) {
-        Timer::Start();  // Ends in OnUpdate (TODO: bad design)
+        // TODO: Reimplement timing
 
         if (m_Multithreaded) {
             ExecuteThreaded(image);
