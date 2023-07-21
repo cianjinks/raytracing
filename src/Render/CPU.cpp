@@ -36,7 +36,7 @@ void CPUDevice::Execute(Image* image) {
     //     image->PerSampleSection();
     // });
 
-    if (!m_ThreadPool->IsRunning()) {
+    if (!m_ThreadPool->IsActive()) {
         // TODO: Reimplement timing
 
         if (m_Multithreaded) {
@@ -87,7 +87,7 @@ void CPUDevice::SettingsUI() {
 
     // Execute and clear buttons are only enabled when real time execution is turned off and threadpool is not running
     bool disabled = false;
-    if (m_RealTimeExecution || m_ThreadPool->IsRunning()) {
+    if (m_RealTimeExecution || m_ThreadPool->IsActive()) {
         ImGui::BeginDisabled();
         disabled = true;
     }
@@ -106,14 +106,14 @@ void CPUDevice::SettingsUI() {
     }
     //
 
-    if (m_RealTimeExecution || !m_ThreadPool->IsRunning()) {
+    if (m_RealTimeExecution || !m_ThreadPool->IsActive()) {
         if (ExecutionTime != 0.0f) {
             ImGui::SameLine();
             ImGui::Text("%.3fs", ExecutionTime);
         }
     }
 
-    if (!m_RealTimeExecution && m_ThreadPool->IsRunning()) {
+    if (!m_RealTimeExecution && m_ThreadPool->IsActive()) {
         ImGui::SameLine();
         if (ImGui::Button("Stop")) {
             m_ThreadPool->Clear();

@@ -11,7 +11,6 @@ ThreadPool::~ThreadPool() {
 }
 
 void ThreadPool::Init(uint64_t count) {
-    m_IsRunning = false;
     m_ClearSignal = false;
     m_StopSignal = false;
     m_QuickExitSignal = false;
@@ -31,17 +30,15 @@ void ThreadPool::ThreadExecution() {
             std::unique_lock<std::shared_mutex> lock(m_TasksMutex);
 
             m_NotifyTask.wait(lock, [this, &task] {
-                if (m_Tasks.empty()) {
-                    return m_StopSignal.load();  // Exit predicate if m_StopSignal is triggered
-                }
-                task = std::move(m_Tasks.front());
-                m_Tasks.pop();
-                return true;
+                return m_StopSignal.load() || !m_Tasks.empty();
             });
 
             if (m_StopSignal && m_Tasks.empty()) {
                 return;
             }
+
+            task = std::move(m_Tasks.front());
+            m_Tasks.pop();
         }
 
         m_ActiveThreads++;
