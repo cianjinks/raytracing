@@ -6,7 +6,6 @@
 #include "Math/Material.h"
 #include "Math/Object.h"
 #include "Render/Kernel/Kernel.h"
-#include "Window/Image.h"
 
 namespace raytracing {
 
@@ -21,11 +20,11 @@ class LearnKernel : public Kernel {
     LearnKernel();
     ~LearnKernel();
 
-    Color Exec(Image* image, uint32_t x, uint32_t y, uint32_t s) override;
+    glm::vec3 Exec(Texture2D<uint8_t, 3>* texture, uint32_t x, uint32_t y, uint32_t s) override;
     void UI() override;
 
    private:
-    Color RayColor(const Ray& ray, uint32_t depth, uint32_t& seed);
+    glm::vec3 RayColor(const Ray& ray, uint32_t depth, uint32_t& seed);
 
     void FirstScene();
     void TestMaterialScene();

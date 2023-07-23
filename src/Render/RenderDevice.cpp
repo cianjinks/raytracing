@@ -9,7 +9,7 @@ namespace raytracing {
 
 RenderDevice::RenderDevice(std::string name) : Name(name) {}
 
-RenderDeviceManager::RenderDeviceManager(Image* image) : m_Image(image) { SetupRenderDevices(); }
+RenderDeviceManager::RenderDeviceManager(Texture2D<uint8_t, 3>* texture) : m_Texture(texture) { SetupRenderDevices(); }
 
 RenderDeviceManager::~RenderDeviceManager() { ClearRenderDevices(); }
 
@@ -17,7 +17,7 @@ void RenderDeviceManager::SetupRenderDevices() {
     RT_PROFILE_FUNC;
 
     /* Add more here. */
-    RenderDevice* cpu = new CPUDevice();  // TODO: CPU threadpool should be freed when device is swapped
+    RenderDevice* cpu = new CPUDevice(m_Texture);  // TODO: CPU threadpool should be freed when device is swapped
     m_DeviceList.emplace_back(cpu);
     m_CurrentDevice = cpu;
     m_CurrentDeviceIndex = 0;
@@ -33,7 +33,7 @@ void RenderDeviceManager::ClearRenderDevices() {
 }
 
 void RenderDeviceManager::OnUpdate() {
-    m_CurrentDevice->OnUpdate(m_Image);
+    m_CurrentDevice->OnUpdate();
 }
 
 void RenderDeviceManager::UI() {

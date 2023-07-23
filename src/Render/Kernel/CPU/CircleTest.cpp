@@ -10,9 +10,9 @@ CircleTestKernel::CircleTestKernel() : Kernel("Circle Test") {
 
 CircleTestKernel::~CircleTestKernel() {}
 
-Color CircleTestKernel::Exec(Image* image, uint32_t x, uint32_t y, uint32_t s) {
-    x -= image->GetWidth() / 2;
-    y -= image->GetHeight() / 2;
+glm::vec3 CircleTestKernel::Exec(Texture2D<uint8_t, 3>* texture, uint32_t x, uint32_t y, uint32_t s) {
+    x -= texture->GetWidth() / 2;
+    y -= texture->GetHeight() / 2;
     if (std::sqrt((x * x) + (y * y)) <= (uint32_t)m_CircleRadius) {
         return {0, 1, 0};
     }

@@ -121,7 +121,7 @@ ImageView::ImageView(uint32_t window_width, uint32_t window_height,
     m_CameraUniformID =
         glGetUniformLocation(m_ShaderProgramID, "u_ProjectionMatrix");
 
-    m_Image = new Image(m_ImageWidth, m_ImageHeight);
+    m_Image = new Texture2D<uint8_t, 3>(m_ImageWidth, m_ImageHeight);
     m_Image->Randomize();
 
     RT_LOG("Image View Initialised");
@@ -142,7 +142,7 @@ void ImageView::OnUpdate() {
                        glm::value_ptr(m_Camera->GetProjectionView()));
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, m_ImageWidth, m_ImageHeight, 0,
-                 GL_RGB, GL_UNSIGNED_BYTE, (uint8_t *)m_Image->GetData());
+                 GL_RGB, GL_UNSIGNED_BYTE, m_Image->GetData());
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     m_Camera->OnUpdate();
@@ -230,6 +230,7 @@ void ImageView::ResizeImage(uint32_t width, uint32_t height) {
     glBufferSubData(GL_ARRAY_BUFFER, 0, 20 * sizeof(float), vertices);
 
     m_Image->Resize(width, height);
+    m_Image->Randomize();
 }
 
 }  // namespace raytracing

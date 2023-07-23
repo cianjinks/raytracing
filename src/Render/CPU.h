@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RenderDevice.h"
+#include "Texture2D.h"
 #include "Util/Thread.h"
 
 namespace raytracing {
@@ -11,20 +12,24 @@ class CPUDevice : public RenderDevice {
     bool m_Multithreaded = true;
     uint32_t m_NumTilesX = 4;
     uint32_t m_NumTilesY = 4;
+    Texture2D<float, 3> m_AccumulationBuffer;
+    Texture2D<uint8_t, 3>* m_Texture;
 
     bool m_RealTimeExecution = false;
+    uint32_t m_CurrentSample = 1;
     ThreadPool* m_ThreadPool;
 
    public:
-    CPUDevice();
+    CPUDevice(Texture2D<uint8_t, 3>* texture);
     ~CPUDevice();
 
-    void OnUpdate(Image* image) override;
+    void OnUpdate() override;
     void SettingsUI() override;
 
    private:
-    void Execute(Image* image);
-    void ExecuteThreaded(Image* image);
+    void Execute();
+    void ExecuteThreaded();
+    void ExecuteSingle();
 };
 
 }  // namespace raytracing

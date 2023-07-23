@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Event.h"
-#include "Image.h"
+#include "Render/Texture2D.h"
 #include "ImageCamera.h"
 
 /**
@@ -24,7 +24,7 @@ class ImageView {
     float m_FImageWidth;
     float m_FImageHeight;
 
-    Image* m_Image;
+    Texture2D<uint8_t, 3>* m_Image;
     ImageCamera* m_Camera;
 
     uint32_t m_ShaderProgramID;
@@ -42,7 +42,7 @@ class ImageView {
     void ResizeWindow(uint32_t width, uint32_t height);
     void ResizeImage(uint32_t width, uint32_t height);
 
-    Image* GetImage() const { return m_Image; }
+    Texture2D<uint8_t, 3>* GetTexture() const { return m_Image; }
 };
 
 }  // namespace raytracing

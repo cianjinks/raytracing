@@ -7,9 +7,9 @@ namespace raytracing {
 LearnKernel::LearnKernel() : Kernel("Learn") {
     RT_PROFILE_FUNC_N("Learn Kernel Init");
     // FirstScene();
-    // TestMaterialScene();
+    TestMaterialScene();
     // TestLensScene();
-    RandomizeScene();
+    // RandomizeScene();
     RT_LOG("Learn Kernel Init");
 }
 
@@ -22,7 +22,7 @@ void LearnKernel::FirstScene() {
     m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, 90.0f, 2.0f, 2.5f);
     m_Scene = new Scene("Test Scene", {0, 0, 0});
     m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f));
-    m_Scene->Add(new Sphere("Sphere 2", {2.0, 0, 0}, CreateS<Metal>(glm::vec3(0.8), 0.3f), 1.0f));
+    m_Scene->Add(new Sphere("Sphere 2", {2.0, 0, 0}, CreateS<Metal>(glm::vec3(0.8f), 0.3f), 1.0f));
     m_Scene->Add(new Sphere("Sphere 3", {-2.0, 0, 0}, CreateS<Metal>(glm::vec3(0.8f, 0.6f, 0.2f), 1.0f), 1.0f));
     // m_Scene->Add(new Box("Box", {5, 0, 0}, CreateS<Lambertian>(glm::vec3(0.5f)), {1, 1, 1}));
     m_Scene->Add(new Plane("Plane", {0, -1, 0}, CreateS<Lambertian>(glm::vec3(0.8, 0.8, 0.0f)), {0, 1, 0}));
@@ -91,7 +91,7 @@ void LearnKernel::RandomizeScene() {
     m_Scene->Add(new Sphere("Sphere", glm::vec3(4.0f, 1.0f, 0.0f), material3, 1.0f));
 }
 
-Color LearnKernel::Exec(Image* image, uint32_t x, uint32_t y, uint32_t s) {
+glm::vec3 LearnKernel::Exec(Texture2D<uint8_t, 3>* texture, uint32_t x, uint32_t y, uint32_t s) {
     RT_PROFILE_FUNC;
 
     uint32_t seed = (x + 1) * (y + 1) * s;
@@ -99,11 +99,11 @@ Color LearnKernel::Exec(Image* image, uint32_t x, uint32_t y, uint32_t s) {
     /* Slight variation across samples for anti-aliasing. */
     float fx = float(x) + FastRandom::Float(seed, -1.0f, 1.0f);
     float fy = float(y) + FastRandom::Float(seed, -1.0f, 1.0f);
-    float fs = ((fx * 2.0f) / float(image->GetWidth())) - 1.0f;  /* -1 -> 1 */
-    float ft = ((fy * 2.0f) / float(image->GetHeight())) - 1.0f; /* -1 -> 1 */
+    float fs = ((fx * 2.0f) / float(texture->GetWidth())) - 1.0f;  /* -1 -> 1 */
+    float ft = ((fy * 2.0f) / float(texture->GetHeight())) - 1.0f; /* -1 -> 1 */
 
     float view_plane_height = 2.0f * glm::tan(glm::radians(m_Camera->vfov) / 2.0f);
-    float view_plane_width = image->GetAspectRatio() * view_plane_height;
+    float view_plane_width = texture->GetAspectRatio() * view_plane_height;
 
     glm::vec3 u = glm::cross(glm::normalize(m_Camera->direction), m_Camera->up);
     glm::vec3 v = glm::cross(u, glm::normalize(m_Camera->direction));
@@ -152,7 +152,7 @@ void LearnKernel::UI() {
     // }
 }
 
-Color LearnKernel::RayColor(const Ray& ray, uint32_t depth, uint32_t& seed) {
+glm::vec3 LearnKernel::RayColor(const Ray& ray, uint32_t depth, uint32_t& seed) {
     RT_PROFILE_FUNC;
 
     HitResult result;
@@ -160,7 +160,7 @@ Color LearnKernel::RayColor(const Ray& ray, uint32_t depth, uint32_t& seed) {
     seed += depth;
     if (depth <= 0) return {0.0f, 0.0f, 0.0f};
 
-    if (m_Scene->Hit(ray, 0.001, Constant::FInfinity, result)) {
+    if (m_Scene->Hit(ray, 0.001f, Constant::FInfinity, result)) {
         Ray scattered;
         glm::vec3 attenuation;
         if (result.material->scatter(ray, seed, result, attenuation, scattered)) {
@@ -171,7 +171,7 @@ Color LearnKernel::RayColor(const Ray& ray, uint32_t depth, uint32_t& seed) {
 
     glm::vec3 unit = glm::normalize(ray.direction);
     float t = 0.5f * (unit.y + 1.0f);
-    return (1.0f - t) * Color(1.0f) + t * Color(0.5f, 0.7f, 1.0f);
+    return (1.0f - t) * glm::vec3(1.0f) + t * glm::vec3(0.5f, 0.7f, 1.0f);
 }
 
 }  // namespace raytracing

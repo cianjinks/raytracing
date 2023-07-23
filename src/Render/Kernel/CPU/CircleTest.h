@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Render/Kernel/Kernel.h"
-#include "Window/Image.h"
 
 namespace raytracing {
 
@@ -13,7 +12,7 @@ class CircleTestKernel : public Kernel {
     CircleTestKernel();
     ~CircleTestKernel();
 
-    Color Exec(Image* image, uint32_t x, uint32_t y, uint32_t s) override;
+    glm::vec3 Exec(Texture2D<uint8_t, 3>* texture, uint32_t x, uint32_t y, uint32_t s) override;
     void UI() override;
 };
 

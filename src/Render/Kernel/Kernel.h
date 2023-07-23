@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Window/Image.h"
+#include "Render/Texture2D.h"
 
 /**
  * @brief Kernel
  * Not to be confused with OpenCL kernels.
  * A Kernel represents an algorithm to be ran on a device. The algorithm updates
- * an Image. Ths allows me to have multiple algorithms for multiple devices for
+ * a Texture2D in the device manager. Ths allows me to have multiple algorithms for multiple devices for
  * learning.
  */
 
@@ -20,7 +20,7 @@ class Kernel {
     Kernel(std::string name);
     virtual ~Kernel() = default;
 
-    virtual Color Exec(Image* image, uint32_t x, uint32_t y, uint32_t s) = 0;
+    virtual glm::vec3 Exec(Texture2D<uint8_t, 3>* texture, uint32_t x, uint32_t y, uint32_t s) = 0;
     virtual void UI() = 0;
 };
 

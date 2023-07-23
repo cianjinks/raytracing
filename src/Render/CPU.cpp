@@ -8,7 +8,10 @@
 
 namespace raytracing {
 
-CPUDevice::CPUDevice() : RenderDevice("CPU") {
+CPUDevice::CPUDevice(Texture2D<uint8_t, 3>* texture)
+    : RenderDevice("CPU"),
+      m_Texture(texture),
+      m_AccumulationBuffer(texture->GetWidth(), texture->GetHeight()) {
     m_Kernels.AddKernel(new ColorTestKernel());
     m_Kernels.AddKernel(new CircleTestKernel());
     m_Kernels.AddKernel(new LearnKernel());
@@ -20,59 +23,81 @@ CPUDevice::~CPUDevice() {
     delete m_ThreadPool;
 }
 
-void CPUDevice::OnUpdate(Image* image) {
+void CPUDevice::OnUpdate() {
     RT_PROFILE_FUNC;
 
     if (m_RealTimeExecution) {
-        Execute(image);
+        Execute();
     }
 }
 
-void CPUDevice::Execute(Image* image) {
+void CPUDevice::Execute() {
     RT_PROFILE_FUNC;
 
-    // TODO: Better interface? Then user can use quick_stop flag without function param if they want
-    // m_ThreadPool->AddTaskQE([image, x, y, s, ] (std::atomic<bool>& quick_stop) -> void {
-    //     image->PerSampleSection();
-    // });
+    // TODO: Resizing accumulation buffer?
 
     if (!m_ThreadPool->IsActive()) {
         // TODO: Reimplement timing
 
         if (m_Multithreaded) {
-            ExecuteThreaded(image);
+            ExecuteThreaded();
         } else {
-            m_ThreadPool->Resize(1);
-            m_ThreadPool->AddTaskQE(
-                &Image::PerSample, image,
-                [this](Image* image, uint32_t x, uint32_t y, uint32_t s) {
-                    return m_Kernels.GetCurrentKernel()->Exec(image, x, y, s);
-                },
-                m_NumSamples);
+            ExecuteSingle();
         }
     }
 }
 
 /* TODO: Handle odd image dimensions / tiles. */
-void CPUDevice::ExecuteThreaded(Image* image) {
+void CPUDevice::ExecuteThreaded() {
     RT_PROFILE_FUNC;
 
     m_ThreadPool->Resize(m_NumTilesX * m_NumTilesY);
-    uint32_t tile_width = image->GetWidth() / m_NumTilesX;
-    uint32_t tile_height = image->GetHeight() / m_NumTilesY;
+    m_AccumulationBuffer.Clear();
+
+    uint32_t tile_width = m_Texture->GetWidth() / m_NumTilesX;
+    uint32_t tile_height = m_Texture->GetHeight() / m_NumTilesY;
     for (uint32_t tx = 0; tx < m_NumTilesX; tx++) {
         for (uint32_t ty = 0; ty < m_NumTilesY; ty++) {
             uint32_t x = tx * tile_width;
             uint32_t y = ty * tile_height;
 
-            m_ThreadPool->AddTaskQE(
-                &Image::PerSampleSection, image,
-                [this](Image* image, uint32_t x, uint32_t y, uint32_t s) {
-                    return m_Kernels.GetCurrentKernel()->Exec(image, x, y, s);
-                },
-                m_NumSamples, x, y, tile_width, tile_height);
+            auto func = [this, x, y, tile_width, tile_height](std::atomic<bool>& stop) -> void {
+                for (uint32_t s = 0; s < m_NumSamples; s++) {
+                    for (uint32_t w = x; w < (x + tile_width); w++) {
+                        for (uint32_t h = y; h < (y + tile_height); h++) {
+                            m_AccumulationBuffer(w, h) += m_Kernels.GetCurrentKernel()->Exec(m_Texture, w, h, s);
+                            glm::vec3 val = glm::sqrt(m_AccumulationBuffer(w, h) / float(s + 1));
+                            m_Texture->at(w, h) = glm::u8vec3(glm::clamp(val, 0.0f, 0.999f) * 256.0f);
+                            if (stop) { return; }
+                        }
+                    }
+                }
+            };
+            m_ThreadPool->AddTaskQE(func);
         }
     }
+}
+
+void CPUDevice::ExecuteSingle() {
+    RT_PROFILE_FUNC;
+
+    m_ThreadPool->Resize(1);
+    m_AccumulationBuffer.Clear();
+
+    auto func = [this](std::atomic<bool>& stop) -> void {
+        for (uint32_t s = 0; s < m_NumSamples; s++) {
+            for (uint32_t w = 0; w < m_Texture->GetWidth(); w++) {
+                for (uint32_t h = 0; h < m_Texture->GetHeight(); h++)
+                {
+                    m_AccumulationBuffer(w, h) += m_Kernels.GetCurrentKernel()->Exec(m_Texture, w, h, s);
+                    glm::vec3 val = glm::sqrt(m_AccumulationBuffer(w, h) / float(s + 1));
+                    m_Texture->at(w, h) = glm::u8vec3(glm::clamp(val, 0.0f, 0.999f) * 256.0f);
+                    if (stop) { return; }
+                }
+            }
+        }
+    };
+    m_ThreadPool->AddTaskQE(func);
 }
 
 void CPUDevice::SettingsUI() {
@@ -93,12 +118,12 @@ void CPUDevice::SettingsUI() {
     }
 
     if (ImGui::Button("Execute")) {
-        Execute(Application::GetImageView()->GetImage());
+        Execute();
     }
 
     ImGui::SameLine();
     if (ImGui::Button("Clear")) {
-        Application::GetImageView()->GetImage()->Randomize();
+        m_Texture->Randomize();
     }
 
     if (disabled) {

@@ -18,7 +18,7 @@ class RenderDevice {
     RenderDevice(std::string name);
     virtual ~RenderDevice() = default;
 
-    virtual void OnUpdate(Image* image) = 0;
+    virtual void OnUpdate() = 0;
     virtual void SettingsUI() = 0;
 
     KernelLibrary& GetKernels() { return m_Kernels; }
@@ -31,10 +31,10 @@ class RenderDeviceManager {
     RenderDevice* m_CurrentDevice = nullptr;
     uint32_t m_CurrentDeviceIndex = 0;
 
-    Image* m_Image = nullptr;
+    Texture2D<uint8_t, 3>* m_Texture = nullptr;
 
    public:
-    RenderDeviceManager(Image* image);
+    RenderDeviceManager(Texture2D<uint8_t, 3>* texture);
     ~RenderDeviceManager();
 
     void OnUpdate();
