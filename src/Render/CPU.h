@@ -16,7 +16,8 @@ class CPUDevice : public RenderDevice {
     Texture2D<uint8_t, 3>* m_Texture;
 
     bool m_RealTimeExecution = false;
-    uint32_t m_CurrentSample = 1;
+    uint32_t m_CurrentSample = 0;
+
     ThreadPool* m_ThreadPool;
 
    public:
@@ -28,8 +29,13 @@ class CPUDevice : public RenderDevice {
 
    private:
     void Execute();
+
     void ExecuteThreaded();
     void ExecuteSingle();
+    void ExecuteThreadedRT();
+    void ExecuteSingleRT();
+
+    void AccumulateSection(uint32_t x, uint32_t y, uint32_t s, uint32_t width, uint32_t height, std::atomic<bool>& stop);
 };
 
 }  // namespace raytracing

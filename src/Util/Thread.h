@@ -37,6 +37,10 @@ class ThreadPool {
     // Clear the queue and exit current tasks early if possible
     void Clear();
 
+    // Hold and wait for all queued tasks to finish
+    // TODO: Is there a better way to wait, i.e condition variable or other?
+    void WaitForTasks() { while(IsActive()) {} }
+
     template <class Function, class... Args>
     void AddTask(Function&& func, Args&&... args) {
         auto task = std::bind(std::forward<Function>(func), std::forward<Args>(args)...);

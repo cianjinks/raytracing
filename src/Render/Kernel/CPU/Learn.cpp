@@ -7,9 +7,9 @@ namespace raytracing {
 LearnKernel::LearnKernel() : Kernel("Learn") {
     RT_PROFILE_FUNC_N("Learn Kernel Init");
     // FirstScene();
-    TestMaterialScene();
+    // TestMaterialScene();
     // TestLensScene();
-    // RandomizeScene();
+    RandomizeScene();
     RT_LOG("Learn Kernel Init");
 }
 

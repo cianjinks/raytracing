@@ -43,9 +43,8 @@ class Texture2D {
 
             delete[] m_Data;
             m_Data = new T[m_ElementCount];
-
-            Clear();
         }
+        Clear();
     }
 
     void Clear() {
