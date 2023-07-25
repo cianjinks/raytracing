@@ -8,17 +8,26 @@ namespace raytracing {
 
 class CPUDevice : public RenderDevice {
    private:
+    /* Execution settings */
     uint32_t m_NumSamples = 1;
     bool m_Multithreaded = true;
     uint32_t m_NumTilesX = 4;
     uint32_t m_NumTilesY = 4;
+
+    /* Execution targets */
     Texture2D3u8* m_Texture;
     Texture2D3f* m_AccumulationBuffer;
 
+    /* Execution utilities */
+    ThreadPool* m_ThreadPool;
+    Timer m_Timer;
+
+    /* Real time execution flags */
     bool m_RealTimeExecution = false;
     uint32_t m_CurrentSample = 0;
 
-    ThreadPool* m_ThreadPool;
+    /* Once-off execution flags */
+    bool m_IsExecuting = false;
 
    public:
     CPUDevice();

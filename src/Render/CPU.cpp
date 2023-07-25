@@ -27,26 +27,41 @@ CPUDevice::~CPUDevice() {
 void CPUDevice::OnUpdate() {
     RT_PROFILE_FUNC;
 
+    /* Catch end of once-off execution. */
+    if (m_IsExecuting && !m_ThreadPool->IsActive()) {
+        m_IsExecuting = false;
+
+        if (m_Timer.IsRunning()) {
+            m_Timer.Stop();
+            ExecutionTime = m_Timer.GetElapsedTimeS();
+        }
+    }
+
     if (m_RealTimeExecution) {
         // TODO: Create a dirty/reset function
         if (m_CurrentSample == 0) {
             m_AccumulationBuffer->Resize(m_Texture->GetWidth(), m_Texture->GetHeight());
         }
         if (m_CurrentSample < m_NumSamples) {
+            m_Timer.Start();
+
             if (m_Multithreaded) {
                 ExecuteThreadedRT();
             } else {
-                ExecuteThreaded();
+                ExecuteSingleRT();
             }
             m_CurrentSample++;
+
+            m_Timer.Stop();
+            ExecutionTime = m_Timer.GetElapsedTimeS();
         }
     }
 }
 
 void CPUDevice::Execute() {
     RT_PROFILE_FUNC;
-    if (!m_ThreadPool->IsActive()) {
-        // TODO: Reimplement timing
+    if (!m_ThreadPool->IsActive() && !m_IsExecuting) {
+        m_Timer.Start();
 
         m_AccumulationBuffer->Resize(m_Texture->GetWidth(), m_Texture->GetHeight());
         if (m_Multithreaded) {
@@ -54,6 +69,9 @@ void CPUDevice::Execute() {
         } else {
             ExecuteSingle();
         }
+
+        /* Flag so we can catch end of once-off execution in OnUpdate. */
+        m_IsExecuting = true;
     }
 }
 
@@ -96,7 +114,7 @@ void CPUDevice::ExecuteThreadedRT() {
         for (uint32_t ty = 0; ty < m_NumTilesY; ty++) {
             uint32_t x = tx * tile_width;
             uint32_t y = ty * tile_height;
-            m_ThreadPool->AddTaskQE(&CPUDevice::AccumulateSection, this, m_CurrentSample, x, y, tile_width, tile_height);
+            m_ThreadPool->AddTaskQE(&CPUDevice::AccumulateSection, this, x, y, m_CurrentSample, tile_width, tile_height);
         }
     }
     m_ThreadPool->WaitForTasks();
@@ -117,7 +135,9 @@ void CPUDevice::AccumulateSection(uint32_t x, uint32_t y, uint32_t s, uint32_t w
             m_AccumulationBuffer->at(w, h) += m_Kernels.GetCurrentKernel()->Exec(m_Texture, w, h, s);
             glm::vec3 val = glm::sqrt(m_AccumulationBuffer->at(w, h) / float(s + 1));
             m_Texture->at(w, h) = glm::u8vec3(glm::clamp(val, 0.0f, 0.999f) * 256.0f);
-            if (stop) { return; }
+            if (stop) {
+                return;
+            }
         }
     }
 }

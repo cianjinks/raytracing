@@ -4,18 +4,23 @@ namespace raytracing {
 
 class Timer {
    private:
-    static float s_ElapsedTime;
-    static bool s_MismatchFlag; /* Track if there is a mismatch between calling
-                                   Start() and End(). */
+    float m_ElapsedTime;
+    bool m_IsRunning;
 
-    static std::chrono::steady_clock::time_point s_Start;
-    static std::chrono::steady_clock::time_point s_End;
+    std::chrono::steady_clock::time_point m_Start;
+    std::chrono::steady_clock::time_point m_End;
 
    public:
-    static void Start();
-    static void End();
-    static float GetElapsedTimeMS();
-    static float GetElapsedTimeS();
+    Timer();
+    ~Timer() = default;
+
+    void Start();
+    void Stop();
+
+    bool IsRunning() const { return m_IsRunning; }
+
+    float GetElapsedTimeMS() { return m_ElapsedTime * (1.0f / 1000.0f); }
+    float GetElapsedTimeS() { return m_ElapsedTime; }
 };
 
 }  // namespace raytracing
