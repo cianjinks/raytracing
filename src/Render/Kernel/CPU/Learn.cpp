@@ -91,7 +91,7 @@ void LearnKernel::RandomizeScene() {
     m_Scene->Add(new Sphere("Sphere", glm::vec3(4.0f, 1.0f, 0.0f), material3, 1.0f));
 }
 
-glm::vec3 LearnKernel::Exec(Texture2D<uint8_t, 3>* texture, uint32_t x, uint32_t y, uint32_t s) {
+glm::vec3 LearnKernel::Exec(Texture2D3u8* texture, uint32_t x, uint32_t y, uint32_t s) {
     RT_PROFILE_FUNC;
 
     uint32_t seed = (x + 1) * (y + 1) * s;

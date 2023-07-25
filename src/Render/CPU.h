@@ -12,8 +12,8 @@ class CPUDevice : public RenderDevice {
     bool m_Multithreaded = true;
     uint32_t m_NumTilesX = 4;
     uint32_t m_NumTilesY = 4;
-    Texture2D<float, 3> m_AccumulationBuffer;
-    Texture2D<uint8_t, 3>* m_Texture;
+    Texture2D3u8* m_Texture;
+    Texture2D3f* m_AccumulationBuffer;
 
     bool m_RealTimeExecution = false;
     uint32_t m_CurrentSample = 0;
@@ -21,7 +21,7 @@ class CPUDevice : public RenderDevice {
     ThreadPool* m_ThreadPool;
 
    public:
-    CPUDevice(Texture2D<uint8_t, 3>* texture);
+    CPUDevice();
     ~CPUDevice();
 
     void OnUpdate() override;

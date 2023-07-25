@@ -8,13 +8,14 @@
 
 namespace raytracing {
 
-CPUDevice::CPUDevice(Texture2D<uint8_t, 3>* texture)
-    : RenderDevice("CPU"),
-      m_Texture(texture),
-      m_AccumulationBuffer(texture->GetWidth(), texture->GetHeight()) {
+CPUDevice::CPUDevice() : RenderDevice("CPU") {
     m_Kernels.AddKernel(new ColorTestKernel());
     m_Kernels.AddKernel(new CircleTestKernel());
     m_Kernels.AddKernel(new LearnKernel());
+
+    // CPU writes to ImageView's cpu texture buffer
+    m_Texture = Application::GetImageView()->GetTexture();
+    m_AccumulationBuffer = new Texture2D3f(m_Texture->GetWidth(), m_Texture->GetHeight());
 
     m_ThreadPool = new ThreadPool(m_NumTilesX * m_NumTilesY);
 }
@@ -29,7 +30,7 @@ void CPUDevice::OnUpdate() {
     if (m_RealTimeExecution) {
         // TODO: Create a dirty/reset function
         if (m_CurrentSample == 0) {
-            m_AccumulationBuffer.Resize(m_Texture->GetWidth(), m_Texture->GetHeight());
+            m_AccumulationBuffer->Resize(m_Texture->GetWidth(), m_Texture->GetHeight());
         }
         if (m_CurrentSample < m_NumSamples) {
             if (m_Multithreaded) {
@@ -47,7 +48,7 @@ void CPUDevice::Execute() {
     if (!m_ThreadPool->IsActive()) {
         // TODO: Reimplement timing
 
-        m_AccumulationBuffer.Resize(m_Texture->GetWidth(), m_Texture->GetHeight());
+        m_AccumulationBuffer->Resize(m_Texture->GetWidth(), m_Texture->GetHeight());
         if (m_Multithreaded) {
             ExecuteThreaded();
         } else {
@@ -113,8 +114,8 @@ void CPUDevice::AccumulateSection(uint32_t x, uint32_t y, uint32_t s, uint32_t w
 
     for (uint32_t w = x; w < (x + width); w++) {
         for (uint32_t h = y; h < (y + height); h++) {
-            m_AccumulationBuffer(w, h) += m_Kernels.GetCurrentKernel()->Exec(m_Texture, w, h, s);
-            glm::vec3 val = glm::sqrt(m_AccumulationBuffer(w, h) / float(s + 1));
+            m_AccumulationBuffer->at(w, h) += m_Kernels.GetCurrentKernel()->Exec(m_Texture, w, h, s);
+            glm::vec3 val = glm::sqrt(m_AccumulationBuffer->at(w, h) / float(s + 1));
             m_Texture->at(w, h) = glm::u8vec3(glm::clamp(val, 0.0f, 0.999f) * 256.0f);
             if (stop) { return; }
         }

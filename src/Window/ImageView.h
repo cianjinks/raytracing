@@ -24,7 +24,7 @@ class ImageView {
     float m_FImageWidth;
     float m_FImageHeight;
 
-    Texture2D<uint8_t, 3>* m_Image;
+    Texture2D3u8* m_Image;
     ImageCamera* m_Camera;
 
     uint32_t m_ShaderProgramID;
@@ -42,7 +42,7 @@ class ImageView {
     void ResizeWindow(uint32_t width, uint32_t height);
     void ResizeImage(uint32_t width, uint32_t height);
 
-    Texture2D<uint8_t, 3>* GetTexture() const { return m_Image; }
+    Texture2D3u8* GetTexture() const { return m_Image; }
 };
 
 }  // namespace raytracing

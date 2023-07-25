@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <stb_image_write.h>
 
 namespace raytracing {
 
@@ -86,7 +87,8 @@ class Texture2D {
     }
 
     void Save(const char* filepath) {
-        // TODO
+        /* Do nothing in the general case for now. See specializations below. */
+        RT_ERROR("Texture2D::Save does not work for this texture type");
     }
 
     glm::vec<N, T>& at(uint32_t w, uint32_t h) {
@@ -110,4 +112,22 @@ void Texture2D<uint8_t, 3>::Randomize() {
         v = std::rand() % 256;
     }
 }
+
+template <>
+void Texture2D<uint8_t, 3>::Save(const char* filepath) {
+    stbi_flip_vertically_on_write(true);
+    int stride_in_bytes = m_Width * sizeof(uint8_t) * 3; /* Size of a row in bytes. */
+    int result = stbi_write_png(filepath, (int)m_Width, (int)m_Height, 3, m_Data, stride_in_bytes);
+    if (result) {
+        RT_LOG("Image has been saved to: {}", filepath);
+    } else {
+        RT_ERROR("Failed to save image to: {}", filepath);
+    }
+}
+
+// ALIASES
+typedef Texture2D<float, 3> Texture2D3f;
+typedef Texture2D<uint8_t, 3> Texture2D3u8;
+//
+
 } // namespace raytracing

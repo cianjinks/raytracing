@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/Kernel.h"
-#include "Window/Image.h"
 
 namespace raytracing {
 
@@ -31,10 +30,8 @@ class RenderDeviceManager {
     RenderDevice* m_CurrentDevice = nullptr;
     uint32_t m_CurrentDeviceIndex = 0;
 
-    Texture2D<uint8_t, 3>* m_Texture = nullptr;
-
    public:
-    RenderDeviceManager(Texture2D<uint8_t, 3>* texture);
+    RenderDeviceManager();
     ~RenderDeviceManager();
 
     void OnUpdate();

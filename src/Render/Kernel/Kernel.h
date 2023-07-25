@@ -20,7 +20,7 @@ class Kernel {
     Kernel(std::string name);
     virtual ~Kernel() = default;
 
-    virtual glm::vec3 Exec(Texture2D<uint8_t, 3>* texture, uint32_t x, uint32_t y, uint32_t s) = 0;
+    virtual glm::vec3 Exec(Texture2D3u8* texture, uint32_t x, uint32_t y, uint32_t s) = 0;
     virtual void UI() = 0;
 };
 

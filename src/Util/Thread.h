@@ -52,7 +52,7 @@ class ThreadPool {
         m_NotifyTask.notify_one();
     }
 
-    // QS -> Quick Exit
+    // QE -> Quick Exit
     // Passes a quick exit flag (atomic_bool&) as the last argument to the task function
     // The threadpool will use it to signal when the function should exit early
     template <class Function, class... Args>

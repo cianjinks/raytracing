@@ -12,7 +12,7 @@ class CircleTestKernel : public Kernel {
     CircleTestKernel();
     ~CircleTestKernel();
 
-    glm::vec3 Exec(Texture2D<uint8_t, 3>* texture, uint32_t x, uint32_t y, uint32_t s) override;
+    glm::vec3 Exec(Texture2D3u8* texture, uint32_t x, uint32_t y, uint32_t s) override;
     void UI() override;
 };
 
