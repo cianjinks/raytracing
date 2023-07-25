@@ -23,7 +23,7 @@ void Timer::End() {
     if (s_MismatchFlag) {
         s_MismatchFlag = false;
 
-        s_End = std::chrono::high_resolution_clock::now();
+        s_End = std::chrono::steady_clock::now();
         s_ElapsedTime = std::chrono::duration<float>(s_End - s_Start).count();
 
     } else {
