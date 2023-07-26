@@ -19,7 +19,7 @@ LearnKernel::~LearnKernel() {
 }
 
 void LearnKernel::FirstScene() {
-    m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, 90.0f, 2.0f, 2.5f);
+    m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, 0.2f, 90.0f, 2.0f, 2.5f);
     m_Scene = new Scene("Test Scene", {0, 0, 0});
     m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f));
     m_Scene->Add(new Sphere("Sphere 2", {2.0, 0, 0}, CreateS<Metal>(glm::vec3(0.8f), 0.3f), 1.0f));
@@ -29,7 +29,7 @@ void LearnKernel::FirstScene() {
 }
 
 void LearnKernel::TestMaterialScene() {
-    m_Camera = new Camera({2.0f, 4.0f, 5.0f}, {-2.0f, -4.0f, -5.0f}, {0.0f, 1.0f, 0.0f}, 90.0f, 2.0f, 2.5f);
+    m_Camera = new Camera({2.0f, 4.0f, 5.0f}, {-2.0f, -4.0f, -5.0f}, {0.0f, 1.0f, 0.0f}, 0.2f, 90.0f, 2.0f, 2.5f);
     m_Scene = new Scene("Test Scene", {0, 0, 0});
     m_Scene->Add(new Sphere("Ground", {0, -1000.0f, 0}, CreateS<Lambertian>(glm::vec3(0.5f)), 1000.0f));
     m_Scene->Add(new Sphere("Red Sphere", {1.5f, 1.0f, -1.5f}, CreateS<Lambertian>(glm::vec3(0.5f, 0.0f, 0.0f)), 1.0f));
@@ -39,14 +39,14 @@ void LearnKernel::TestMaterialScene() {
 }
 
 void LearnKernel::TestLensScene() {
-    m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, 90.0f, 2.0f, 2.5f);
+    m_Camera = new Camera({0.0f, 0.0f, -2.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, 0.2f, 90.0f, 2.0f, 2.5f);
     m_Scene = new Scene("Test Scene", {0, 0, 0});
     m_Scene->Add(new Sphere("Sphere 1", {0, 0, 0}, CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f));
     m_Scene->Add(new Sphere("Ground", {0, -1001.0f, 0}, CreateS<Lambertian>(glm::vec3(1.0f)), 1000.0f));
 }
 
 void LearnKernel::RandomizeScene() {
-    m_Camera = new Camera({13.0f, 2.0f, 3.0f}, {-13.0f, -2.0f, -3.0f}, {0.0f, 1.0f, 0.0f}, 20.0f, 0.1f, 10.0f);
+    m_Camera = new Camera({13.0f, 2.0f, 3.0f}, {-13.0f, -2.0f, -3.0f}, {0.0f, 1.0f, 0.0f}, 0.2f, 20.0f, 0.1f, 10.0f);
     m_Scene = new Scene("Test Scene", {0, 0, 0});
 
     S<Lambertian> ground_material = CreateS<Lambertian>(glm::vec3(0.5f));
@@ -137,8 +137,11 @@ glm::vec3 LearnKernel::Exec(Texture2D3u8* texture, uint32_t x, uint32_t y, uint3
 }
 
 bool LearnKernel::OnUpdate() {
-    // TODO: Camera controls
-    return false;
+    return m_Camera->OnUpdate();
+}
+
+void LearnKernel::OnEvent(Event& event) {
+    m_Camera->OnEvent(event);
 }
 
 void LearnKernel::UI() {
@@ -147,6 +150,7 @@ void LearnKernel::UI() {
     UI::SliderInt("Max Bounces", (int*)&m_MaxBounces, 0, 50);
     UI::InputFloat3("Camera Position", &m_Camera->position.x);
     UI::InputFloat3("Camera Direction", &m_Camera->direction.x);
+    UI::SliderFloat("Camera Speed", &m_Camera->speed, 0.1f, 1.0f);
     UI::InputFloat("Camera Vertical FOV", &m_Camera->vfov);
     UI::Checkbox("Camera Lens", &m_UseLens);
     UI::InputFloat("Camera Aperture", &m_Camera->aperture);

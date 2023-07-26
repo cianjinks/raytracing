@@ -18,11 +18,20 @@ enum class EventType {
 class Event {
    private:
     EventType m_EventType = EventType::NONE;
+    bool m_Handled = false;
+    /* Avoiding implementing any kind of dependency graph. Dirty flag triggers RenderDevice dirtying if set. */
+    bool m_Dirty = false;
 
    public:
     Event(EventType type) : m_EventType(type) {}
 
     EventType GetEventType() const { return m_EventType; }
+
+    void Handle() { m_Handled = true; }
+    bool IsHandled() { return m_Handled; }
+
+    void SetDirty(bool dirty) { m_Dirty = dirty; }
+    bool IsDirty() { return m_Dirty; }
 };
 
 class EventDispatcher {
@@ -34,11 +43,14 @@ class EventDispatcher {
         : m_Event(event) {}
 
     template <typename T, typename F>
-    bool Dispatch(EventType type, const F& func) {
+    bool Dispatch(EventType type, const F& func, bool dirty = true) {
         /* Note: If user mismatches T and type it will compile time error from static_cast. */
         if (m_Event.GetEventType() == type) {
             T& event = static_cast<T&>(m_Event);
             func(event);
+
+            m_Event.Handle();
+            m_Event.SetDirty(dirty);
             return true;
         }
         return false;

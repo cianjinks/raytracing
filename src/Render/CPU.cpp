@@ -38,6 +38,7 @@ void CPUDevice::OnUpdate() {
         }
     }
 
+    /* Real time execution */
     if (m_RealTimeExecution) {
         if (m_CurrentSample < m_NumSamples) {
             m_Timer.Start();

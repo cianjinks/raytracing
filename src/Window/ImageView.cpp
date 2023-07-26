@@ -153,17 +153,21 @@ void ImageView::OnEvent(Event &event) {
 
     EventDispatcher dispatcher(event);
 
-    dispatcher.Dispatch<WindowResizeEvent>(EventType::WINDOW_RESIZE, [this](auto &event) {
-        ResizeWindow(event.GetWidth(), event.GetHeight());
-    });
+    dispatcher.Dispatch<WindowResizeEvent>(
+        EventType::WINDOW_RESIZE, [this](auto &event) {
+            ResizeWindow(event.GetWidth(), event.GetHeight());
+        },
+        false);
 
-    dispatcher.Dispatch<KeyEvent>(EventType::KEY_PRESS, [this](auto &event) {
-        int key = event.GetKey();
-        if (key == GLFW_KEY_Z) {
-            /* Center image based on height. */
-            m_Camera->Center(m_FImageHeight / m_FWindowHeight);
-        }
-    });
+    dispatcher.Dispatch<KeyEvent>(
+        EventType::KEY_PRESS, [this](auto &event) {
+            int key = event.GetKey();
+            if (key == GLFW_KEY_Z) {
+                /* Center image based on height. */
+                m_Camera->Center(m_FImageHeight / m_FWindowHeight);
+            }
+        },
+        false);
 
     m_Camera->OnEvent(event);
 }

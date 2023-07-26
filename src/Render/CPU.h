@@ -34,6 +34,7 @@ class CPUDevice : public RenderDevice {
     ~CPUDevice();
 
     void OnUpdate() override;
+    void OnEvent(Event& event) override{};
     void SettingsUI() override;
 
     void Dirty() override;

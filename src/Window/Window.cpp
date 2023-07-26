@@ -133,4 +133,14 @@ void Window::OnUpdate() {
     glfwPollEvents();
 }
 
+void Window::CaptureCursor() {
+    glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    m_CursorCaptured = true;
+}
+
+void Window::ReleaseCursor() {
+    glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    m_CursorCaptured = false;
+}
+
 }  // namespace raytracing

@@ -40,23 +40,6 @@ class Object : public Hittable {
     virtual ~Object() = default;
 };
 
-/* Camera doesn't need to be object / hittable. */
-class Camera {
-   public:
-    glm::vec3 position;
-    glm::vec3 direction;
-    glm::vec3 up;
-
-    float vfov;
-
-    float aperture;
-    float focus_dist;
-
-    Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up, float vfov, float aperture, float focus_dist)
-        : position(position), direction(direction), up(up), vfov(vfov), aperture(aperture), focus_dist(focus_dist) {}
-    ~Camera() = default;
-};
-
 class Scene : public Object {
    private:
     std::vector<Object*> m_Objects;

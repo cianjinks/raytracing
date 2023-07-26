@@ -22,6 +22,9 @@ class Window {
     GLFWwindow* m_Window;
     CallbackFunc m_EventCallback;
 
+    bool m_CursorCaptured = false;
+    bool m_FirstMouse = true;
+
    public:
     Window(std::string name, int32_t width, int32_t height);
     ~Window();
@@ -31,6 +34,13 @@ class Window {
     bool ShouldClose() const { return glfwWindowShouldClose(m_Window); }
     GLFWwindow* GetGLFWWindow() const { return m_Window; }
     void SetEventCallback(CallbackFunc callback) { m_EventCallback = callback; }
+
+    void CaptureCursor();
+    void ReleaseCursor();
+    bool IsCursorCaptured() { return m_CursorCaptured; }
+
+    void SetMouseStatus(bool status) { m_FirstMouse = status; }
+    bool GetMouseStatus() { return m_FirstMouse; }
 };
 
 }  // namespace raytracing

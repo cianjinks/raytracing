@@ -32,10 +32,16 @@ void RenderDeviceManager::ClearRenderDevices() {
 }
 
 void RenderDeviceManager::OnUpdate() {
-    m_CurrentDevice->OnUpdate();
-    if (m_CurrentDevice->GetCurrentKernel()->OnUpdate()) {
+    if (m_CurrentDevice->GetCurrentKernel()->OnUpdate() || m_IsDirty) {
         m_CurrentDevice->Dirty();
+        m_IsDirty = false;
     }
+    m_CurrentDevice->OnUpdate();
+}
+
+void RenderDeviceManager::OnEvent(Event& event) {
+    m_CurrentDevice->GetCurrentKernel()->OnEvent(event);
+    m_CurrentDevice->OnEvent(event);
 }
 
 void RenderDeviceManager::UI() {

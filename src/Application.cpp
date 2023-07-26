@@ -66,7 +66,13 @@ void Application::OnEvent(Event& event) {
     if (UI::WantInput()) {
         return;
     }
+
     s_ImageView->OnEvent(event);
+    m_DeviceManager->OnEvent(event);
+
+    if (event.IsDirty()) {
+        m_DeviceManager->Dirty();
+    }
 }
 
 }  // namespace raytracing

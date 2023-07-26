@@ -22,13 +22,17 @@ void ImageCamera::OnUpdate() {
 void ImageCamera::OnEvent(Event &event) {
     EventDispatcher dispatcher(event);
 
-    dispatcher.Dispatch<WindowResizeEvent>(EventType::WINDOW_RESIZE, [this](auto &event) {
-        Resize((float)event.GetWidth(), (float)event.GetHeight());
-    });
+    dispatcher.Dispatch<WindowResizeEvent>(
+        EventType::WINDOW_RESIZE, [this](auto &event) {
+            Resize((float)event.GetWidth(), (float)event.GetHeight());
+        },
+        false);
 
-    dispatcher.Dispatch<MouseScrollEvent>(EventType::MOUSE_SCROLL, [this](auto &event) {
-        Zoom(event.GetYOffset());
-    });
+    dispatcher.Dispatch<MouseScrollEvent>(
+        EventType::MOUSE_SCROLL, [this](auto &event) {
+            Zoom(event.GetYOffset());
+        },
+        false);
 
     dispatcher.Dispatch<MouseButtonEvent>(EventType::MOUSE_PRESS, [this](auto &event) {
         int but = event.GetButton();
@@ -44,18 +48,19 @@ void ImageCamera::PollInput() {
     if (Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE)) {
         MousePan();
     }
-    if (Input::IsKeyPressed(GLFW_KEY_W)) {
-        KeyPan(0.0f, panSpeed);
-    }
-    if (Input::IsKeyPressed(GLFW_KEY_A)) {
-        KeyPan(-panSpeed, 0.0f);
-    }
-    if (Input::IsKeyPressed(GLFW_KEY_S)) {
-        KeyPan(0.0f, -panSpeed);
-    }
-    if (Input::IsKeyPressed(GLFW_KEY_D)) {
-        KeyPan(panSpeed, 0.0f);
-    }
+
+    // if (Input::IsKeyPressed(GLFW_KEY_W)) {
+    //     KeyPan(0.0f, panSpeed);
+    // }
+    // if (Input::IsKeyPressed(GLFW_KEY_A)) {
+    //     KeyPan(-panSpeed, 0.0f);
+    // }
+    // if (Input::IsKeyPressed(GLFW_KEY_S)) {
+    //     KeyPan(0.0f, -panSpeed);
+    // }
+    // if (Input::IsKeyPressed(GLFW_KEY_D)) {
+    //     KeyPan(panSpeed, 0.0f);
+    // }
 }
 
 void ImageCamera::UpdateProjection() {

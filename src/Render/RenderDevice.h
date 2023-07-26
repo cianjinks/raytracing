@@ -19,6 +19,7 @@ class RenderDevice {
     virtual ~RenderDevice() = default;
 
     virtual void OnUpdate() = 0;
+    virtual void OnEvent(Event& event) = 0;
     virtual void SettingsUI() = 0;
 
     /* Called when any UI setting changes in the application or kernel updates (Kernel::OnUpdate). */
@@ -34,14 +35,17 @@ class RenderDeviceManager {
     RenderDevice* m_CurrentDevice = nullptr;
     uint32_t m_CurrentDeviceIndex = 0;
 
+    bool m_IsDirty = false;
+
    public:
     RenderDeviceManager();
     ~RenderDeviceManager();
 
     void OnUpdate();
+    void OnEvent(Event& event);
     void UI();
 
-    void Dirty() { m_CurrentDevice->Dirty(); }
+    void Dirty() { m_IsDirty = true; }
 
     RenderDevice* GetCurrentDevice() const { return m_CurrentDevice; }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Render/Texture2D.h"
+#include "Window/Event.h"
 
 /**
  * @brief Kernel
@@ -24,6 +25,7 @@ class Kernel {
 
     /* A kernel may want to do something every frame. Return true if it did. */
     virtual bool OnUpdate() = 0;
+    virtual void OnEvent(Event& event) = 0;
     virtual void UI() = 0;
 };
 
