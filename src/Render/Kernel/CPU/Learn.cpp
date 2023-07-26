@@ -1,6 +1,6 @@
 #include "Learn.h"
 
-#include "imgui.h"
+#include "Window/UI.h"
 
 namespace raytracing {
 
@@ -136,16 +136,21 @@ glm::vec3 LearnKernel::Exec(Texture2D3u8* texture, uint32_t x, uint32_t y, uint3
     return RayColor(ray, m_MaxBounces, seed);
 }
 
+bool LearnKernel::OnUpdate() {
+    // TODO: Camera controls
+    return false;
+}
+
 void LearnKernel::UI() {
     RT_PROFILE_FUNC;
 
-    ImGui::SliderInt("Max Bounces", (int*)&m_MaxBounces, 0, 50);
-    ImGui::InputFloat3("Camera Position", &m_Camera->position.x);
-    ImGui::InputFloat3("Camera Direction", &m_Camera->direction.x);
-    ImGui::InputFloat("Camera Vertical FOV", &m_Camera->vfov);
-    ImGui::Checkbox("Camera Lens", &m_UseLens);
-    ImGui::InputFloat("Camera Aperture", &m_Camera->aperture);
-    ImGui::InputFloat("Camera Focus Distance", &m_Camera->focus_dist);
+    UI::SliderInt("Max Bounces", (int*)&m_MaxBounces, 0, 50);
+    UI::InputFloat3("Camera Position", &m_Camera->position.x);
+    UI::InputFloat3("Camera Direction", &m_Camera->direction.x);
+    UI::InputFloat("Camera Vertical FOV", &m_Camera->vfov);
+    UI::Checkbox("Camera Lens", &m_UseLens);
+    UI::InputFloat("Camera Aperture", &m_Camera->aperture);
+    UI::InputFloat("Camera Focus Distance", &m_Camera->focus_dist);
     // for (Object* object : m_Scene->GetObjects()) {
     //     ImGui::SliderFloat3(object->name.c_str(), &object->position.x, -10.0f,
     //                         10.0f);

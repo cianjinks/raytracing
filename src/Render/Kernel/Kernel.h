@@ -21,6 +21,9 @@ class Kernel {
     virtual ~Kernel() = default;
 
     virtual glm::vec3 Exec(Texture2D3u8* texture, uint32_t x, uint32_t y, uint32_t s) = 0;
+
+    /* A kernel may want to do something every frame. Return true if it did. */
+    virtual bool OnUpdate() = 0;
     virtual void UI() = 0;
 };
 

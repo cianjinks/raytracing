@@ -36,6 +36,8 @@ class CPUDevice : public RenderDevice {
     void OnUpdate() override;
     void SettingsUI() override;
 
+    void Dirty() override;
+
    private:
     bool Execute();
 

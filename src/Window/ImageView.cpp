@@ -9,7 +9,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 #include "Input.h"
-#include "imgui.h"
+#include "Window/UI.h"
 
 namespace raytracing {
 
@@ -177,12 +177,10 @@ void ImageView::UI() {
     int image_dim[2] = {(int)m_ImageWidth, (int)m_ImageHeight};
     // ImGui::SliderInt("Image Width", &image_dim[0], 0, (int)m_WindowWidth);
     // ImGui::SliderInt("Image Height", &image_dim[1], 0, (int)m_WindowHeight);
-    ImGui::InputInt2("Image Dimension", image_dim);
-    if ((uint32_t)image_dim[0] != m_ImageWidth ||
-        (uint32_t)image_dim[1] != m_ImageHeight) {
+    if (UI::InputInt2("Image Dimension", image_dim)) {
         ResizeImage(image_dim[0], image_dim[1]);
     }
-    if (ImGui::Button("Save Image")) {
+    if (UI::ButtonND("Save Image")) {
         nfdchar_t *path;
         nfdfilteritem_t filterItem[1] = {{"Portable Network Graphics", "png"}};
         nfdresult_t result = NFD_SaveDialog(&path, filterItem, 1, nullptr, "image.png");

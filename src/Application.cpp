@@ -1,8 +1,5 @@
 #include "Application.h"
 
-#include <iostream>
-
-#include "imgui.h"
 namespace raytracing {
 
 Window* Application::s_Window = nullptr;
@@ -44,6 +41,9 @@ void Application::Run() {
         s_ImageView->OnUpdate();
         UI::PreRender();
         UI();
+        if (UI::HasChanged()) {
+            m_DeviceManager->Dirty();
+        }
         UI::Render();
         s_Window->OnUpdate();
     }

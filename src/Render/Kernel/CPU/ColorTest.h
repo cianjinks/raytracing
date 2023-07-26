@@ -13,6 +13,7 @@ class ColorTestKernel : public Kernel {
     ~ColorTestKernel();
 
     glm::vec3 Exec(Texture2D3u8* texture, uint32_t x, uint32_t y, uint32_t s) override;
+    bool OnUpdate() override { return false; }
     void UI() override;
 };
 

@@ -4,7 +4,7 @@
 #include "Kernel/CPU/CircleTest.h"
 #include "Kernel/CPU/ColorTest.h"
 #include "Kernel/CPU/Learn.h"
-#include "imgui.h"
+#include "Window/UI.h"
 
 namespace raytracing {
 
@@ -34,15 +34,11 @@ void CPUDevice::OnUpdate() {
 
         if (m_Timer.IsRunning()) {
             m_Timer.Stop();
-            ExecutionTime = m_Timer.GetElapsedTimeS();
+            m_ExecutionTime = m_Timer.GetElapsedTimeS();
         }
     }
 
     if (m_RealTimeExecution) {
-        // TODO: Create a dirty/reset function
-        if (m_CurrentSample == 0) {
-            m_AccumulationBuffer->Resize(m_Texture->GetWidth(), m_Texture->GetHeight());
-        }
         if (m_CurrentSample < m_NumSamples) {
             m_Timer.Start();
 
@@ -54,8 +50,16 @@ void CPUDevice::OnUpdate() {
             m_CurrentSample++;
 
             m_Timer.Stop();
-            ExecutionTime = m_Timer.GetElapsedTimeS();
+            m_ExecutionTime = m_Timer.GetElapsedTimeS();
         }
+    }
+}
+
+void CPUDevice::Dirty() {
+    if (m_RealTimeExecution) {
+        m_Texture->Clear();
+        m_AccumulationBuffer->Resize(m_Texture->GetWidth(), m_Texture->GetHeight());
+        m_CurrentSample = 0;
     }
 }
 
@@ -145,10 +149,10 @@ void CPUDevice::AccumulateSection(uint32_t x, uint32_t y, uint32_t s, uint32_t w
 }
 
 void CPUDevice::SettingsUI() {
-    ImGui::Checkbox("Multithreaded", &m_Multithreaded);
-    ImGui::SliderInt("X Tiles", (int*)&m_NumTilesX, 1, 8);
-    ImGui::SliderInt("Y Tiles", (int*)&m_NumTilesY, 1, 8);
-    ImGui::SliderInt("Samples", (int*)&m_NumSamples, 1, 100);
+    UI::Checkbox("Multithreaded", &m_Multithreaded);
+    UI::SliderInt("X Tiles", (int*)&m_NumTilesX, 1, 8);
+    UI::SliderInt("Y Tiles", (int*)&m_NumTilesY, 1, 8);
+    UI::SliderInt("Samples", (int*)&m_NumSamples, 1, 100);
 
     ImGui::Separator();
 
@@ -161,14 +165,14 @@ void CPUDevice::SettingsUI() {
         disabled = true;
     }
 
-    if (ImGui::Button("Execute")) {
+    if (UI::Button("Execute")) {
         if (Execute()) {
             Application::DisableUI();
         }
     }
 
     ImGui::SameLine();
-    if (ImGui::Button("Clear")) {
+    if (UI::Button("Clear")) {
         m_Texture->Randomize();
     }
 
@@ -184,7 +188,7 @@ void CPUDevice::SettingsUI() {
             ImGui::EndDisabled();
         }
 
-        if (ImGui::Button("Stop")) {
+        if (UI::Button("Stop")) {
             m_ThreadPool->Clear();
         }
 
@@ -194,13 +198,13 @@ void CPUDevice::SettingsUI() {
     }
 
     if (m_RealTimeExecution || !m_ThreadPool->IsActive()) {
-        if (ExecutionTime != 0.0f) {
+        if (m_ExecutionTime != 0.0f) {
             ImGui::SameLine();
-            ImGui::Text("%.3fs", ExecutionTime);
+            ImGui::Text("%.3fs", m_ExecutionTime);
         }
     }
 
-    ImGui::Checkbox("Real Time", &m_RealTimeExecution);
+    UI::Checkbox("Real Time", &m_RealTimeExecution);
 }
 
 }  // namespace raytracing

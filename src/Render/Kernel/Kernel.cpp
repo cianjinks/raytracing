@@ -1,6 +1,6 @@
 #include "Kernel.h"
 
-#include "imgui.h"
+#include "Window/UI.h"
 
 namespace raytracing {
 
@@ -37,7 +37,7 @@ void KernelLibrary::DeviceComboUI() {
         for (int k = 0; k < m_KernelList.size(); k++) {
             Kernel* kernel = m_KernelList[k];
             const bool is_selected = (k == m_CurrentKernelIndex);
-            if (ImGui::Selectable(kernel->Name.c_str(), is_selected)) {
+            if (UI::Selectable(kernel->Name.c_str(), is_selected)) {
                 m_CurrentKernel = kernel;
                 m_CurrentKernelIndex = k;
             }

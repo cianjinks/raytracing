@@ -2,8 +2,7 @@
 
 #include "Application.h"
 #include "CPU.h"
-#include "imgui.h"
-#include "imgui_internal.h"
+#include "Window/UI.h"
 
 namespace raytracing {
 
@@ -34,6 +33,9 @@ void RenderDeviceManager::ClearRenderDevices() {
 
 void RenderDeviceManager::OnUpdate() {
     m_CurrentDevice->OnUpdate();
+    if (m_CurrentDevice->GetCurrentKernel()->OnUpdate()) {
+        m_CurrentDevice->Dirty();
+    }
 }
 
 void RenderDeviceManager::UI() {
@@ -58,7 +60,7 @@ void RenderDeviceManager::DeviceComboUI() {
         for (int r = 0; r < m_DeviceList.size(); r++) {
             RenderDevice* rd = m_DeviceList[r];
             const bool is_selected = (r == m_CurrentDeviceIndex);
-            if (ImGui::Selectable(rd->Name.c_str(), is_selected)) {
+            if (UI::Selectable(rd->Name.c_str(), is_selected)) {
                 m_CurrentDevice = rd;
                 m_CurrentDeviceIndex = r;
             }

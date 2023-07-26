@@ -3,10 +3,10 @@
 #include "Application.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
-#include "imgui.h"
-#include "imgui_internal.h"
 
 namespace raytracing {
+
+bool UI::s_DirtyFlag = false;
 
 void UI::Init() {
     RT_PROFILE_FUNC;
@@ -32,6 +32,7 @@ void UI::Render() {
     RT_PROFILE_FUNC;
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    s_DirtyFlag = false;
 }
 
 bool UI::WantInput() {

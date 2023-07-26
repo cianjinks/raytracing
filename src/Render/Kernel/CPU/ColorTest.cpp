@@ -1,6 +1,6 @@
 #include "ColorTest.h"
 
-#include "imgui.h"
+#include "Window/UI.h"
 
 namespace raytracing {
 
@@ -15,7 +15,7 @@ glm::vec3 ColorTestKernel::Exec(Texture2D3u8* texture, uint32_t x, uint32_t y, u
 }
 
 void ColorTestKernel::UI() {
-    ImGui::ColorEdit3("Color", &m_Color[0]);
+    UI::ColorEdit3("Color", &m_Color[0]);
 }
 
 }  // namespace raytracing

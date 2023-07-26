@@ -8,10 +8,11 @@ class RenderDevice {
    public:
     std::string Name;
 
-    float ExecutionTime = 0.0f;
-
    protected:
     KernelLibrary m_Kernels;
+
+    float m_ExecutionTime = 0.0f;
+    bool m_Dirty = false;
 
    public:
     RenderDevice(std::string name);
@@ -19,6 +20,9 @@ class RenderDevice {
 
     virtual void OnUpdate() = 0;
     virtual void SettingsUI() = 0;
+
+    /* Called when any UI setting changes in the application or kernel updates (Kernel::OnUpdate). */
+    virtual void Dirty() = 0;
 
     KernelLibrary& GetKernels() { return m_Kernels; }
     Kernel* GetCurrentKernel() { return m_Kernels.GetCurrentKernel(); }
@@ -36,6 +40,8 @@ class RenderDeviceManager {
 
     void OnUpdate();
     void UI();
+
+    void Dirty() { m_CurrentDevice->Dirty(); }
 
     RenderDevice* GetCurrentDevice() const { return m_CurrentDevice; }
 

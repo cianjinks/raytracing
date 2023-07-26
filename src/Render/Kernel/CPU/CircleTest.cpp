@@ -1,6 +1,6 @@
 #include "CircleTest.h"
 
-#include "imgui.h"
+#include "Window/UI.h"
 
 namespace raytracing {
 
@@ -20,7 +20,7 @@ glm::vec3 CircleTestKernel::Exec(Texture2D3u8* texture, uint32_t x, uint32_t y, 
 }
 
 void CircleTestKernel::UI() {
-    ImGui::SliderInt("Circle Radius", &m_CircleRadius, 0, 100);
+    UI::SliderInt("Circle Radius", &m_CircleRadius, 0, 100);
 }
 
 }  // namespace raytracing
