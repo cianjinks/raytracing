@@ -2,6 +2,7 @@
 
 namespace raytracing {
 
+// EVENT UTILITY
 enum class EventType {
     NONE = 0,
     KEY_PRESS,
@@ -24,6 +25,28 @@ class Event {
     EventType GetEventType() const { return m_EventType; }
 };
 
+class EventDispatcher {
+   private:
+    Event& m_Event;
+
+   public:
+    EventDispatcher(Event& event)
+        : m_Event(event) {}
+
+    template <typename T, typename F>
+    bool Dispatch(EventType type, const F& func) {
+        /* Note: If user mismatches T and type it will compile time error from static_cast. */
+        if (m_Event.GetEventType() == type) {
+            T& event = static_cast<T&>(m_Event);
+            func(event);
+            return true;
+        }
+        return false;
+    }
+};
+//
+
+// EVENT TYPES
 class KeyEvent : public Event {
    private:
     int m_Key;
@@ -82,5 +105,6 @@ class WindowResizeEvent : public Event {
     uint32_t GetWidth() { return m_Width; }
     uint32_t GetHeight() { return m_Height; }
 };
+//
 
 }  // namespace raytracing

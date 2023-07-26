@@ -151,26 +151,20 @@ void ImageView::OnUpdate() {
 void ImageView::OnEvent(Event &event) {
     RT_PROFILE_FUNC;
 
-    EventType type = event.GetEventType();
-    switch (type) {
-        case EventType::WINDOW_RESIZE: {
-            WindowResizeEvent &resize_event =
-                static_cast<WindowResizeEvent &>(event);
-            ResizeWindow(resize_event.GetWidth(), resize_event.GetHeight());
-            break;
+    EventDispatcher dispatcher(event);
+
+    dispatcher.Dispatch<WindowResizeEvent>(EventType::WINDOW_RESIZE, [this](auto &event) {
+        ResizeWindow(event.GetWidth(), event.GetHeight());
+    });
+
+    dispatcher.Dispatch<KeyEvent>(EventType::KEY_PRESS, [this](auto &event) {
+        int key = event.GetKey();
+        if (key == GLFW_KEY_Z) {
+            /* Center image based on height. */
+            m_Camera->Center(m_FImageHeight / m_FWindowHeight);
         }
-        case EventType::KEY_PRESS: {
-            KeyEvent &key_event = static_cast<KeyEvent &>(event);
-            int key = key_event.GetKey();
-            if (key == GLFW_KEY_Z) {
-                /* Center image based on height. */
-                m_Camera->Center(m_FImageHeight / m_FWindowHeight);
-            }
-            break;
-        }
-        default:
-            break;
-    }
+    });
+
     m_Camera->OnEvent(event);
 }
 

@@ -20,34 +20,23 @@ void ImageCamera::OnUpdate() {
 }
 
 void ImageCamera::OnEvent(Event &event) {
-    EventType type = event.GetEventType();
-    switch (type) {
-        case EventType::WINDOW_RESIZE: {
-            WindowResizeEvent &resize_event =
-                static_cast<WindowResizeEvent &>(event);
-            Resize((float)resize_event.GetWidth(),
-                   (float)resize_event.GetHeight());
-            break;
+    EventDispatcher dispatcher(event);
+
+    dispatcher.Dispatch<WindowResizeEvent>(EventType::WINDOW_RESIZE, [this](auto &event) {
+        Resize((float)event.GetWidth(), (float)event.GetHeight());
+    });
+
+    dispatcher.Dispatch<MouseScrollEvent>(EventType::MOUSE_SCROLL, [this](auto &event) {
+        Zoom(event.GetYOffset());
+    });
+
+    dispatcher.Dispatch<MouseButtonEvent>(EventType::MOUSE_PRESS, [this](auto &event) {
+        int but = event.GetButton();
+        if (but == GLFW_MOUSE_BUTTON_MIDDLE) {
+            m_InitialMousePosition =
+                glm::vec2(Input::GetMouseX(), Input::GetMouseY());
         }
-        case EventType::MOUSE_SCROLL: {
-            MouseScrollEvent &scroll_event =
-                static_cast<MouseScrollEvent &>(event);
-            Zoom(scroll_event.GetYOffset());
-            break;
-        }
-        case EventType::MOUSE_PRESS: {
-            MouseButtonEvent &mouse_event =
-                static_cast<MouseButtonEvent &>(event);
-            int but = mouse_event.GetButton();
-            if (but == GLFW_MOUSE_BUTTON_MIDDLE) {
-                m_InitialMousePosition =
-                    glm::vec2(Input::GetMouseX(), Input::GetMouseY());
-            }
-            break;
-        }
-        default:
-            break;
-    }
+    });
 }
 
 void ImageCamera::PollInput() {
