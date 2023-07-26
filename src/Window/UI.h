@@ -10,4 +10,5 @@ class UI {
 
     static bool WantInput();
 };
+
 }  // namespace raytracing

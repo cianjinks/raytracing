@@ -22,6 +22,7 @@ class Application {
     static Window* s_Window;
     static ImageView* s_ImageView;
     RenderDeviceManager* m_DeviceManager;
+    static bool s_DisableUI;
 
    public:
     Application(ApplicationInfo app_info);
@@ -33,6 +34,10 @@ class Application {
 
     static Window* GetWindow() { return s_Window; }
     static ImageView* GetImageView() { return s_ImageView; }
+
+    static void DisableUI() { s_DisableUI = true; }
+    static void EnableUI() { s_DisableUI = false; }
+    static bool IsUIDisabled() { return s_DisableUI; }
 
    private:
     void OnEvent(Event& event);

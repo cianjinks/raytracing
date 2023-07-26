@@ -30,6 +30,7 @@ void CPUDevice::OnUpdate() {
     /* Catch end of once-off execution. */
     if (m_IsExecuting && !m_ThreadPool->IsActive()) {
         m_IsExecuting = false;
+        Application::EnableUI();
 
         if (m_Timer.IsRunning()) {
             m_Timer.Stop();
@@ -58,7 +59,7 @@ void CPUDevice::OnUpdate() {
     }
 }
 
-void CPUDevice::Execute() {
+bool CPUDevice::Execute() {
     RT_PROFILE_FUNC;
     if (!m_ThreadPool->IsActive() && !m_IsExecuting) {
         m_Timer.Start();
@@ -73,6 +74,7 @@ void CPUDevice::Execute() {
         /* Flag so we can catch end of once-off execution in OnUpdate. */
         m_IsExecuting = true;
     }
+    return m_IsExecuting;
 }
 
 void CPUDevice::ExecuteThreaded() {
@@ -160,7 +162,9 @@ void CPUDevice::SettingsUI() {
     }
 
     if (ImGui::Button("Execute")) {
-        Execute();
+        if (Execute()) {
+            Application::DisableUI();
+        }
     }
 
     ImGui::SameLine();
@@ -173,17 +177,26 @@ void CPUDevice::SettingsUI() {
     }
     //
 
+    // TODO: Cleanup
+    if (!m_RealTimeExecution && m_ThreadPool->IsActive()) {
+        ImGui::SameLine();
+        if (Application::IsUIDisabled()) {
+            ImGui::EndDisabled();
+        }
+
+        if (ImGui::Button("Stop")) {
+            m_ThreadPool->Clear();
+        }
+
+        if (Application::IsUIDisabled()) {
+            ImGui::BeginDisabled();
+        }
+    }
+
     if (m_RealTimeExecution || !m_ThreadPool->IsActive()) {
         if (ExecutionTime != 0.0f) {
             ImGui::SameLine();
             ImGui::Text("%.3fs", ExecutionTime);
-        }
-    }
-
-    if (!m_RealTimeExecution && m_ThreadPool->IsActive()) {
-        ImGui::SameLine();
-        if (ImGui::Button("Stop")) {
-            m_ThreadPool->Clear();
         }
     }
 

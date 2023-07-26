@@ -7,6 +7,7 @@ namespace raytracing {
 
 Window* Application::s_Window = nullptr;
 ImageView* Application::s_ImageView = nullptr;
+bool Application::s_DisableUI = false;
 
 Application::Application(ApplicationInfo app_info) : AppInfo(app_info) {
     RT_PROFILE_FUNC_N("Application Init");
@@ -52,8 +53,10 @@ void Application::UI() {
     RT_PROFILE_FUNC;
 
     ImGui::Begin("Controls");
+    ImGui::BeginDisabled(s_DisableUI);
     m_DeviceManager->UI();
     s_ImageView->UI();
+    ImGui::EndDisabled();
     ImGui::End();
 }
 

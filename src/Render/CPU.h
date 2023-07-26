@@ -37,7 +37,7 @@ class CPUDevice : public RenderDevice {
     void SettingsUI() override;
 
    private:
-    void Execute();
+    bool Execute();
 
     void ExecuteThreaded();
     void ExecuteSingle();
