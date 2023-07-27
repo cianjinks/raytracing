@@ -33,8 +33,8 @@ class ThreadPool {
     uint64_t Count() const { return m_Threads.size(); }
     void Resize(uint64_t count);
 
-    // Atleast 1 thread is executing a task
-    bool IsActive() const { return m_ActiveThreads != 0; };
+    // Atleast 1 thread is executing a task or there are tasks in the queue
+    bool IsActive();
 
     // Clear the queue and exit current tasks early if possible
     void Clear();

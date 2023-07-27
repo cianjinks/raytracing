@@ -11,6 +11,10 @@ ThreadPool::~ThreadPool() {
 }
 
 void ThreadPool::Init(uint64_t count) {
+    if (count == 0) {
+        RT_WARN("Creating threadpool with no threads: {}", count);
+    }
+
     m_ClearSignal = false;
     m_StopSignal = false;
     m_QuickExitSignal = false;
@@ -70,6 +74,11 @@ void ThreadPool::Resize(uint64_t count) {
     }
 }
 
+bool ThreadPool::IsActive() {
+    std::shared_lock<std::shared_mutex> lock(m_TasksMutex);
+    return (m_ActiveThreads != 0) || !m_Tasks.empty();
+}
+
 void ThreadPool::Clear() {
     m_QuickExitSignal = true;
 
@@ -86,7 +95,7 @@ void ThreadPool::Clear() {
 }
 
 void ThreadPool::WaitForTasks() {
-    std::unique_lock<std::shared_mutex> lock(m_TasksMutex);
+    std::shared_lock<std::shared_mutex> lock(m_TasksMutex);
     m_WaitingSignal = true;
     m_DoneTasks.wait(lock, [this] {
         return !IsActive() && m_Tasks.empty();
