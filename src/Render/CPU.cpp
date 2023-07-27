@@ -21,6 +21,7 @@ CPUDevice::CPUDevice() : RenderDevice("CPU") {
 }
 
 CPUDevice::~CPUDevice() {
+    delete m_AccumulationBuffer;
     delete m_ThreadPool;
 }
 
