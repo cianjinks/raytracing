@@ -8,8 +8,7 @@ namespace raytracing {
 
 // FAST RANDOM
 float FastRandom::Float(uint32_t& seed) {
-    seed = PCGHash(seed);
-    return float(seed) / float(std::numeric_limits<uint32_t>::max());
+    return float(PCGHash(seed)) / float(std::numeric_limits<uint32_t>::max());
 }
 
 float FastRandom::Float(uint32_t& seed, float min, float max) {
@@ -51,8 +50,9 @@ glm::vec3 FastRandom::InUnitDisk(uint32_t& seed) {
     }
 }
 
-uint32_t FastRandom::PCGHash(uint32_t input) {
-    uint32_t state = input * 747796405u + 2891336453u;
+uint32_t FastRandom::PCGHash(uint32_t& seed) {
+    uint32_t state = seed;
+    seed = seed * 747796405u + 2891336453u;
     uint32_t word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
     return (word >> 22u) ^ word;
 }

@@ -17,7 +17,7 @@ class FastRandom {
     static glm::vec3 InUnitDisk(uint32_t& seed);
 
    private:
-    static inline uint32_t PCGHash(uint32_t input);
+    static inline uint32_t PCGHash(uint32_t& seed);
 };
 
 class Random {

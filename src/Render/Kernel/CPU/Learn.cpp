@@ -94,7 +94,7 @@ void LearnKernel::RandomizeScene() {
 glm::vec3 LearnKernel::Exec(Texture2D3u8* texture, uint32_t x, uint32_t y, uint32_t s) {
     RT_PROFILE_FUNC;
 
-    uint32_t seed = (x + 1) * (y + 1) * s;
+    uint32_t seed = (x + 1) * (y + 1) * (s + 1);
 
     /* Slight variation across samples for anti-aliasing. */
     float fx = float(x) + FastRandom::Float(seed, -1.0f, 1.0f);
@@ -166,10 +166,11 @@ glm::vec3 LearnKernel::RayColor(const Ray& ray, uint32_t depth, uint32_t& seed) 
 
     HitResult result;
 
-    seed += depth;
     if (depth <= 0) return {0.0f, 0.0f, 0.0f};
 
     if (m_Scene->Hit(ray, 0.001f, Constant::FInfinity, result)) {
+        seed += depth;
+
         Ray scattered;
         glm::vec3 attenuation;
         if (result.material->scatter(ray, seed, result, attenuation, scattered)) {
