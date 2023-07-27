@@ -34,7 +34,7 @@ void ThreadPool::ThreadExecution() {
             });
 
             if (m_StopSignal && m_Tasks.empty()) {
-                return;
+                break;
             }
 
             task = std::move(m_Tasks.front());
@@ -44,6 +44,10 @@ void ThreadPool::ThreadExecution() {
         m_ActiveThreads++;
         task();
         m_ActiveThreads--;
+
+        if (m_WaitingSignal && !IsActive() && m_Tasks.empty()) {
+            m_DoneTasks.notify_all();
+        }
     }
 }
 
@@ -77,7 +81,16 @@ void ThreadPool::Clear() {
     }
 
     // Note: It is not guaranteed that the threads have all stopped working on tasks by the time this returns
-    //       Use IsRunning() to check.
+    //       Use IsActive() or WaitForTasks().
+}
+
+void ThreadPool::WaitForTasks() {
+    std::unique_lock<std::shared_mutex> lock(m_TasksMutex);
+    m_WaitingSignal = true;
+    m_DoneTasks.wait(lock, [this] {
+        return !IsActive() && m_Tasks.empty();
+    });
+    m_WaitingSignal = false;
 }
 
 }  // namespace raytracing

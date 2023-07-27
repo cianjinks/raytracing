@@ -15,6 +15,7 @@ class ThreadPool {
    private:
     std::queue<std::function<void()>> m_Tasks;
     std::condition_variable_any m_NotifyTask;
+    std::condition_variable_any m_DoneTasks;
     std::shared_mutex m_TasksMutex;
 
     std::vector<std::thread> m_Threads;
@@ -23,6 +24,7 @@ class ThreadPool {
     std::atomic<bool> m_ClearSignal;
     std::atomic<bool> m_StopSignal;
     std::atomic<bool> m_QuickExitSignal;
+    std::atomic<bool> m_WaitingSignal;
 
    public:
     ThreadPool(uint64_t count);
@@ -38,8 +40,7 @@ class ThreadPool {
     void Clear();
 
     // Hold and wait for all queued tasks to finish
-    // TODO: Is there a better way to wait, i.e condition variable or other?
-    void WaitForTasks() { while(IsActive()) {} }
+    void WaitForTasks();
 
     template <class Function, class... Args>
     void AddTask(Function&& func, Args&&... args) {
