@@ -153,8 +153,8 @@ void LearnKernel::UI() {
     UI::SliderFloat("Camera Speed", &m_Camera->speed, 0.1f, 1.0f);
     UI::InputFloat("Camera Vertical FOV", &m_Camera->vfov);
     UI::Checkbox("Camera Lens", &m_UseLens);
-    UI::InputFloat("Camera Aperture", &m_Camera->aperture);
-    UI::InputFloat("Camera Focus Distance", &m_Camera->focus_dist);
+    UI::SliderFloat("Camera Aperture", &m_Camera->aperture, 0.1f, 4.0f);
+    UI::SliderFloat("Camera Focus Distance", &m_Camera->focus_dist, 0.1f, 20.0f);
     // for (Object* object : m_Scene->GetObjects()) {
     //     ImGui::SliderFloat3(object->name.c_str(), &object->position.x, -10.0f,
     //                         10.0f);

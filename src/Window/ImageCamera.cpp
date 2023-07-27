@@ -34,13 +34,15 @@ void ImageCamera::OnEvent(Event &event) {
         },
         false);
 
-    dispatcher.Dispatch<MouseButtonEvent>(EventType::MOUSE_PRESS, [this](auto &event) {
-        int but = event.GetButton();
-        if (but == GLFW_MOUSE_BUTTON_MIDDLE) {
-            m_InitialMousePosition =
-                glm::vec2(Input::GetMouseX(), Input::GetMouseY());
-        }
-    });
+    dispatcher.Dispatch<MouseButtonEvent>(
+        EventType::MOUSE_PRESS, [this](auto &event) {
+            int but = event.GetButton();
+            if (but == GLFW_MOUSE_BUTTON_MIDDLE) {
+                m_InitialMousePosition =
+                    glm::vec2(Input::GetMouseX(), Input::GetMouseY());
+            }
+        },
+        false);
 }
 
 void ImageCamera::PollInput() {

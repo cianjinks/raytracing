@@ -95,6 +95,8 @@ void CPUDevice::ExecuteThreaded() {
             m_ThreadPool->AddTaskQE([this, x, y, tile_width, tile_height](std::atomic<bool>& stop) -> void {
                 for (uint32_t s = 0; s < m_NumSamples; s++) {
                     this->AccumulateSection(x, y, s, tile_width, tile_height, stop);
+                    // m_CurrentSample++ /* Not possible with this setup. */
+                    /* We don't wait for all threads to finish a sample before moving onto the next. Could do that if we move once-off execution to the OnUpdate function. */
                 }
             });
         }
@@ -107,6 +109,7 @@ void CPUDevice::ExecuteSingle() {
     m_ThreadPool->AddTaskQE([this](std::atomic<bool>& stop) -> void {
         for (uint32_t s = 0; s < m_NumSamples; s++) {
             this->AccumulateSection(0, 0, s, m_Texture->GetWidth(), m_Texture->GetHeight(), stop);
+            m_CurrentSample++;
         }
     });
 }
@@ -203,6 +206,8 @@ void CPUDevice::SettingsUI() {
             ImGui::SameLine();
             ImGui::Text("%.3fs", m_ExecutionTime);
         }
+        ImGui::SameLine();
+        ImGui::Text("(%u/%u samples)", m_CurrentSample, m_NumSamples);
     }
 
     UI::Checkbox("Real Time", &m_RealTimeExecution);

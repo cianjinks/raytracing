@@ -14,6 +14,7 @@ void ThreadPool::Init(uint64_t count) {
     m_ClearSignal = false;
     m_StopSignal = false;
     m_QuickExitSignal = false;
+    m_WaitingSignal = false;
 
     m_ActiveThreads = 0;
     m_Threads.reserve(count);
