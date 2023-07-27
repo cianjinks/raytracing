@@ -32,10 +32,11 @@ void LearnKernel::TestMaterialScene() {
     m_Camera = new Camera({2.0f, 4.0f, 5.0f}, {-2.0f, -4.0f, -5.0f}, {0.0f, 1.0f, 0.0f}, 0.2f, 90.0f, 2.0f, 2.5f);
     m_Scene = new Scene("Test Scene", {0, 0, 0});
     m_Scene->Add(new Sphere("Ground", {0, -1000.0f, 0}, CreateS<Lambertian>(glm::vec3(0.5f)), 1000.0f));
-    m_Scene->Add(new Sphere("Red Sphere", {1.5f, 1.0f, -1.5f}, CreateS<Lambertian>(glm::vec3(0.5f, 0.0f, 0.0f)), 1.0f));
-    m_Scene->Add(new Sphere("Green Sphere", {-1.5f, 1.0f, 1.5f}, CreateS<Lambertian>(glm::vec3(0.0f, 0.5f, 0.0f)), 1.0f));
-    m_Scene->Add(new Sphere("Metal Sphere", {1.5f, 1.0f, 1.5f}, CreateS<Metal>(glm::vec3(0.6f), 0.5f), 1.0f));
-    m_Scene->Add(new Sphere("Purple Sphere", {-1.5f, 1.0f, -1.5f}, CreateS<Lambertian>(glm::vec3(0.0f, 0.5f, 0.5f)), 1.0f));
+    m_Scene->Add(new Box("Red Cube", {2.0f, 1.0f, -2.0f}, CreateS<Lambertian>(glm::vec3(0.5f, 0.0f, 0.0f)), glm::vec3(1.0f)));
+    m_Scene->Add(new Sphere("Green Sphere", {-2.0f, 1.0f, 2.0f}, CreateS<Lambertian>(glm::vec3(0.0f, 0.5f, 0.0f)), 1.0f));
+    m_Scene->Add(new Sphere("Metal Sphere", {2.0f, 1.0f, 2.0f}, CreateS<Metal>(glm::vec3(0.6f), 0.5f), 1.0f));
+    m_Scene->Add(new Sphere("Purple Sphere", {-2.0f, 1.0f, -2.0f}, CreateS<Lambertian>(glm::vec3(0.0f, 0.5f, 0.5f)), 1.0f));
+    m_Scene->Add(new Sphere("Glass Sphere", {0.0f, 1.0f, 0.0f}, CreateS<Dielectric>(1.5f), 1.0f));
 }
 
 void LearnKernel::TestLensScene() {
