@@ -74,8 +74,6 @@ void Camera::OnEvent(Event& event) {
         if (pitch < glm::radians(-89.0f))
             pitch = glm::radians(-89.0f);
 
-        RT_LOG("Pitch: {}, Yaw: {}", pitch, yaw);
-
         direction.x = glm::cos(yaw) * glm::cos(pitch);
         direction.y = glm::sin(pitch);
         direction.z = glm::sin(yaw) * glm::cos(pitch);
