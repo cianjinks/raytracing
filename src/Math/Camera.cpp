@@ -4,6 +4,13 @@
 
 namespace raytracing {
 
+Camera::Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up, float speed, float vfov, float aperture, float focus_dist)
+    : position(pos), direction(dir), up(up), speed(speed), vfov(vfov), aperture(aperture), focus_dist(focus_dist) {
+    direction = glm::normalize(direction);
+    pitch = glm::asin(direction.y);
+    yaw = glm::atan(direction.z, direction.x);
+}
+
 bool Camera::OnUpdate() {
     bool right_click = Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT);
     if (right_click && !Application::GetWindow()->IsCursorCaptured()) {
@@ -59,17 +66,19 @@ void Camera::OnEvent(Event& event) {
         xoffset *= sensitivity;
         yoffset *= sensitivity;
 
-        yaw += xoffset;
-        pitch += yoffset;
+        yaw += glm::radians(xoffset);
+        pitch += glm::radians(yoffset);
 
-        if (pitch > 89.0f)
-            pitch = 89.0f;
-        if (pitch < -89.0f)
-            pitch = -89.0f;
+        if (pitch > glm::radians(89.0f))
+            pitch = glm::radians(89.0f);
+        if (pitch < glm::radians(-89.0f))
+            pitch = glm::radians(-89.0f);
 
-        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        direction.y = sin(glm::radians(pitch));
-        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        RT_LOG("Pitch: {}, Yaw: {}", pitch, yaw);
+
+        direction.x = glm::cos(yaw) * glm::cos(pitch);
+        direction.y = glm::sin(pitch);
+        direction.z = glm::sin(yaw) * glm::cos(pitch);
         direction = glm::normalize(direction);
     });
 }

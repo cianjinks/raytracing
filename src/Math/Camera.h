@@ -21,13 +21,12 @@ class Camera {
 
     /* Controls */
     float speed;
-    float yaw = 0.0f;
-    float pitch = 0.0f;
+    float yaw = 0.0f;    // radians
+    float pitch = 0.0f;  // radians
     float lastX = 0.0f;
     float lastY = 0.0f;
 
-    Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up, float speed, float vfov, float aperture, float focus_dist)
-        : position(position), direction(direction), up(up), speed(speed), vfov(vfov), aperture(aperture), focus_dist(focus_dist) {}
+    Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up, float speed, float vfov, float aperture, float focus_dist);
     ~Camera() = default;
 
     bool OnUpdate();
