@@ -1,12 +1,14 @@
 #include "Object.h"
 
 #include "Intersection.h"
+#include "Material.h"
+#include "Window/UI.h"
 
 namespace raytracing {
 
 glm::vec3 Ray::At(float t) const { return origin + (direction * t); }
 
-Scene::Scene(std::string name, glm::vec3 position) : Object(name, position, nullptr) {}
+Scene::Scene(std::string name, glm::vec3 position, Camera camera) : Object(name, position, nullptr), m_Camera(camera) {}
 
 Scene::~Scene() {
     for (Object* object : m_Objects) {

@@ -6,15 +6,14 @@
 #include "Math/Constant.h"
 #include "Math/Material.h"
 #include "Math/Object.h"
+#include "Math/SceneManager.h"
 #include "Render/Kernel/Kernel.h"
 
 namespace raytracing {
 
 class LearnKernel : public Kernel {
    private:
-    Scene* m_Scene;
-    Camera* m_Camera;
-    bool m_UseLens = false;
+    SceneManager* m_SceneManager;
     uint32_t m_MaxBounces = 10;
 
    public:

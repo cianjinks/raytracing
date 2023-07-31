@@ -15,6 +15,7 @@ class Camera {
     glm::vec3 up;
 
     /* Lens */
+    bool useLens = false;
     float vfov;
     float aperture;
     float focus_dist;
