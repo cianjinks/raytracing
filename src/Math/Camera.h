@@ -10,23 +10,24 @@ namespace raytracing {
 class Camera {
    public:
     /* Positional */
-    glm::vec3 position;
-    glm::vec3 direction;
-    glm::vec3 up;
+    glm::vec3 position = glm::vec3(0.0f);
+    glm::vec3 direction = glm::vec3(0.0f, 0.0f, 1.0f);
+    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
     /* Lens */
     bool useLens = false;
-    float vfov;
-    float aperture;
-    float focus_dist;
+    float vfov = 90.0f;
+    float aperture = 2.0f;
+    float focus_dist = 2.5f;
 
     /* Controls */
-    float speed;
+    float speed = 0.2f;
     float yaw = 0.0f;    // radians
     float pitch = 0.0f;  // radians
     float lastX = 0.0f;
     float lastY = 0.0f;
 
+    Camera() {}
     Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up, float speed, float vfov, float aperture, float focus_dist);
     ~Camera() = default;
 

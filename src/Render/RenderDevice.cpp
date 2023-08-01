@@ -16,16 +16,13 @@ void RenderDeviceManager::SetupRenderDevices() {
     RT_PROFILE_FUNC;
 
     /* Add more here. */
-    RenderDevice* cpu = new CPUDevice();  // TODO: CPU threadpool should be freed when device is swapped
+    S<RenderDevice> cpu = CreateS<CPUDevice>();  // TODO: CPU threadpool should be freed when device is swapped
     m_DeviceList.emplace_back(cpu);
     m_CurrentDevice = cpu;
     m_CurrentDeviceIndex = 0;
 }
 
 void RenderDeviceManager::ClearRenderDevices() {
-    for (RenderDevice* rd : m_DeviceList) {
-        delete rd;
-    }
     m_DeviceList.clear();
     m_CurrentDevice = nullptr;
     m_CurrentDeviceIndex = 0;
@@ -64,7 +61,7 @@ void RenderDeviceManager::UI() {
 void RenderDeviceManager::DeviceComboUI() {
     if (ImGui::BeginCombo("Device", m_CurrentDevice->Name.c_str())) {
         for (int r = 0; r < m_DeviceList.size(); r++) {
-            RenderDevice* rd = m_DeviceList[r];
+            S<RenderDevice> rd = m_DeviceList[r];
             const bool is_selected = (r == m_CurrentDeviceIndex);
             if (UI::Selectable(rd->Name.c_str(), is_selected)) {
                 m_CurrentDevice = rd;

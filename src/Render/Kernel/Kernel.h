@@ -21,7 +21,7 @@ class Kernel {
     Kernel(std::string name);
     virtual ~Kernel() = default;
 
-    virtual glm::vec3 Exec(Texture2D3u8* texture, uint32_t x, uint32_t y, uint32_t s) = 0;
+    virtual glm::vec3 Exec(const S<Texture2D3u8>& texture, uint32_t x, uint32_t y, uint32_t s) = 0;
 
     /* A kernel may want to do something every frame. Return true if it did. */
     virtual bool OnUpdate() = 0;
@@ -31,8 +31,8 @@ class Kernel {
 
 class KernelLibrary {
    private:
-    std::vector<Kernel*> m_KernelList;
-    Kernel* m_CurrentKernel = nullptr;
+    std::vector<S<Kernel>> m_KernelList;
+    S<Kernel> m_CurrentKernel = nullptr;
     uint32_t m_CurrentKernelIndex = 0;
 
    public:
@@ -41,9 +41,9 @@ class KernelLibrary {
 
     void DeviceComboUI();
 
-    void AddKernel(Kernel* kernel);
+    void AddKernel(S<Kernel> kernel);
     void SetCurrentKernel(uint32_t index);
-    Kernel* GetCurrentKernel() const { return m_CurrentKernel; }
+    S<Kernel> GetCurrentKernel() const { return m_CurrentKernel; }
 };
 
 }  // namespace raytracing

@@ -9,21 +9,18 @@
 namespace raytracing {
 
 CPUDevice::CPUDevice() : RenderDevice("CPU") {
-    m_Kernels.AddKernel(new ColorTestKernel());
-    m_Kernels.AddKernel(new CircleTestKernel());
-    m_Kernels.AddKernel(new LearnKernel());
+    m_Kernels.AddKernel(CreateS<ColorTestKernel>());
+    m_Kernels.AddKernel(CreateS<CircleTestKernel>());
+    m_Kernels.AddKernel(CreateS<LearnKernel>());
 
     // CPU writes to ImageView's cpu texture buffer
     m_Texture = Application::GetImageView()->GetTexture();
-    m_AccumulationBuffer = new Texture2D3f(m_Texture->GetWidth(), m_Texture->GetHeight());
+    m_AccumulationBuffer = CreateU<Texture2D3f>(m_Texture->GetWidth(), m_Texture->GetHeight());
 
-    m_ThreadPool = new ThreadPool(m_NumTilesX * m_NumTilesY);
+    m_ThreadPool = CreateU<ThreadPool>(m_NumTilesX * m_NumTilesY);
 }
 
-CPUDevice::~CPUDevice() {
-    delete m_AccumulationBuffer;
-    delete m_ThreadPool;
-}
+CPUDevice::~CPUDevice() {}
 
 void CPUDevice::OnUpdate() {
     RT_PROFILE_FUNC;

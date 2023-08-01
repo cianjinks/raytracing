@@ -10,7 +10,7 @@ ColorTestKernel::ColorTestKernel() : Kernel("Color Test") {
 
 ColorTestKernel::~ColorTestKernel() {}
 
-glm::vec3 ColorTestKernel::Exec(Texture2D3u8* texture, uint32_t x, uint32_t y, uint32_t s) {
+glm::vec3 ColorTestKernel::Exec(const S<Texture2D3u8>& texture, uint32_t x, uint32_t y, uint32_t s) {
     return m_Color;
 }
 

@@ -117,20 +117,17 @@ ImageView::ImageView(uint32_t window_width, uint32_t window_height,
     glValidateProgram(m_ShaderProgramID);
     glUseProgram(m_ShaderProgramID);
 
-    m_Camera = new ImageCamera(m_FWindowWidth, m_FWindowHeight);
+    m_Camera = CreateU<ImageCamera>(m_FWindowWidth, m_FWindowHeight);
     m_CameraUniformID =
         glGetUniformLocation(m_ShaderProgramID, "u_ProjectionMatrix");
 
-    m_Image = new Texture2D3u8(m_ImageWidth, m_ImageHeight);
+    m_Image = CreateS<Texture2D3u8>(m_ImageWidth, m_ImageHeight);
     m_Image->Randomize();
 
     RT_LOG("Image View Initialised");
 }
 
-ImageView::~ImageView() {
-    delete m_Camera;
-    delete m_Image;
-}
+ImageView::~ImageView() {}
 
 void ImageView::OnUpdate() {
     RT_PROFILE_FUNC;

@@ -19,9 +19,9 @@ class Application {
     ApplicationInfo AppInfo;
 
    private:
-    static Window* s_Window;
-    static ImageView* s_ImageView;
-    RenderDeviceManager* m_DeviceManager;
+    static S<Window> s_Window;
+    static S<ImageView> s_ImageView;
+    U<RenderDeviceManager> m_DeviceManager;
     static bool s_DisableUI;
 
    public:
@@ -32,8 +32,8 @@ class Application {
     void Run();
     void UI();
 
-    static Window* GetWindow() { return s_Window; }
-    static ImageView* GetImageView() { return s_ImageView; }
+    static S<Window> GetWindow() { return s_Window; }
+    static S<ImageView> GetImageView() { return s_ImageView; }
 
     static void DisableUI() { s_DisableUI = true; }
     static void EnableUI() { s_DisableUI = false; }

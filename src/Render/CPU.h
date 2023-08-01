@@ -15,11 +15,11 @@ class CPUDevice : public RenderDevice {
     uint32_t m_NumTilesY = 4;
 
     /* Execution targets */
-    Texture2D3u8* m_Texture;
-    Texture2D3f* m_AccumulationBuffer;
+    S<Texture2D3u8> m_Texture;
+    U<Texture2D3f> m_AccumulationBuffer;
 
     /* Execution utilities */
-    ThreadPool* m_ThreadPool;
+    U<ThreadPool> m_ThreadPool;
     Timer m_Timer;
 
     /* Real time execution flags */

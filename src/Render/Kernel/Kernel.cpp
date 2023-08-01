@@ -9,15 +9,12 @@ Kernel::Kernel(std::string name) : Name(name) {}
 KernelLibrary::KernelLibrary() {}
 
 KernelLibrary::~KernelLibrary() {
-    for (Kernel* k : m_KernelList) {
-        delete k;
-    }
     m_KernelList.clear();
     m_CurrentKernel = nullptr;
     m_CurrentKernelIndex = 0;
 }
 
-void KernelLibrary::AddKernel(Kernel* kernel) {
+void KernelLibrary::AddKernel(S<Kernel> kernel) {
     m_KernelList.emplace_back(kernel);
     m_CurrentKernel = kernel;
     m_CurrentKernelIndex = m_KernelList.size() - 1;
@@ -35,7 +32,7 @@ void KernelLibrary::SetCurrentKernel(uint32_t index) {
 void KernelLibrary::DeviceComboUI() {
     if (ImGui::BeginCombo("Kernel", m_CurrentKernel->Name.c_str())) {
         for (int k = 0; k < m_KernelList.size(); k++) {
-            Kernel* kernel = m_KernelList[k];
+            S<Kernel> kernel = m_KernelList[k];
             const bool is_selected = (k == m_CurrentKernelIndex);
             if (UI::Selectable(kernel->Name.c_str(), is_selected)) {
                 m_CurrentKernel = kernel;

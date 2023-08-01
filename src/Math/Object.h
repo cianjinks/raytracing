@@ -42,24 +42,6 @@ class Object : public Hittable {
     virtual ~Object() = default;
 };
 
-class Scene : public Object {
-   private:
-    std::vector<Object*> m_Objects;
-    Camera m_Camera; /* Scenes only support 1 camera. */
-
-   public:
-    Scene(std::string name, glm::vec3 position, Camera camera);
-    ~Scene();
-
-    void Add(Object* object);
-    void Remove(Object* object);
-
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
-
-    std::vector<Object*>& GetObjects() { return m_Objects; }
-    Camera& GetCamera() { return m_Camera; }
-};
-
 class Sphere : public Object {
    public:
     float radius;

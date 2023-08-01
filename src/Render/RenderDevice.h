@@ -26,13 +26,13 @@ class RenderDevice {
     virtual void Dirty() = 0;
 
     KernelLibrary& GetKernels() { return m_Kernels; }
-    Kernel* GetCurrentKernel() { return m_Kernels.GetCurrentKernel(); }
+    S<Kernel> GetCurrentKernel() { return m_Kernels.GetCurrentKernel(); }
 };
 
 class RenderDeviceManager {
    private:
-    std::vector<RenderDevice*> m_DeviceList;
-    RenderDevice* m_CurrentDevice = nullptr;
+    std::vector<S<RenderDevice>> m_DeviceList;
+    S<RenderDevice> m_CurrentDevice = nullptr;
     uint32_t m_CurrentDeviceIndex = 0;
 
     bool m_IsDirty = false;
@@ -47,7 +47,7 @@ class RenderDeviceManager {
 
     void Dirty() { m_IsDirty = true; }
 
-    RenderDevice* GetCurrentDevice() const { return m_CurrentDevice; }
+    S<RenderDevice> GetCurrentDevice() const { return m_CurrentDevice; }
 
    private:
     void SetupRenderDevices();
