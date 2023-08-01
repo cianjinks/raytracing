@@ -8,7 +8,7 @@ namespace raytracing {
 
 glm::vec3 Ray::At(float t) const { return origin + (direction * t); }
 
-bool Sphere::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
+bool Sphere::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const {
     if (Intersection::RaySphere(ray, *this, t_min, t_max, hit)) {
         hit.material = material;
         return true;
@@ -16,7 +16,7 @@ bool Sphere::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
     return false;
 }
 
-bool Box::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
+bool Box::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const {
     if (Intersection::RayBox(ray, *this, t_min, t_max, hit)) {
         hit.material = material;
         return true;
@@ -24,7 +24,7 @@ bool Box::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
     return false;
 }
 
-bool Plane::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
+bool Plane::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const {
     if (Intersection::RayPlane(ray, *this, t_min, t_max, hit)) {
         hit.material = material;
         return true;
@@ -32,7 +32,7 @@ bool Plane::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
     return false;
 }
 
-bool Cylinder::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
+bool Cylinder::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const {
     if (Intersection::RayCylinder(ray, *this, t_min, t_max, hit)) {
         hit.material = material;
         return true;
@@ -40,7 +40,7 @@ bool Cylinder::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
     return false;
 }
 
-bool Torus::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
+bool Torus::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const {
     if (Intersection::RayTorus(ray, *this, t_min, t_max, hit)) {
         hit.material = material;
         return true;

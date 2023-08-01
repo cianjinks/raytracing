@@ -19,10 +19,10 @@ class Scene : public Object {
         m_Objects.emplace_back(CreateU<T>(std::forward<Args>(args)...));
     }
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
+    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
 
     std::vector<U<Object>>& GetObjects() { return m_Objects; }
-    S<Camera> GetCamera() { return m_Camera; }
+    inline Camera& GetCamera() const { return *m_Camera.get(); }
 };
 
 class SceneManager {
@@ -37,7 +37,7 @@ class SceneManager {
 
     void UI();
 
-    S<Scene> GetScene() const { return m_CurrentScene; }
+    inline Scene& GetScene() const { return *m_CurrentScene.get(); }
 
    private:
     void SceneComboUI();

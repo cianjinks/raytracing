@@ -28,7 +28,7 @@ class Hittable {
    public:
     virtual ~Hittable() = default;
     virtual bool Hit(const Ray& ray, float t_min, float t_max,
-                     HitResult& hit) = 0;
+                     HitResult& hit) const = 0;
 };
 
 class Object : public Hittable {
@@ -50,7 +50,7 @@ class Sphere : public Object {
         : Object(name, position, material), radius(radius) {}
     ~Sphere() = default;
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
+    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
 };
 
 class Box : public Object {
@@ -61,7 +61,7 @@ class Box : public Object {
         : Object(name, position, material), size(size) {}
     ~Box() = default;
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
+    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
 };
 
 class Plane : public Object {
@@ -73,7 +73,7 @@ class Plane : public Object {
         : Object(name, position, material), normal(normal) {}
     ~Plane() = default;
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
+    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
 };
 
 class Cylinder : public Object {
@@ -86,7 +86,7 @@ class Cylinder : public Object {
         : Object(name, {0, 0, 0}, material), capA(capA), capB(capB) {}
     ~Cylinder() = default;
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
+    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
 };
 
 class Torus : public Object {
@@ -100,7 +100,7 @@ class Torus : public Object {
           small_radius(small_radius) {}
     ~Torus() = default;
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) override;
+    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
 };
 
 }  // namespace raytracing

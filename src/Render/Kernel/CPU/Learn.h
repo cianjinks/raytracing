@@ -26,7 +26,7 @@ class LearnKernel : public Kernel {
     void UI() override;
 
    private:
-    glm::vec3 RayColor(const Ray& ray, uint32_t depth, uint32_t& seed);
+    glm::vec3 RayColor(const Scene& scene, const Ray& ray, uint32_t depth, uint32_t& seed);
 
     void FirstScene();
     void TestMaterialScene();

@@ -31,8 +31,20 @@ class Camera {
     Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up, float speed, float vfov, float aperture, float focus_dist);
     ~Camera() = default;
 
+    inline void SetPosition(const glm::vec3& pos) { position = pos; }
+    inline void SetDirection(const glm::vec3& dir) {
+        direction = glm::normalize(dir);
+        UpdatePY();
+    }
+
     bool OnUpdate();
     void OnEvent(Event& event);
+
+   private:
+    void UpdatePY() {
+        pitch = glm::asin(direction.y);
+        yaw = glm::atan(direction.z, direction.x);
+    }
 };
 
 }  // namespace raytracing

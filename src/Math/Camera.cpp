@@ -6,9 +6,7 @@ namespace raytracing {
 
 Camera::Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up, float speed, float vfov, float aperture, float focus_dist)
     : position(pos), direction(dir), up(up), speed(speed), vfov(vfov), aperture(aperture), focus_dist(focus_dist) {
-    direction = glm::normalize(direction);
-    pitch = glm::asin(direction.y);
-    yaw = glm::atan(direction.z, direction.x);
+    SetDirection(direction);
 }
 
 bool Camera::OnUpdate() {

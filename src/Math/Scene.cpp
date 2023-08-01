@@ -10,7 +10,7 @@ Scene::~Scene() {
     m_Objects.clear();
 }
 
-bool Scene::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) {
+bool Scene::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const {
     RT_PROFILE_FUNC;
 
     HitResult temp_hr;
@@ -43,14 +43,14 @@ SceneManager::SceneManager() {
 
 void SceneManager::UI() {
     SceneComboUI();
-    const S<Camera>& camera = m_CurrentScene->GetCamera();
-    UI::InputFloat3("Camera Position", &camera->position.x);
-    UI::InputFloat3("Camera Direction", &camera->direction.x);
-    UI::SliderFloat("Camera Speed", &camera->speed, 0.1f, 1.0f);
-    UI::InputFloat("Camera Vertical FOV", &camera->vfov);
-    UI::Checkbox("Camera Lens", &camera->useLens);
-    UI::SliderFloat("Camera Aperture", &camera->aperture, 0.0f, 4.0f);
-    UI::SliderFloat("Camera Focus Distance", &camera->focus_dist, 0.0f, 20.0f);
+    Camera& camera = m_CurrentScene->GetCamera();
+    UI::InputFloat3("Camera Position", &camera.position.x);
+    UI::InputFloat3("Camera Direction", &camera.direction.x);
+    UI::SliderFloat("Camera Speed", &camera.speed, 0.1f, 1.0f);
+    UI::InputFloat("Camera Vertical FOV", &camera.vfov);
+    UI::Checkbox("Camera Lens", &camera.useLens);
+    UI::SliderFloat("Camera Aperture", &camera.aperture, 0.0f, 4.0f);
+    UI::SliderFloat("Camera Focus Distance", &camera.focus_dist, 0.0f, 20.0f);
     // for (Object* object : m_Scene->GetObjects()) {
     //     ImGui::SliderFloat3(object->name.c_str(), &object->position.x, -10.0f,
     //                         10.0f);
@@ -76,8 +76,8 @@ void SceneManager::SceneComboUI() {
 
 S<Scene> SceneManager::FirstScene() {
     S<Camera> camera = CreateS<Camera>();
-    camera->position = glm::vec3(0.0f, 0.0f, -2.5f);
-    camera->direction = glm::vec3(0.0f, 0.0f, 1.0f);
+    camera->SetPosition(glm::vec3(0.0f, 0.0f, -2.5f));
+    camera->SetDirection(glm::vec3(0.0f, 0.0f, 1.0f));
     S<Scene> scene = CreateS<Scene>("First Scene", glm::vec3(0.0f), camera);
     scene->Add<Sphere>("Sphere 1", glm::vec3(0, 0, 0), CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f);
     scene->Add<Sphere>("Sphere 2", glm::vec3(2.0, 0, 0), CreateS<Metal>(glm::vec3(0.8f), 0.3f), 1.0f);
@@ -89,8 +89,8 @@ S<Scene> SceneManager::FirstScene() {
 
 S<Scene> SceneManager::MaterialTestScene() {
     S<Camera> camera = CreateS<Camera>();
-    camera->position = glm::vec3(2.0f, 4.0f, 5.0f);
-    camera->direction = glm::vec3(-2.0f, -4.0f, -5.0f);
+    camera->SetPosition(glm::vec3(2.0f, 4.0f, 5.0f));
+    camera->SetDirection(glm::vec3(-2.0f, -4.0f, -5.0f));
     S<Scene> scene = CreateS<Scene>("Material Test", glm::vec3(0.0f), camera);
     scene->Add<Sphere>("Ground", glm::vec3(0, -1000.0f, 0), CreateS<Lambertian>(glm::vec3(0.5f)), 1000.0f);
     scene->Add<Box>("Red Cube", glm::vec3(2.0f, 1.0f, -2.0f), CreateS<Lambertian>(glm::vec3(0.5f, 0.0f, 0.0f)), glm::vec3(1.0f));
@@ -103,8 +103,8 @@ S<Scene> SceneManager::MaterialTestScene() {
 
 S<Scene> SceneManager::LensTestScene() {
     S<Camera> camera = CreateS<Camera>();
-    camera->position = glm::vec3(0.0f, 0.0f, -2.5f);
-    camera->direction = glm::vec3(0.0f, 0.0f, 1.0f);
+    camera->SetPosition(glm::vec3(0.0f, 0.0f, -2.5f));
+    camera->SetDirection(glm::vec3(0.0f, 0.0f, 1.0f));
     S<Scene> scene = CreateS<Scene>("Lens Test", glm::vec3(0.0f), camera);
     scene->Add<Sphere>("Sphere 1", glm::vec3(0, 0, 0), CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f);
     scene->Add<Sphere>("Ground", glm::vec3(0, -1001.0f, 0), CreateS<Lambertian>(glm::vec3(1.0f)), 1000.0f);
@@ -113,8 +113,8 @@ S<Scene> SceneManager::LensTestScene() {
 
 S<Scene> SceneManager::RandomLargeScene() {
     S<Camera> camera = CreateS<Camera>();
-    camera->position = glm::vec3(13.0f, 2.0f, 3.0f);
-    camera->direction = glm::vec3(-13.0f, -2.0f, -3.0f);
+    camera->SetPosition(glm::vec3(13.0f, 2.0f, 3.0f));
+    camera->SetDirection(glm::vec3(-13.0f, -2.0f, -3.0f));
     S<Scene> scene = CreateS<Scene>("Random Large", glm::vec3(0.0f), camera);
 
     S<Lambertian> ground_material = CreateS<Lambertian>(glm::vec3(0.5f));
