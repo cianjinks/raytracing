@@ -10,6 +10,8 @@ class Scene : public Object {
     std::vector<U<Object>> m_Objects;
     S<Camera> m_Camera; /* Scenes only support 1 camera. */
 
+    glm::vec3 m_SkyColor = glm::vec3(0.0f);
+
    public:
     Scene(std::string name, glm::vec3 position, S<Camera> camera);
     ~Scene();
@@ -23,6 +25,16 @@ class Scene : public Object {
 
     std::vector<U<Object>>& GetObjects() { return m_Objects; }
     inline Camera& GetCamera() const { return *m_Camera.get(); }
+
+    inline const glm::vec3& GetSkyColor() const { return m_SkyColor; }
+    inline glm::vec3& GetSkyColor() { return m_SkyColor; }
+
+    inline void SetSkyColor(const glm::vec3& color) { m_SkyColor = color; }
+    inline void SetSkyColor(float r, float g, float b) {
+        m_SkyColor.r = r;
+        m_SkyColor.g = g;
+        m_SkyColor.b = b;
+    }
 };
 
 class SceneManager {
@@ -46,6 +58,7 @@ class SceneManager {
     S<Scene> MaterialTestScene();
     S<Scene> LensTestScene();
     S<Scene> RandomLargeScene();
+    S<Scene> LightTestScene();
 };
 
 }  // namespace raytracing

@@ -79,22 +79,21 @@ glm::vec3 LearnKernel::RayColor(const Scene& scene, const Ray& ray, uint32_t dep
 
     HitResult result;
 
-    if (depth <= 0) return {0.0f, 0.0f, 0.0f};
+    if (depth <= 0) return glm::vec3(0.0f);
 
     if (scene.Hit(ray, 0.001f, Constant::FInfinity, result)) {
         seed += depth;
 
         Ray scattered;
         glm::vec3 attenuation;
+        glm::vec3 emitted = result.material->emitted();
         if (result.material->scatter(ray, seed, result, attenuation, scattered)) {
-            return attenuation * RayColor(scene, scattered, depth - 1, seed);
+            return emitted + attenuation * RayColor(scene, scattered, depth - 1, seed);
         }
-        return glm::vec3(0.0f);
+        return emitted;
     }
 
-    glm::vec3 unit = glm::normalize(ray.direction);
-    float t = 0.5f * (unit.y + 1.0f);
-    return (1.0f - t) * glm::vec3(1.0f) + t * glm::vec3(0.5f, 0.7f, 1.0f);
+    return scene.GetSkyColor();
 }
 
 }  // namespace raytracing

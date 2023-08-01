@@ -31,11 +31,13 @@ SceneManager::SceneManager() {
     S<Scene> mat_test_scene = MaterialTestScene();
     S<Scene> lens_test_scene = LensTestScene();
     S<Scene> random_scene = RandomLargeScene();
+    S<Scene> light_test_scene = LightTestScene();
 
     m_SceneList.emplace_back(first_scene);
     m_SceneList.emplace_back(mat_test_scene);
     m_SceneList.emplace_back(lens_test_scene);
     m_SceneList.emplace_back(random_scene);
+    m_SceneList.emplace_back(light_test_scene);
 
     m_CurrentScene = mat_test_scene;
     m_CurrentSceneIndex = 1;
@@ -43,6 +45,7 @@ SceneManager::SceneManager() {
 
 void SceneManager::UI() {
     SceneComboUI();
+    UI::ColorEdit3("Sky Color", &m_CurrentScene->GetSkyColor().x);
     Camera& camera = m_CurrentScene->GetCamera();
     UI::InputFloat3("Camera Position", &camera.position.x);
     UI::InputFloat3("Camera Direction", &camera.direction.x);
@@ -79,6 +82,7 @@ S<Scene> SceneManager::FirstScene() {
     camera->SetPosition(glm::vec3(0.0f, 0.0f, -2.5f));
     camera->SetDirection(glm::vec3(0.0f, 0.0f, 1.0f));
     S<Scene> scene = CreateS<Scene>("First Scene", glm::vec3(0.0f), camera);
+    scene->SetSkyColor(0.70, 0.80, 1.00);
     scene->Add<Sphere>("Sphere 1", glm::vec3(0, 0, 0), CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f);
     scene->Add<Sphere>("Sphere 2", glm::vec3(2.0, 0, 0), CreateS<Metal>(glm::vec3(0.8f), 0.3f), 1.0f);
     scene->Add<Sphere>("Sphere 3", glm::vec3(-2.0, 0, 0), CreateS<Metal>(glm::vec3(0.8f, 0.6f, 0.2f), 1.0f), 1.0f);
@@ -92,6 +96,7 @@ S<Scene> SceneManager::MaterialTestScene() {
     camera->SetPosition(glm::vec3(2.0f, 4.0f, 5.0f));
     camera->SetDirection(glm::vec3(-2.0f, -4.0f, -5.0f));
     S<Scene> scene = CreateS<Scene>("Material Test", glm::vec3(0.0f), camera);
+    scene->SetSkyColor(0.70, 0.80, 1.00);
     scene->Add<Sphere>("Ground", glm::vec3(0, -1000.0f, 0), CreateS<Lambertian>(glm::vec3(0.5f)), 1000.0f);
     scene->Add<Box>("Red Cube", glm::vec3(2.0f, 1.0f, -2.0f), CreateS<Lambertian>(glm::vec3(0.5f, 0.0f, 0.0f)), glm::vec3(1.0f));
     scene->Add<Sphere>("Green Sphere", glm::vec3(-2.0f, 1.0f, 2.0f), CreateS<Lambertian>(glm::vec3(0.0f, 0.5f, 0.0f)), 1.0f);
@@ -106,6 +111,7 @@ S<Scene> SceneManager::LensTestScene() {
     camera->SetPosition(glm::vec3(0.0f, 0.0f, -2.5f));
     camera->SetDirection(glm::vec3(0.0f, 0.0f, 1.0f));
     S<Scene> scene = CreateS<Scene>("Lens Test", glm::vec3(0.0f), camera);
+    scene->SetSkyColor(0.70, 0.80, 1.00);
     scene->Add<Sphere>("Sphere 1", glm::vec3(0, 0, 0), CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f);
     scene->Add<Sphere>("Ground", glm::vec3(0, -1001.0f, 0), CreateS<Lambertian>(glm::vec3(1.0f)), 1000.0f);
     return scene;
@@ -115,7 +121,9 @@ S<Scene> SceneManager::RandomLargeScene() {
     S<Camera> camera = CreateS<Camera>();
     camera->SetPosition(glm::vec3(13.0f, 2.0f, 3.0f));
     camera->SetDirection(glm::vec3(-13.0f, -2.0f, -3.0f));
+
     S<Scene> scene = CreateS<Scene>("Random Large", glm::vec3(0.0f), camera);
+    scene->SetSkyColor(0.70, 0.80, 1.00);
 
     S<Lambertian> ground_material = CreateS<Lambertian>(glm::vec3(0.5f));
     // scene->Add(CreateU<Plane>("Ground", glm::vec3(0.0f), CreateS<Lambertian>(glm::vec3(0.5f)), glm::vec3(0, 1, 0)));
@@ -158,6 +166,18 @@ S<Scene> SceneManager::RandomLargeScene() {
     S<Metal> material3 = CreateS<Metal>(glm::vec3(0.7f, 0.6f, 0.5f), 0.0f);
     scene->Add<Sphere>("Sphere", glm::vec3(4.0f, 1.0f, 0.0f), material3, 1.0f);
 
+    return scene;
+}
+
+S<Scene> SceneManager::LightTestScene() {
+    S<Camera> camera = CreateS<Camera>();
+    camera->SetPosition(glm::vec3(2.0f, 7.0f, 5.0f));
+    camera->SetDirection(glm::vec3(-2.0f, -7.0f, -5.0f));
+
+    S<Scene> scene = CreateS<Scene>("Light Test", glm::vec3(0.0f), camera);
+    scene->Add<Sphere>("Ground", glm::vec3(0, -1000.0f, 0), CreateS<Lambertian>(glm::vec3(0.5f)), 1000.0f);
+    scene->Add<Sphere>("Sphere", glm::vec3(0.0f, 2.0f, 0.0f), CreateS<Lambertian>(glm::vec3(0.5f)), 2.0f);
+    scene->Add<Sphere>("Light", glm::vec3(0.0f, 5.0f, 0.0f), CreateS<DiffuseLight>(glm::vec3(1.0f), 4.0f), 0.5f);
     return scene;
 }
 

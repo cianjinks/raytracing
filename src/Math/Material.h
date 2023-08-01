@@ -12,6 +12,7 @@ namespace raytracing {
 class Material {
    public:
     virtual bool scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const = 0;
+    virtual glm::vec3 emitted() const { return glm::vec3(0.0f); }
 };
 
 class Lambertian : public Material {
@@ -40,6 +41,16 @@ class Dielectric : public Material {
 
    private:
     static float reflectance(float cosine, float ref_idx);
+};
+
+class DiffuseLight : public Material {
+   public:
+    glm::vec3 color;
+    float intensity = 1.0f;
+
+    DiffuseLight(const glm::vec3& c, float intensity) : color(c), intensity(intensity) {}
+    virtual bool scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const override;
+    virtual glm::vec3 emitted() const override;
 };
 
 }  // namespace raytracing

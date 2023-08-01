@@ -154,7 +154,7 @@ void CPUDevice::SettingsUI() {
     UI::Checkbox("Multithreaded", &m_Multithreaded);
     UI::SliderInt("X Tiles", (int*)&m_NumTilesX, 1, 8);
     UI::SliderInt("Y Tiles", (int*)&m_NumTilesY, 1, 8);
-    UI::SliderInt("Samples", (int*)&m_NumSamples, 1, 100);
+    UI::SliderInt("Samples", (int*)&m_NumSamples, 1, 500);
 
     ImGui::Separator();
 

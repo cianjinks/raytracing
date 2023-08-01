@@ -61,4 +61,12 @@ float Dielectric::reflectance(float cosine, float ref_idx) {
     return r0 + (1 - r0) * glm::pow(1 - cosine, 5);
 }
 
+bool DiffuseLight::scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const {
+    return false;
+}
+
+glm::vec3 DiffuseLight::emitted() const {
+    return intensity * color;
+}
+
 }  // namespace raytracing
