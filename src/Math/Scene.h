@@ -59,6 +59,7 @@ class SceneManager {
     S<Scene> LensTestScene();
     S<Scene> RandomLargeScene();
     S<Scene> LightTestScene();
+    S<Scene> CornellBox();
 };
 
 }  // namespace raytracing

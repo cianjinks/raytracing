@@ -32,15 +32,17 @@ SceneManager::SceneManager() {
     S<Scene> lens_test_scene = LensTestScene();
     S<Scene> random_scene = RandomLargeScene();
     S<Scene> light_test_scene = LightTestScene();
+    S<Scene> cornell_box = CornellBox();
 
     m_SceneList.emplace_back(first_scene);
     m_SceneList.emplace_back(mat_test_scene);
     m_SceneList.emplace_back(lens_test_scene);
     m_SceneList.emplace_back(random_scene);
     m_SceneList.emplace_back(light_test_scene);
+    m_SceneList.emplace_back(cornell_box);
 
-    m_CurrentScene = light_test_scene;
-    m_CurrentSceneIndex = 4;
+    m_CurrentScene = cornell_box;
+    m_CurrentSceneIndex = 5;
 };
 
 void SceneManager::UI() {
@@ -58,7 +60,7 @@ void SceneManager::UI() {
         Camera& camera = m_CurrentScene->GetCamera();
         UI::InputFloat3("Camera Position", &camera.position.x);
         UI::InputFloat3("Camera Direction", &camera.direction.x);
-        UI::SliderFloat("Camera Speed", &camera.speed, 0.1f, 1.0f);
+        UI::SliderFloat("Camera Speed", &camera.speed, 0.1f, 10.0f);
         UI::InputFloat("Camera Vertical FOV", &camera.vfov);
         UI::Checkbox("Camera Lens", &camera.useLens);
         UI::SliderFloat("Camera Aperture", &camera.aperture, 0.0f, 4.0f);
@@ -186,6 +188,30 @@ S<Scene> SceneManager::LightTestScene() {
     scene->Add<Sphere>("Sphere", glm::vec3(0.0f, 2.0f, 0.0f), CreateS<Lambertian>(glm::vec3(0.5f)), 2.0f);
     // scene->Add<Sphere>("Light", glm::vec3(0.0f, 5.0f, 0.0f), CreateS<DiffuseLight>(glm::vec3(1.0f), 4.0f), 0.5f);
     scene->Add<Rectangle>("Light", glm::vec3(-0.5f, 5.0f, -0.5f), CreateS<DiffuseLight>(glm::vec3(1.0f), 4.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    return scene;
+}
+
+S<Scene> SceneManager::CornellBox() {
+    S<Camera> camera = CreateS<Camera>();
+    camera->SetPosition(glm::vec3(0, 256, -600));
+    camera->SetDirection(glm::vec3(0, 0, 1));
+
+    S<Scene> scene = CreateS<Scene>("Cornell Box", glm::vec3(0.0f), camera);
+
+    S<Lambertian> red = CreateS<Lambertian>(glm::vec3(0.65f, 0.05f, 0.05f));
+    S<Lambertian> white = CreateS<Lambertian>(glm::vec3(0.73f));
+    S<Lambertian> green = CreateS<Lambertian>(glm::vec3(0.12f, 0.45f, 0.15f));
+    S<DiffuseLight> light = CreateS<DiffuseLight>(glm::vec3(1.0f), 15.0f);
+
+    scene->Add<Rectangle>("Floor", glm::vec3(-256, 0, -256), white, glm::vec3(0, 0, 512), glm::vec3(512, 0, 0));
+    scene->Add<Rectangle>("Ceiling", glm::vec3(-256, 512, -256), white, glm::vec3(0, 0, 512), glm::vec3(512, 0, 0));
+    scene->Add<Rectangle>("Back Wall", glm::vec3(-256, 0, 256), white, glm::vec3(0, 512, 0), glm::vec3(512, 0, 0));
+    scene->Add<Rectangle>("Left Wall", glm::vec3(256, 0, -256), green, glm::vec3(0, 512, 0), glm::vec3(0, 0, 512));
+    scene->Add<Rectangle>("Right Wall", glm::vec3(-256, 0, -256), red, glm::vec3(0, 512, 0), glm::vec3(0, 0, 512));
+    scene->Add<Box>("Box 1", glm::vec3(80, 150.0f, 80), white, glm::vec3(80.0f, 150.0f, 80.0f));
+    scene->Add<Box>("Box 1", glm::vec3(-80, 80, -80), white, glm::vec3(80.0f));
+    scene->Add<Rectangle>("Light", glm::vec3(-64, 511, -64), light, glm::vec3(0, 0, 128), glm::vec3(128, 0, 0));
+
     return scene;
 }
 
