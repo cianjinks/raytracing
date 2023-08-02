@@ -13,6 +13,8 @@ class Material {
    public:
     virtual bool scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const = 0;
     virtual glm::vec3 emitted() const { return glm::vec3(0.0f); }
+
+    virtual void UI() {}
 };
 
 class Lambertian : public Material {
@@ -51,6 +53,8 @@ class DiffuseLight : public Material {
     DiffuseLight(const glm::vec3& c, float intensity) : color(c), intensity(intensity) {}
     virtual bool scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const override;
     virtual glm::vec3 emitted() const override;
+
+    virtual void UI() override;
 };
 
 }  // namespace raytracing

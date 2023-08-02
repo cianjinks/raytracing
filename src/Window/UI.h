@@ -41,6 +41,7 @@ class UI {
     WRAP_IMGUI_BOOL_FN(Selectable);
     WRAP_IMGUI_BOOL_FN(SliderInt);
     WRAP_IMGUI_BOOL_FN(SliderFloat);
+    WRAP_IMGUI_BOOL_FN(SliderFloat3);
 };
 
 }  // namespace raytracing

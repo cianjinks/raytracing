@@ -1,5 +1,7 @@
 #include "Material.h"
 
+#include "Window/UI.h"
+
 namespace raytracing {
 
 bool Lambertian::scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const {
@@ -67,6 +69,12 @@ bool DiffuseLight::scatter(const Ray& ray, uint32_t& seed, const HitResult& hit,
 
 glm::vec3 DiffuseLight::emitted() const {
     return intensity * color;
+}
+
+void DiffuseLight::UI() {
+    ImGui::Text("Diffuse Material");
+    UI::ColorEdit3("Color", &color.r);
+    UI::SliderFloat("Intensity", &intensity, 0.0f, 50.0f);
 }
 
 }  // namespace raytracing

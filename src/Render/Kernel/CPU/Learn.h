@@ -14,7 +14,7 @@ namespace raytracing {
 class LearnKernel : public Kernel {
    private:
     U<SceneManager> m_SceneManager;
-    uint32_t m_MaxBounces = 10;
+    uint32_t m_MaxBounces = 50;
 
    public:
     LearnKernel();

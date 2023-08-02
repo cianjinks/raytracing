@@ -88,6 +88,40 @@ bool Intersection::RayTorus(const Ray& ray, const Torus& torus, float t_min,
     return false;
 }
 
+bool Intersection::RayRectangle(const Ray& ray, const Rectangle& rect, float t_min,
+                                float t_max, HitResult& hit) {
+    /* For a rectangle, the width and height must be perpendicular otherwise it will be a parallelogram. */
+    if (glm::dot(rect.width, rect.height) != 0.0f) {
+        return false;
+    }
+
+    glm::vec3 normal = glm::normalize(glm::cross(rect.width, rect.height));
+    /* TODO: These intersection functions probably shouldn't take a Box/Plane/etc object. */
+    Plane plane("", rect.position, nullptr, normal);
+    if (!Intersection::RayPlane(ray, plane, t_min, t_max, hit)) {
+        return false;
+    }
+
+    /* See if intersection points lies within the rect bounds. */
+    /* x = hit point */
+    /* xw = project(x - p, w) */
+    /* xh = project(x - p, h) */
+    /* 0 <= length(xw) <= length(w) */
+    /* 0 <= length(xh) <= length(h) */
+    glm::vec3 xp = hit.position - rect.position; /* We need hit pos relative to rect corner. */
+    float w_l = glm::length(rect.width);
+    float h_l = glm::length(rect.height);
+    float xw_s = glm::dot(xp, rect.width) / w_l;
+    float xh_s = glm::dot(xp, rect.height) / h_l;
+
+    if (0 <= xw_s && xw_s <= w_l) {
+        if (0 <= xh_s && xh_s <= h_l) {
+            return true;
+        }
+    }
+    return false;
+}
+
 /* Discard if t values not between t_min and t_max. */
 bool Intersection::ClipT(float t_min, float t_max, float t1, float t2,
                          float& r_t) {

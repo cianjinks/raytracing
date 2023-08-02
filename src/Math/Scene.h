@@ -23,7 +23,7 @@ class Scene : public Object {
 
     bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
 
-    std::vector<U<Object>>& GetObjects() { return m_Objects; }
+    inline std::vector<U<Object>>& GetObjects() { return m_Objects; }
     inline Camera& GetCamera() const { return *m_Camera.get(); }
 
     inline const glm::vec3& GetSkyColor() const { return m_SkyColor; }

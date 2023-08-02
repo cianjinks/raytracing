@@ -40,6 +40,8 @@ class Object : public Hittable {
     Object(std::string name, glm::vec3 position, S<Material> material)
         : name(name), position(position), material(material) {}
     virtual ~Object() = default;
+
+    virtual void UI();
 };
 
 class Sphere : public Object {
@@ -101,6 +103,22 @@ class Torus : public Object {
     ~Torus() = default;
 
     bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
+};
+
+class Rectangle : public Object {
+   public:
+    /* Rectangle position represents the bottom left corner. */
+    /* Rectangle width and height are vectors relative to that corner, representing the bounds of the rectangle. */
+    glm::vec3 width;
+    glm::vec3 height;
+
+    Rectangle(std::string name, glm::vec3 position, S<Material> material, glm::vec3 width, glm::vec3 height)
+        : Object(name, position, material), width(width), height(height) {}
+    ~Rectangle() = default;
+
+    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
+
+    virtual void UI() override;
 };
 
 }  // namespace raytracing

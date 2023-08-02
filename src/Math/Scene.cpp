@@ -39,25 +39,31 @@ SceneManager::SceneManager() {
     m_SceneList.emplace_back(random_scene);
     m_SceneList.emplace_back(light_test_scene);
 
-    m_CurrentScene = mat_test_scene;
-    m_CurrentSceneIndex = 1;
+    m_CurrentScene = light_test_scene;
+    m_CurrentSceneIndex = 4;
 };
 
 void SceneManager::UI() {
-    SceneComboUI();
-    UI::ColorEdit3("Sky Color", &m_CurrentScene->GetSkyColor().x);
-    Camera& camera = m_CurrentScene->GetCamera();
-    UI::InputFloat3("Camera Position", &camera.position.x);
-    UI::InputFloat3("Camera Direction", &camera.direction.x);
-    UI::SliderFloat("Camera Speed", &camera.speed, 0.1f, 1.0f);
-    UI::InputFloat("Camera Vertical FOV", &camera.vfov);
-    UI::Checkbox("Camera Lens", &camera.useLens);
-    UI::SliderFloat("Camera Aperture", &camera.aperture, 0.0f, 4.0f);
-    UI::SliderFloat("Camera Focus Distance", &camera.focus_dist, 0.0f, 20.0f);
-    // for (Object* object : m_Scene->GetObjects()) {
-    //     ImGui::SliderFloat3(object->name.c_str(), &object->position.x, -10.0f,
-    //                         10.0f);
-    // }
+    if (ImGui::CollapsingHeader("Scene Options")) {
+        SceneComboUI();
+        UI::ColorEdit3("Sky Color", &m_CurrentScene->GetSkyColor().x);
+    }
+    if (ImGui::CollapsingHeader("Scene Objects")) {
+        for (auto&& object : m_CurrentScene->GetObjects()) {
+            object->UI();
+            object->material->UI();
+        }
+    }
+    if (ImGui::CollapsingHeader("Camera Options")) {
+        Camera& camera = m_CurrentScene->GetCamera();
+        UI::InputFloat3("Camera Position", &camera.position.x);
+        UI::InputFloat3("Camera Direction", &camera.direction.x);
+        UI::SliderFloat("Camera Speed", &camera.speed, 0.1f, 1.0f);
+        UI::InputFloat("Camera Vertical FOV", &camera.vfov);
+        UI::Checkbox("Camera Lens", &camera.useLens);
+        UI::SliderFloat("Camera Aperture", &camera.aperture, 0.0f, 4.0f);
+        UI::SliderFloat("Camera Focus Distance", &camera.focus_dist, 0.0f, 20.0f);
+    }
 }
 
 void SceneManager::SceneComboUI() {
@@ -101,7 +107,8 @@ S<Scene> SceneManager::MaterialTestScene() {
     scene->Add<Box>("Red Cube", glm::vec3(2.0f, 1.0f, -2.0f), CreateS<Lambertian>(glm::vec3(0.5f, 0.0f, 0.0f)), glm::vec3(1.0f));
     scene->Add<Sphere>("Green Sphere", glm::vec3(-2.0f, 1.0f, 2.0f), CreateS<Lambertian>(glm::vec3(0.0f, 0.5f, 0.0f)), 1.0f);
     scene->Add<Sphere>("Metal Sphere", glm::vec3(2.0f, 1.0f, 2.0f), CreateS<Metal>(glm::vec3(0.6f), 0.5f), 1.0f);
-    scene->Add<Sphere>("Purple Sphere", glm::vec3(-2.0f, 1.0f, -2.0f), CreateS<Lambertian>(glm::vec3(0.0f, 0.5f, 0.5f)), 1.0f);
+    // scene->Add<Sphere>("Purple Sphere", glm::vec3(-2.0f, 1.0f, -2.0f), CreateS<Lambertian>(glm::vec3(0.0f, 0.5f, 0.5f)), 1.0f);
+    scene->Add<Rectangle>("Purple Rectangle", glm::vec3(-2.5f, 1.0f, -2.5f), CreateS<Lambertian>(glm::vec3(0.0f, 0.5f, 0.5f)), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     scene->Add<Sphere>("Glass Sphere", glm::vec3(0.0f, 1.0f, 0.0f), CreateS<Dielectric>(1.5f), 1.0f);
     return scene;
 }
@@ -177,7 +184,8 @@ S<Scene> SceneManager::LightTestScene() {
     S<Scene> scene = CreateS<Scene>("Light Test", glm::vec3(0.0f), camera);
     scene->Add<Sphere>("Ground", glm::vec3(0, -1000.0f, 0), CreateS<Lambertian>(glm::vec3(0.5f)), 1000.0f);
     scene->Add<Sphere>("Sphere", glm::vec3(0.0f, 2.0f, 0.0f), CreateS<Lambertian>(glm::vec3(0.5f)), 2.0f);
-    scene->Add<Sphere>("Light", glm::vec3(0.0f, 5.0f, 0.0f), CreateS<DiffuseLight>(glm::vec3(1.0f), 4.0f), 0.5f);
+    // scene->Add<Sphere>("Light", glm::vec3(0.0f, 5.0f, 0.0f), CreateS<DiffuseLight>(glm::vec3(1.0f), 4.0f), 0.5f);
+    scene->Add<Rectangle>("Light", glm::vec3(-0.5f, 5.0f, -0.5f), CreateS<DiffuseLight>(glm::vec3(1.0f), 4.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     return scene;
 }
 

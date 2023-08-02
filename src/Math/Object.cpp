@@ -8,6 +8,11 @@ namespace raytracing {
 
 glm::vec3 Ray::At(float t) const { return origin + (direction * t); }
 
+void Object::UI() {
+    ImGui::Text(name.c_str());
+    UI::SliderFloat3("Position", &position.x, -10.0f, 10.0f);
+}
+
 bool Sphere::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const {
     if (Intersection::RaySphere(ray, *this, t_min, t_max, hit)) {
         hit.material = material;
@@ -46,6 +51,20 @@ bool Torus::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const 
         return true;
     }
     return false;
+}
+
+bool Rectangle::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const {
+    if (Intersection::RayRectangle(ray, *this, t_min, t_max, hit)) {
+        hit.material = material;
+        return true;
+    }
+    return false;
+}
+
+void Rectangle::UI() {
+    Object::UI();
+    UI::SliderFloat3("Width", &width.x, -10.0f, 10.0f);
+    UI::SliderFloat3("Height", &height.x, -10.0f, 10.0f);
 }
 
 }  // namespace raytracing
