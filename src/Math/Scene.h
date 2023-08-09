@@ -8,7 +8,7 @@ namespace raytracing {
 
 class Scene : public Object {
    private:
-    std::vector<U<Object>> m_Objects;
+    std::vector<U<Hittable>> m_Objects;
     S<Camera> m_Camera; /* Scenes only support 1 camera. */
 
     glm::vec3 m_SkyColor = glm::vec3(0.0f);
@@ -18,13 +18,13 @@ class Scene : public Object {
     ~Scene();
 
     template <class T, class... Args>
-    void Add(Args&&... args) {
-        m_Objects.emplace_back(CreateU<T>(std::forward<Args>(args)...));
+    T* Add(Args&&... args) {
+        return dynamic_cast<T*>(m_Objects.emplace_back(CreateU<T>(std::forward<Args>(args)...)).get());
     }
 
     bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
 
-    inline std::vector<U<Object>>& GetObjects() { return m_Objects; }
+    inline std::vector<U<Hittable>>& GetObjects() { return m_Objects; }
     inline Camera& GetCamera() const { return *m_Camera.get(); }
 
     inline const glm::vec3& GetSkyColor() const { return m_SkyColor; }

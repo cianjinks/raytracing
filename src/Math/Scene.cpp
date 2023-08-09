@@ -52,8 +52,9 @@ void SceneManager::UI() {
     }
     if (ImGui::CollapsingHeader("Scene Objects")) {
         for (auto&& object : m_CurrentScene->GetObjects()) {
-            object->UI();
-            object->material->UI();
+            // object->UI();
+            // object->material->UI();
+            // TODO: Cast to correct object type and display settings
         }
     }
     if (ImGui::CollapsingHeader("Camera Options")) {
@@ -208,8 +209,16 @@ S<Scene> SceneManager::CornellBox() {
     scene->Add<Rectangle>("Back Wall", glm::vec3(-256, 0, 256), white, glm::vec3(0, 512, 0), glm::vec3(512, 0, 0));
     scene->Add<Rectangle>("Left Wall", glm::vec3(256, 0, -256), green, glm::vec3(0, 512, 0), glm::vec3(0, 0, 512));
     scene->Add<Rectangle>("Right Wall", glm::vec3(-256, 0, -256), red, glm::vec3(0, 512, 0), glm::vec3(0, 0, 512));
-    scene->Add<Box>("Box 1", glm::vec3(80, 150.0f, 80), white, glm::vec3(80.0f, 150.0f, 80.0f));
-    scene->Add<Box>("Box 1", glm::vec3(-80, 80, -80), white, glm::vec3(80.0f));
+
+    S<Box> box1 = CreateS<Box>("Box 1", glm::vec3(80, 150.0f, 80), white, glm::vec3(80.0f, 150.0f, 80.0f));
+    S<Box> box2 = CreateS<Box>("Box 2", glm::vec3(-110, 80, -80), white, glm::vec3(80.0f));
+    Transform* t1 = scene->Add<Transform>(box1);
+    Transform* t2 = scene->Add<Transform>(box2);
+    t1->rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f);
+    t1->rotationAngle = 25.0f;
+    t2->rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f);
+    t2->rotationAngle = -23.0f;
+
     scene->Add<Rectangle>("Light", glm::vec3(-64, 511, -64), light, glm::vec3(0, 0, 128), glm::vec3(128, 0, 0));
 
     return scene;
