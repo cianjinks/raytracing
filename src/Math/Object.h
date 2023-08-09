@@ -2,8 +2,6 @@
 
 #include <glm/glm.hpp>
 
-#include "Camera.h"
-
 namespace raytracing {
 
 class Ray {

@@ -25,36 +25,7 @@ glm::vec3 LearnKernel::Exec(const S<Texture2D3u8>& texture, uint32_t x, uint32_t
     float fs = ((fx * 2.0f) / float(texture->GetWidth())) - 1.0f;  /* -1 -> 1 */
     float ft = ((fy * 2.0f) / float(texture->GetHeight())) - 1.0f; /* -1 -> 1 */
 
-    float view_plane_height = 2.0f * glm::tan(glm::radians(camera.vfov) / 2.0f);
-    float view_plane_width = texture->GetAspectRatio() * view_plane_height;
-
-    glm::vec3 u = glm::cross(glm::normalize(camera.direction), camera.up);
-    glm::vec3 v = glm::cross(u, glm::normalize(camera.direction));
-
-    glm::vec3 vertical = view_plane_height * v;
-    glm::vec3 horizontal = view_plane_width * u;
-
-    /* Camera lens calculations. */
-    glm::vec3 cd = glm::normalize(camera.direction);
-    glm::vec3 offset = glm::vec3(0.0f);
-    if (camera.useLens) {
-        /* Offset camera position by point in a random disk oriented along camera view plane. */
-        /* This simulates shooting rays from a circular lens. */
-        /* TODO: My aperture seems to be off by a factor of 2. Maybe this divide by 2 is wrong because of -1 to 1 range? */
-        glm::vec3 random_disk = (camera.aperture / 2.0f) * FastRandom::InUnitDisk(seed);
-        offset = (u * random_disk.x) + (v * random_disk.y);
-
-        /* Scale camera direction by focus_dist to push view plane farther away. */
-        /* We also need to scale vertical / horizontal otherwise the view will be zoomed. */
-        vertical = camera.focus_dist * vertical;
-        horizontal = camera.focus_dist * horizontal;
-        cd = camera.focus_dist * cd;
-    }
-
-    Ray ray;
-    ray.origin = camera.position + offset;
-    /* Half vertical and horizontal because camera.direction is in the centre of the view plane, but they were calculated with the full width and height. */
-    ray.direction = cd + ((horizontal / 2.0f) * fs) + ((vertical / 2.0f) * ft) - offset;
+    Ray ray = camera.GetRay(fs, ft, texture->GetAspectRatio(), seed);
 
     return RayColor(scene, ray, m_MaxBounces, seed);
 }

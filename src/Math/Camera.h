@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 
+#include "Math/Object.h"
 #include "Window/Event.h"
 
 namespace raytracing {
@@ -30,6 +31,9 @@ class Camera {
     Camera() {}
     Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up, float speed, float vfov, float aperture, float focus_dist);
     ~Camera() = default;
+
+    /* s and t are NDC going from -1 to 1 */
+    Ray GetRay(float s, float t, float aspect_ratio, uint32_t seed) const;
 
     inline void SetPosition(const glm::vec3& pos) { position = pos; }
     inline void SetDirection(const glm::vec3& dir) {
