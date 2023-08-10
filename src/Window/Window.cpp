@@ -26,8 +26,6 @@ Window::Window(std::string name, int32_t width, int32_t height)
         RT_ASSERT(false, "Failed to initialise GLAD!");
     }
 
-    RT_PROFILE_GPU_CONTEXT;
-
     if (NFD_Init() != NFD_OKAY) {
         RT_ASSERT(false, "Failed to initialise Native File Dialog!");
     }
