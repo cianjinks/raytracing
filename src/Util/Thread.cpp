@@ -13,6 +13,7 @@ ThreadPool::~ThreadPool() {
 }
 
 void ThreadPool::Init(uint64_t count) {
+    RT_PROFILE_FUNC;
     if (count == 0) {
         RT_WARN("Creating threadpool with no threads: {}", count);
     }
@@ -25,11 +26,15 @@ void ThreadPool::Init(uint64_t count) {
     m_ActiveThreads = 0;
     m_Threads.reserve(count);
     for (uint64_t c = 0; c < count; c++) {
-        m_Threads.emplace_back(std::bind(&ThreadPool::ThreadExecution, this));
+        m_Threads.emplace_back(std::bind(&ThreadPool::ThreadExecution, this, c));
     }
 }
 
-void ThreadPool::ThreadExecution() {
+void ThreadPool::ThreadExecution(uint64_t index) {
+    std::string name = "ThreadPool " + std::to_string(index);
+    RT_PROFILE_THREAD_N(name.c_str());
+    RT_PROFILE_FUNC;
+
     while (true) {
         std::function<void()> task;
 
@@ -52,13 +57,18 @@ void ThreadPool::ThreadExecution() {
         task();
         m_ActiveThreads--;
 
-        if (m_WaitingSignal && !IsActive() && m_Tasks.empty()) {
-            m_DoneTasks.notify_all();
+        {
+            std::shared_lock<std::shared_mutex> lock(m_TasksMutex);
+
+            if (m_WaitingSignal && (m_ActiveThreads == 0) && m_Tasks.empty()) {
+                m_DoneTasks.notify_all();
+            }
         }
     }
 }
 
 void ThreadPool::Stop() {
+    RT_PROFILE_FUNC;
     m_QuickExitSignal = true;
     m_StopSignal = true;
     m_NotifyTask.notify_all();
@@ -69,6 +79,7 @@ void ThreadPool::Stop() {
 }
 
 void ThreadPool::Resize(uint64_t count) {
+    RT_PROFILE_FUNC;
     if (m_Threads.size() != count) {
         // TODO: Optimize!
         Stop();
@@ -77,11 +88,13 @@ void ThreadPool::Resize(uint64_t count) {
 }
 
 bool ThreadPool::IsActive() {
+    RT_PROFILE_FUNC;
     std::shared_lock<std::shared_mutex> lock(m_TasksMutex);
     return (m_ActiveThreads != 0) || !m_Tasks.empty();
 }
 
 void ThreadPool::Clear() {
+    RT_PROFILE_FUNC;
     m_QuickExitSignal = true;
 
     {
@@ -97,10 +110,11 @@ void ThreadPool::Clear() {
 }
 
 void ThreadPool::WaitForTasks() {
+    RT_PROFILE_FUNC;
     std::shared_lock<std::shared_mutex> lock(m_TasksMutex);
     m_WaitingSignal = true;
     m_DoneTasks.wait(lock, [this] {
-        return !IsActive() && m_Tasks.empty();
+        return (m_ActiveThreads == 0) && m_Tasks.empty();
     });
     m_WaitingSignal = false;
 }

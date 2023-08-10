@@ -26,6 +26,8 @@ Window::Window(std::string name, int32_t width, int32_t height)
         RT_ASSERT(false, "Failed to initialise GLAD!");
     }
 
+    RT_PROFILE_GPU_CONTEXT;
+
     if (NFD_Init() != NFD_OKAY) {
         RT_ASSERT(false, "Failed to initialise Native File Dialog!");
     }
@@ -130,6 +132,7 @@ Window::~Window() {
 void Window::OnUpdate() {
     RT_PROFILE_FUNC_N("Window Swap");
     glfwSwapBuffers(m_Window);
+    RT_PROFILE_GPU_SWAP;
     glfwPollEvents();
 }
 

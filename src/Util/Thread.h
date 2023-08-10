@@ -71,7 +71,7 @@ class ThreadPool {
     }
 
    private:
-    void ThreadExecution();
+    void ThreadExecution(uint64_t index);
 
     void Init(uint64_t count);
     void Stop();
