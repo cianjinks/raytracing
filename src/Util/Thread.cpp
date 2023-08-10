@@ -2,6 +2,8 @@
 
 namespace raytracing {
 
+uint32_t ThreadPool::s_MaxThreadCount = std::thread::hardware_concurrency();
+
 ThreadPool::ThreadPool(uint64_t count) {
     Init(count);
 }

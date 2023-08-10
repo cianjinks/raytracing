@@ -17,7 +17,7 @@ CPUDevice::CPUDevice() : RenderDevice("CPU") {
     m_Texture = Application::GetImageView()->GetTexture();
     m_AccumulationBuffer = CreateU<Texture2D3f>(m_Texture->GetWidth(), m_Texture->GetHeight());
 
-    m_ThreadPool = CreateU<ThreadPool>(m_NumTilesX * m_NumTilesY);
+    m_ThreadPool = CreateU<ThreadPool>(m_NumThreads);
 }
 
 CPUDevice::~CPUDevice() {}
@@ -83,21 +83,19 @@ bool CPUDevice::Execute() {
 void CPUDevice::ExecuteThreaded() {
     RT_PROFILE_FUNC;
     /* TODO: Handle odd image dimensions / tiles. */
-    m_ThreadPool->Resize(m_NumTilesX * m_NumTilesY);
+    m_ThreadPool->Resize(m_NumThreads);
     uint32_t tile_width = m_Texture->GetWidth() / m_NumTilesX;
     uint32_t tile_height = m_Texture->GetHeight() / m_NumTilesY;
-    for (uint32_t tx = 0; tx < m_NumTilesX; tx++) {
-        for (uint32_t ty = 0; ty < m_NumTilesY; ty++) {
-            uint32_t x = tx * tile_width;
-            uint32_t y = ty * tile_height;
-            m_ThreadPool->AddTaskQE([this, x, y, tile_width, tile_height](std::atomic<bool>& stop) -> void {
-                for (uint32_t s = 0; s < m_NumSamples; s++) {
-                    this->AccumulateSection(x, y, s, tile_width, tile_height, stop);
-                    // m_CurrentSample++ /* Not possible with this setup. */
-                    /* We don't wait for all threads to finish a sample before moving onto the next. Could do that if we move once-off execution to the OnUpdate function. */
-                }
-            });
+    for (uint32_t s = 0; s < m_NumSamples; s++) {
+        for (uint32_t tx = 0; tx < m_NumTilesX; tx++) {
+            for (uint32_t ty = 0; ty < m_NumTilesY; ty++) {
+                uint32_t x = tx * tile_width;
+                uint32_t y = ty * tile_height;
+                m_ThreadPool->AddTaskQE(&CPUDevice::AccumulateSection, this, x, y, s, tile_width, tile_height);
+            }
         }
+        // m_CurrentSample++ /* Not possible with this setup. */
+        /* We don't wait for the threadpool to finish each sample before queueing the next. Could do that if we move once-off execution to the OnUpdate function. */
     }
 }
 
@@ -115,7 +113,7 @@ void CPUDevice::ExecuteSingle() {
 void CPUDevice::ExecuteThreadedRT() {
     RT_PROFILE_FUNC;
     /* TODO: Handle odd image dimensions / tiles. */
-    m_ThreadPool->Resize(m_NumTilesX * m_NumTilesY);
+    m_ThreadPool->Resize(m_NumThreads);
     uint32_t tile_width = m_Texture->GetWidth() / m_NumTilesX;
     uint32_t tile_height = m_Texture->GetHeight() / m_NumTilesY;
     for (uint32_t tx = 0; tx < m_NumTilesX; tx++) {
@@ -152,6 +150,7 @@ void CPUDevice::AccumulateSection(uint32_t x, uint32_t y, uint32_t s, uint32_t w
 
 void CPUDevice::SettingsUI() {
     UI::Checkbox("Multithreaded", &m_Multithreaded);
+    UI::SliderInt("Threads", (int*)&m_NumThreads, 1, ThreadPool::s_MaxThreadCount);
     UI::SliderInt("X Tiles", (int*)&m_NumTilesX, 1, 8);
     UI::SliderInt("Y Tiles", (int*)&m_NumTilesY, 1, 8);
     UI::SliderInt("Samples", (int*)&m_NumSamples, 1, 500);

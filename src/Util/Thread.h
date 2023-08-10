@@ -12,6 +12,9 @@
 namespace raytracing {
 
 class ThreadPool {
+   public:
+    static uint32_t s_MaxThreadCount;
+
    private:
     std::queue<std::function<void()>> m_Tasks;
     std::condition_variable_any m_NotifyTask;

@@ -11,6 +11,7 @@ class CPUDevice : public RenderDevice {
     /* Execution settings */
     uint32_t m_NumSamples = 50;
     bool m_Multithreaded = true;
+    uint32_t m_NumThreads = ThreadPool::s_MaxThreadCount - 1;
     uint32_t m_NumTilesX = 4;
     uint32_t m_NumTilesY = 4;
 
