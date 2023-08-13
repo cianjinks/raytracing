@@ -12,6 +12,7 @@ namespace raytracing {
 #else
 #define RT_PROFILE_FUNC
 #define RT_PROFILE_FUNC_N(name)
+#define RT_PROFILE_THREAD_N(name)
 #define RT_PROFILE_GPU_SWAP
 #endif
 
