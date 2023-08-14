@@ -196,6 +196,7 @@ S<Scene> SceneManager::CornellBox() {
     S<Camera> camera = CreateS<Camera>();
     camera->SetPosition(glm::vec3(0, 256, -600));
     camera->SetDirection(glm::vec3(0, 0, 1));
+    camera->vfov = 75.0f;
 
     S<Scene> scene = CreateS<Scene>("Cornell Box", glm::vec3(0.0f), camera);
 
@@ -210,14 +211,14 @@ S<Scene> SceneManager::CornellBox() {
     scene->Add<Rectangle>("Left Wall", glm::vec3(256, 0, -256), green, glm::vec3(0, 512, 0), glm::vec3(0, 0, 512));
     scene->Add<Rectangle>("Right Wall", glm::vec3(-256, 0, -256), red, glm::vec3(0, 512, 0), glm::vec3(0, 0, 512));
 
-    S<Box> box1 = CreateS<Box>("Box 1", glm::vec3(80, 150.0f, 80), white, glm::vec3(80.0f, 150.0f, 80.0f));
-    S<Box> box2 = CreateS<Box>("Box 2", glm::vec3(-110, 80, -80), white, glm::vec3(80.0f));
+    S<Box> box1 = CreateS<Box>("Box 1", glm::vec3(70, 150.0f, 0), white, glm::vec3(80.0f, 150.0f, 80.0f));
+    S<Box> box2 = CreateS<Box>("Box 2", glm::vec3(-100, 70, -120), white, glm::vec3(70.0f));
     Transform* t1 = scene->Add<Transform>(box1);
     Transform* t2 = scene->Add<Transform>(box2);
     t1->rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f);
-    t1->rotationAngle = 25.0f;
+    t1->rotationAngle = 24.0f;
     t2->rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f);
-    t2->rotationAngle = -23.0f;
+    t2->rotationAngle = -28.0f;
 
     scene->Add<Rectangle>("Light", glm::vec3(-64, 511, -64), light, glm::vec3(0, 0, 128), glm::vec3(128, 0, 0));
 

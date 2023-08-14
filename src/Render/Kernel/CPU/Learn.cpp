@@ -20,8 +20,8 @@ glm::vec3 LearnKernel::Exec(const S<Texture2D3u8>& texture, uint32_t x, uint32_t
     const Camera& camera = scene.GetCamera();
 
     /* Slight variation across samples for anti-aliasing. */
-    float fx = float(x) + FastRandom::Float(seed, -1.0f, 1.0f);
-    float fy = float(y) + FastRandom::Float(seed, -1.0f, 1.0f);
+    float fx = float(x) + FastRandom::Float(seed, -0.5f, 0.5f);
+    float fy = float(y) + FastRandom::Float(seed, -0.5f, 0.5f);
     float fs = ((fx * 2.0f) / float(texture->GetWidth())) - 1.0f;  /* -1 -> 1 */
     float ft = ((fy * 2.0f) / float(texture->GetHeight())) - 1.0f; /* -1 -> 1 */
 

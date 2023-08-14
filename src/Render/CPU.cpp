@@ -67,6 +67,7 @@ bool CPUDevice::Execute() {
     if (!m_ThreadPool->IsActive() && !m_IsExecuting) {
         m_Timer.Start();
 
+        m_Texture->Clear();
         m_AccumulationBuffer->Resize(m_Texture->GetWidth(), m_Texture->GetHeight());
         if (m_Multithreaded) {
             ExecuteThreaded();
