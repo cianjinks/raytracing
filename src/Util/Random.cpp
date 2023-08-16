@@ -76,6 +76,11 @@ std::uniform_real_distribution<float>& Random::FloatDist() {
     return distribution;
 }
 
+std::uniform_int_distribution<uint32_t> Random::IntDist() {
+    static thread_local std::uniform_int_distribution<uint32_t> distribution(0, 1);
+    return distribution;
+}
+
 std::uniform_real_distribution<double> Random::DoubleDist(double min, double max) {
     return std::uniform_real_distribution<double>(min, max);
 }
@@ -84,10 +89,15 @@ std::uniform_real_distribution<float> Random::FloatDist(float min, float max) {
     return std::uniform_real_distribution<float>(min, max);
 }
 
+std::uniform_int_distribution<uint32_t> Random::IntDist(int min, int max) {
+    return std::uniform_int_distribution<uint32_t>(min, max);
+}
+
 double Random::Double() {
     return DoubleDist()(Generator());
 }
 
+/* TODO: Do I need the fmod? */
 double Random::Double(double min, double max) {
     double val = DoubleDist(min, max)(Generator());
     val = std::fmod(val, max - min) + min;
@@ -98,10 +108,19 @@ float Random::Float() {
     return FloatDist()(Generator());
 }
 
+/* TODO: Do I need the fmod? */
 float Random::Float(float min, float max) {
     float val = FloatDist(min, max)(Generator());
     val = std::fmod(val, max - min) + min;
     return val;
+}
+
+uint32_t Random::Int() {
+    return IntDist()(Generator());
+}
+
+uint32_t Random::Int(uint32_t min, uint32_t max) {
+    return IntDist(min, max)(Generator());
 }
 
 glm::vec3 Random::Vec3() { return glm::vec3(Float(), Float(), Float()); }

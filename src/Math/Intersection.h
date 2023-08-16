@@ -11,14 +11,20 @@ class Intersection {
    public:
     static bool RaySphere(const Ray& ray, const Sphere& sphere, float t_min,
                           float t_max, HitResult& hit);
+
+    static bool Slabs(const Ray& ray, float t_min, float t_max, const glm::vec3& p0, const glm::vec3& p1);
     static bool RayBox(const Ray& ray, const Box& box, float t_min, float t_max,
                        HitResult& hit);
+
     static bool RayPlane(const Ray& ray, const Plane& plane, float t_min,
                          float t_max, HitResult& hit);
+
     static bool RayCylinder(const Ray& ray, const Cylinder& cylinder,
                             float t_min, float t_max, HitResult& hit);
+
     static bool RayTorus(const Ray& ray, const Torus& torus, float t_min,
                          float t_max, HitResult& hit);
+
     static bool RayRectangle(const Ray& ray, const Rectangle& rect, float t_min,
                              float t_max, HitResult& hit);
 

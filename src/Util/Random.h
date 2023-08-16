@@ -28,6 +28,8 @@ class Random {
     static double Double(double min, double max);
     static float Float();
     static float Float(float min, float max);
+    static uint32_t Int();
+    static uint32_t Int(uint32_t min, uint32_t max);
     static glm::vec3 Vec3();
     static glm::vec3 Vec3(float min, float max);
     /* Generate a uniform random point in a sphere. */
@@ -41,8 +43,10 @@ class Random {
     static std::mt19937& Generator();
     static std::uniform_real_distribution<double>& DoubleDist();
     static std::uniform_real_distribution<float>& FloatDist();
+    static std::uniform_int_distribution<uint32_t> IntDist();
     static std::uniform_real_distribution<double> DoubleDist(double min, double max);
     static std::uniform_real_distribution<float> FloatDist(float min, float max);
+    static std::uniform_int_distribution<uint32_t> IntDist(int min, int max);
 };
 
 }  // namespace raytracing

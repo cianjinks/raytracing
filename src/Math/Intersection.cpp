@@ -29,6 +29,23 @@ bool Intersection::RaySphere(const Ray& ray, const Sphere& sphere, float t_min,
     return true;
 }
 
+bool Intersection::Slabs(const Ray& ray, float t_min, float t_max, const glm::vec3& p0, const glm::vec3& p1) {
+    glm::vec3 ird = 1.0f / ray.direction;
+    glm::vec3 t0v = (p0 - ray.origin) * ird;
+    glm::vec3 t1v = (p1 - ray.origin) * ird;
+    glm::vec3 tminv = glm::min(t0v, t1v);
+    glm::vec3 tmaxv = glm::max(t0v, t1v);
+    float t1 = glm::max(glm::max(tminv.x, tminv.y), tminv.z);
+    float t2 = glm::min(glm::min(tmaxv.x, tmaxv.y), tmaxv.z);
+
+    float t = Constant::FInfinity;
+    bool test = ClipT(t_min, t_max, t1, t2, t);
+    if (!test) return false;
+
+    return t1 <= t2;
+}
+
+/* RayBox is just Slabs but also computes normal and probably texture coords in the future. */
 bool Intersection::RayBox(const Ray& ray, const Box& box, float t_min,
                           float t_max, HitResult& hit) {
     glm::vec3 ird = 1.0f / ray.direction;
