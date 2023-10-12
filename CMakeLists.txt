@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.5)
 project(raytracing)
 
 # OpenGL
@@ -27,27 +27,7 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_USE_HYBRID_HPG ON CACHE BOOL "" FORCE)
 
-# ImGui
-set(imgui-directory dependencies/imgui)
-set(imgui-source ${imgui-directory}/imconfig.h
-	${imgui-directory}/imgui.h
-	${imgui-directory}/imgui.cpp
-	${imgui-directory}/imgui_draw.cpp
-	${imgui-directory}/imgui_internal.h
-	${imgui-directory}/imgui_widgets.cpp
-	${imgui-directory}/imstb_rectpack.h
-	${imgui-directory}/imstb_textedit.h
-	${imgui-directory}/imstb_truetype.h
-    ${imgui-directory}/imgui_tables.cpp
-	${imgui-directory}/imgui_demo.cpp
-	${imgui-directory}/backends/imgui_impl_glfw.cpp
-	${imgui-directory}/backends/imgui_impl_opengl3.cpp
-)
-
-# pch
-set(pch src/PCH.h)
-
-# Subprojects
+# Dependencies
 add_subdirectory(dependencies/glad)
 add_subdirectory(dependencies/glfw)
 add_subdirectory(dependencies/spdlog)
@@ -55,6 +35,7 @@ add_subdirectory(dependencies/stb_image)
 add_subdirectory(dependencies/glm)
 add_subdirectory(dependencies/tracy)
 add_subdirectory(dependencies/nfd)
+add_subdirectory(dependencies/imgui)
 
 # Options
 # add_compile_definitions(RT_ENABLE_INSTRUMENTATION)
@@ -63,9 +44,11 @@ add_compile_definitions(RT_ENABLE_LOGGING)
 # Set `source` variable to all .h and .cpp files in `src`
 file(GLOB_RECURSE source CONFIGURE_DEPENDS "src/*.h" "src/*.cpp")
 
-add_executable(raytracing ${source} ${imgui-source})
-target_link_libraries(raytracing PRIVATE ${OPENGL_LIBRARIES} glad glfw stb_image glm spdlog TracyClient nfd)
-target_include_directories(raytracing PRIVATE ${imgui-directory})
+add_executable(raytracing ${source})
+target_link_libraries(raytracing PRIVATE ${OPENGL_LIBRARIES} glad glfw stb_image glm spdlog TracyClient nfd imgui)
+
+# PCH
+set(pch src/PCH.h)
 target_precompile_headers(raytracing PRIVATE ${pch})
 
 # Visual Studio Startup Project
