@@ -18,4 +18,5 @@ set(imgui-source
 )
 
 add_library(imgui ${imgui-source})
+target_link_libraries(imgui glfw)
 target_include_directories(imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

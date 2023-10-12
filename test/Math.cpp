@@ -9,7 +9,7 @@ namespace raytracing {
 TEST(BBox, Empty) {
     BBox empty;
     Ray ray;
-    ray.origin = glm::vec3(0.0f, 1.0f, -1.0f);
+    ray.origin = glm::vec3(0.0f, 0.0f, -1.0f);
     ray.direction = glm::vec3(0.0f, 0.0f, 1.0f);
 
     EXPECT_FALSE(empty.Hit(ray, 0.001f, Constant::FInfinity));
