@@ -1,6 +1,5 @@
 #include "RenderDevice.h"
 
-#include "Application.h"
 #include "CPU.h"
 #include "Window/UI.h"
 

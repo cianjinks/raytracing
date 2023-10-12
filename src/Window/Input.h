@@ -5,7 +5,7 @@
 
 #include <glm/glm.hpp>
 
-#include "Application.h"
+#include "App/Application.h"
 
 /**
  * @brief Input

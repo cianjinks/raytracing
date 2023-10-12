@@ -7,3 +7,6 @@
 [submodule "dependencies/nfd"]
 	path = dependencies/nfd
 	url = https://github.com/btzy/nativefiledialog-extended
+[submodule "test/googletest"]
+	path = test/googletest
+	url = https://github.com/google/googletest

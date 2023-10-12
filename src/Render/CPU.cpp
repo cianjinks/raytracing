@@ -1,6 +1,6 @@
 #include "CPU.h"
 
-#include "Application.h"
+#include "App/Application.h"
 #include "Kernel/CPU/CircleTest.h"
 #include "Kernel/CPU/ColorTest.h"
 #include "Kernel/CPU/Learn.h"

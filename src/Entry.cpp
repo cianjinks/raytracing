@@ -1,4 +1,4 @@
-#include "Application.h"
+#include "App/Application.h"
 
 int main(void) {
     raytracing::ApplicationInfo info;
