@@ -23,7 +23,7 @@ class BVHNode : public Hittable {
    private:
     static bool box_compare(
         const S<Hittable> a, const S<Hittable> b, int axis_index) {
-        return a->BoundingBox().min[axis_index] < b->BoundingBox().min[axis_index];
+        return a->BoundingBox().min()[axis_index] < b->BoundingBox().min()[axis_index];
     }
 
     static bool box_x_compare(const S<Hittable> a, const S<Hittable> b) {

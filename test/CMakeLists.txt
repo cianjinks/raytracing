@@ -10,7 +10,7 @@ endif()
 add_subdirectory(googletest)
 
 set(TEST_SOURCE
-    "Math.cpp"
+    "BBox.cpp"
 )
 
 add_executable(raytracing-test ${TEST_SOURCE} ${RT_SOURCES})

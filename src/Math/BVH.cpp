@@ -22,6 +22,13 @@ BVHNode::BVHNode(const std::vector<S<Hittable>>& objects, uint64_t start, uint64
             left = objects_cpy[start + 1];
             right = objects_cpy[start];
         }
+
+        /* Filter out empty bounding boxes. */
+        if (left->BoundingBox().Empty()) {
+            left = right;
+        } else if (right->BoundingBox().Empty()) {
+            right = left;
+        }
     } else {
         std::sort(objects_cpy.begin() + start, objects_cpy.begin() + end, comparator);
 
