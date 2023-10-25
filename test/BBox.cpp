@@ -35,4 +35,21 @@ TEST(BBox, BasicHit) {
     EXPECT_FALSE(bbox.Empty());
 }
 
+TEST(BBox, Pad) {
+    /* Infinitely thin bounding box in X axis. */
+    BBox bbox(glm::vec3(0, -1, -1), glm::vec3(0, 1, 1));
+
+    Ray ray;
+    ray.origin = glm::vec3(0, 0, -1);
+    ray.direction = glm::vec3(0, 0, 1);
+
+    EXPECT_FALSE(bbox.Hit(ray, 0.001f, Constant::FInfinity));
+
+    bbox.Pad();
+
+    EXPECT_TRUE(bbox.Hit(ray, 0.001f, Constant::FInfinity));
+
+    /* TODO: Without padding it causes issues with the BVH construction math and that should be tested for. */
+}
+
 }  // namespace raytracing

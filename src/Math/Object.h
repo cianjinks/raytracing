@@ -148,6 +148,7 @@ class Rectangle : public Object {
         : Object(name, position, material), width(width), height(height) {
         /* TODO: Verify this is correct. */
         bbox = BBox(position, position + width + height);
+        bbox.Pad(); /* Rect will have a zero axis bounding box. */
     }
     ~Rectangle() = default;
 

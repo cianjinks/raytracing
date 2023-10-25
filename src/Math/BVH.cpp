@@ -26,8 +26,10 @@ BVHNode::BVHNode(const std::vector<S<Hittable>>& objects, uint64_t start, uint64
         /* Filter out empty bounding boxes. */
         if (left->BoundingBox().Empty()) {
             left = right;
+            RT_WARN("BVHNode construction with object with empy bounding box!");
         } else if (right->BoundingBox().Empty()) {
             right = left;
+            RT_WARN("BVHNode construction with object with empy bounding box!");
         }
     } else {
         std::sort(objects_cpy.begin() + start, objects_cpy.begin() + end, comparator);

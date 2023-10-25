@@ -133,6 +133,7 @@ bool Intersection::RayRectangle(const Ray& ray, const Rectangle& rect, float t_m
 
     if (0 <= xw_s && xw_s <= w_l) {
         if (0 <= xh_s && xh_s <= h_l) {
+            /* HitResult is set by Intersection::RayPlane. */
             return true;
         }
     }
@@ -154,7 +155,7 @@ bool Intersection::ClipT(float t_min, float t_max, float t1, float t2,
 
 /* Ensure normal goes outward from the surface. */
 glm::vec3 Intersection::EnsureNormal(const Ray& ray, glm::vec3 normal) {
-    bool face_test = glm::dot(ray.direction, normal) < 0;
+    bool face_test = glm::dot(ray.direction, normal) < 0; /* Negative dot product -> facing away from each other. */
     return face_test ? normal : -normal;
 }
 

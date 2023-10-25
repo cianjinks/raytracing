@@ -28,6 +28,27 @@ BBox::BBox(const BBox& bbox0, const BBox& bbox1) {
     m_Empty = false;
 }
 
+bool BBox::Pad() {
+    bool padded = false;
+    float delta = 0.0001f;
+    if ((m_Max.x - m_Min.x) < delta) {
+        m_Min.x -= delta;
+        m_Max.x += delta;
+        padded = true;
+    }
+    if ((m_Max.y - m_Min.y) < delta) {
+        m_Min.y -= delta;
+        m_Max.y += delta;
+        padded = true;
+    }
+    if ((m_Max.z - m_Min.z) < delta) {
+        m_Min.z -= delta;
+        m_Max.z += delta;
+        padded = true;
+    }
+    return padded;
+}
+
 bool BBox::Hit(const Ray& ray, float t_min, float t_max) const {
     return Intersection::Slabs(ray, t_min, t_max, m_Min, m_Max);
 }

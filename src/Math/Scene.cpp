@@ -42,6 +42,7 @@ SceneManager::SceneManager() {
     S<Scene> light_test_scene = LightTestScene();
     S<Scene> cornell_box = CornellBox();
     S<Scene> bvh_test = BVHTest();
+    S<Scene> rect_test = RectTest();
 
     m_SceneList.emplace_back(first_scene);
     m_SceneList.emplace_back(mat_test_scene);
@@ -50,9 +51,10 @@ SceneManager::SceneManager() {
     m_SceneList.emplace_back(light_test_scene);
     m_SceneList.emplace_back(cornell_box);
     m_SceneList.emplace_back(bvh_test);
+    m_SceneList.emplace_back(rect_test);
 
-    m_CurrentScene = first_scene;
-    m_CurrentSceneIndex = 0;
+    m_CurrentScene = rect_test;
+    m_CurrentSceneIndex = 7;
 };
 
 void SceneManager::UI() {
@@ -106,7 +108,8 @@ S<Scene> SceneManager::FirstScene() {
     scene->Add<Sphere>("Sphere 2", glm::vec3(2.0, 0, 0), CreateS<Metal>(glm::vec3(0.8f), 0.3f), 1.0f);
     scene->Add<Sphere>("Sphere 3", glm::vec3(-2.0, 0, 0), CreateS<Metal>(glm::vec3(0.8f, 0.6f, 0.2f), 1.0f), 1.0f);
     // scene->Add<Box>("Box", glm::vec3(5, 0, 0), CreateS<Lambertian>(glm::vec3(0.5f)), glm::vec3(1, 1, 1)));
-    scene->Add<Plane>("Plane", glm::vec3(0, -1, 0), CreateS<Lambertian>(glm::vec3(0.8, 0.8, 0.0f)), glm::vec3(0, 1, 0));
+    // scene->Add<Plane>("Plane", glm::vec3(0, -1, 0), CreateS<Lambertian>(glm::vec3(0.8, 0.8, 0.0f)), glm::vec3(0, 1, 0));
+    scene->Add<Rectangle>("Ground", glm::vec3(-10.0f, -1.0f, -10.0f), CreateS<Lambertian>(glm::vec3(0.8, 0.8, 0.0f)), glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(20.0f, 0.0f, 0.0f));
 
     scene->BuildBVH();
     return scene;
@@ -263,6 +266,24 @@ S<Scene> SceneManager::BVHTest() {
     scene->Add<Box>("Box", glm::vec3(-1, 0, 0), red, glm::vec3(0.5f));
     scene->Add<Sphere>("Sphere", glm::vec3(1, 0, 0), green, 0.5f);
     scene->Add<Rectangle>("Floor", glm::vec3(-3.0f, -0.5f, -3.0f), grey, glm::vec3(6, 0, 0), glm::vec3(0, 0, 6));
+
+    scene->BuildBVH();
+    return scene;
+}
+
+S<Scene> SceneManager::RectTest() {
+    S<Camera> camera = CreateS<Camera>();
+    camera->SetPosition(glm::vec3(0, 0, -2));
+    camera->SetDirection(glm::vec3(0, 0, 1));
+    camera->speed = 0.05f;
+
+    S<Scene> scene = CreateS<Scene>("Rect Test", glm::vec3(0.0f), camera);
+    scene->SetSkyColor(0.70, 0.80, 1.00);
+
+    S<Lambertian> grey = CreateS<Lambertian>(glm::vec3(0.5f));
+
+    scene->Add<Rectangle>("Ground", glm::vec3(-2, -1, -2), grey, glm::vec3(4, 0, 0), glm::vec3(0, 0, 4));
+    scene->Add<Rectangle>("Wall", glm::vec3(0, -1, -2), grey, glm::vec3(0, 0, 4), glm::vec3(0, 4, 0));
 
     scene->BuildBVH();
     return scene;

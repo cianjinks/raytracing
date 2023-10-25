@@ -18,6 +18,8 @@ class BBox {
     BBox(const glm::vec3& p0, const glm::vec3& p1);
     BBox(const BBox& bbox0, const BBox& bbox1);
 
+    bool Pad();
+
     bool Hit(const Ray& ray, float t_min, float t_max) const;
 
     bool Empty() const { return m_Empty; };
