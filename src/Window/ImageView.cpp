@@ -192,6 +192,9 @@ void ImageView::UI() {
             RT_ERROR("Native File Dialog Error: {}", NFD_GetError());
         }
     }
+
+    glm::uvec2 mouse_coord = GetMousePixel();
+    ImGui::Text("(%d, %d)", mouse_coord.x, mouse_coord.y);
 }
 
 void ImageView::ResizeWindow(uint32_t width, uint32_t height) {
@@ -224,6 +227,25 @@ void ImageView::ResizeImage(uint32_t width, uint32_t height) {
 
     m_Image->Resize(width, height);
     m_Image->Randomize();
+}
+
+glm::uvec2 ImageView::GetMousePixel() {
+    glm::dvec2 mouse_coord = Input::GetMouseCoord();
+
+    /* Transform to NDC. */
+    mouse_coord.y = m_FWindowHeight - mouse_coord.y;
+    mouse_coord.x = ((mouse_coord.x * 2.0f) / m_FWindowWidth) - 1.0f;
+    mouse_coord.y = ((mouse_coord.y * 2.0f) / m_FWindowHeight) - 1.0f;
+
+    /* Inverse ProjectionView to retrieve vertex position. */
+    glm::dvec4 transform = glm::inverse(m_Camera->GetProjectionView()) * glm::dvec4(mouse_coord, 0, 1);
+
+    /* Vertex position is between -(m_ImageWidth / 2) -> (m_ImageWidth / 2), same for m_ImageHeight. */
+    /* Transform into pixel coordinate. */
+    mouse_coord.x = transform.x + (m_FImageWidth / 2.0f);
+    mouse_coord.y = transform.y + (m_FImageHeight / 2.0f);
+
+    return {static_cast<uint32_t>(mouse_coord.x), static_cast<uint32_t>(mouse_coord.y)};
 }
 
 }  // namespace raytracing

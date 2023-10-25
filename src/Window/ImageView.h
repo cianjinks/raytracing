@@ -43,6 +43,10 @@ class ImageView {
     void ResizeImage(uint32_t width, uint32_t height);
 
     S<Texture2D3u8> GetTexture() const { return m_Image; }
+
+   private:
+    /* Get the pixel coordinates of the Image currently moused over. */
+    glm::uvec2 GetMousePixel();
 };
 
 }  // namespace raytracing
