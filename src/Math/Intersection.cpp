@@ -113,9 +113,11 @@ bool Intersection::RayRectangle(const Ray& ray, const Rectangle& rect, float t_m
     }
 
     glm::vec3 normal = glm::normalize(glm::cross(rect.width, rect.height));
+
     /* TODO: These intersection functions probably shouldn't take a Box/Plane/etc object. */
+    HitResult plane_hit;
     Plane plane("", rect.position, nullptr, normal);
-    if (!Intersection::RayPlane(ray, plane, t_min, t_max, hit)) {
+    if (!Intersection::RayPlane(ray, plane, t_min, t_max, plane_hit)) {
         return false;
     }
 
@@ -125,7 +127,7 @@ bool Intersection::RayRectangle(const Ray& ray, const Rectangle& rect, float t_m
     /* xh = project(x - p, h) */
     /* 0 <= length(xw) <= length(w) */
     /* 0 <= length(xh) <= length(h) */
-    glm::vec3 xp = hit.position - rect.position; /* We need hit pos relative to rect corner. */
+    glm::vec3 xp = plane_hit.position - rect.position; /* We need hit pos relative to rect corner. */
     float w_l = glm::length(rect.width);
     float h_l = glm::length(rect.height);
     float xw_s = glm::dot(xp, rect.width) / w_l;
@@ -133,7 +135,10 @@ bool Intersection::RayRectangle(const Ray& ray, const Rectangle& rect, float t_m
 
     if (0 <= xw_s && xw_s <= w_l) {
         if (0 <= xh_s && xh_s <= h_l) {
-            /* HitResult is set by Intersection::RayPlane. */
+            hit.t = plane_hit.t;
+            hit.position = ray.At(hit.t);
+            hit.normal = normal;
+            hit.normal = EnsureNormal(ray, hit.normal);
             return true;
         }
     }
