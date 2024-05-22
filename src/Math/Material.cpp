@@ -45,7 +45,6 @@ bool Dielectric::scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, g
     float sin_theta = glm::sqrt(1.0f - cos_theta * cos_theta);
 
     bool cannot_refract = refraction_ratio * sin_theta > 1.0f;
-    glm::vec3 direction;
 
     if (cannot_refract || reflectance(cos_theta, refraction_ratio) > FastRandom::Float(seed)) {
         scattered.direction = Math::V3Reflect(norm_direction, hit.normal);
@@ -58,9 +57,9 @@ bool Dielectric::scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, g
 }
 
 float Dielectric::reflectance(float cosine, float ref_idx) {
-    float r0 = (1 - ref_idx) / (1 + ref_idx);
+    float r0 = (1.0f - ref_idx) / (1 + ref_idx);
     r0 = r0 * r0;
-    return r0 + (1 - r0) * glm::pow(1 - cosine, 5);
+    return r0 + (1.0f - r0) * glm::pow(1.0f - cosine, 5.0f);
 }
 
 bool DiffuseLight::scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const {

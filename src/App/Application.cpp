@@ -20,7 +20,7 @@ Application::Application(ApplicationInfo app_info) : AppInfo(app_info) {
                                          AppInfo.ImageWidth, AppInfo.ImageHeight);
     }
     m_DeviceManager = CreateU<RenderDeviceManager>();
-    UI::Init();
+    UI::Init(s_Window->GetContentScale());
     RT_LOG("Application Initialised");
 }
 

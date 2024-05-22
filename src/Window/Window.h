@@ -41,6 +41,8 @@ class Window {
 
     void SetMouseStatus(bool status) { m_FirstMouse = status; }
     bool GetMouseStatus() { return m_FirstMouse; }
+
+    float GetContentScale();
 };
 
 }  // namespace raytracing

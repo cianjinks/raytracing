@@ -103,7 +103,7 @@ S<Scene> SceneManager::FirstScene() {
     camera->SetPosition(glm::vec3(0.0f, 0.0f, -2.5f));
     camera->SetDirection(glm::vec3(0.0f, 0.0f, 1.0f));
     S<Scene> scene = CreateS<Scene>("First Scene", glm::vec3(0.0f), camera);
-    scene->SetSkyColor(0.70, 0.80, 1.00);
+    scene->SetSkyColor(0.7f, 0.8f, 1.0f);
     scene->Add<Sphere>("Sphere 1", glm::vec3(0, 0, 0), CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f);
     scene->Add<Sphere>("Sphere 2", glm::vec3(2.0, 0, 0), CreateS<Metal>(glm::vec3(0.8f), 0.3f), 1.0f);
     scene->Add<Sphere>("Sphere 3", glm::vec3(-2.0, 0, 0), CreateS<Metal>(glm::vec3(0.8f, 0.6f, 0.2f), 1.0f), 1.0f);
@@ -120,7 +120,7 @@ S<Scene> SceneManager::MaterialTestScene() {
     camera->SetPosition(glm::vec3(2.0f, 4.0f, 5.0f));
     camera->SetDirection(glm::vec3(-2.0f, -4.0f, -5.0f));
     S<Scene> scene = CreateS<Scene>("Material Test", glm::vec3(0.0f), camera);
-    scene->SetSkyColor(0.70, 0.80, 1.00);
+    scene->SetSkyColor(0.70f, 0.80f, 1.00f);
     scene->Add<Sphere>("Ground", glm::vec3(0, -1000.0f, 0), CreateS<Lambertian>(glm::vec3(0.5f)), 1000.0f);
     scene->Add<Box>("Red Cube", glm::vec3(2.0f, 1.0f, -2.0f), CreateS<Lambertian>(glm::vec3(0.5f, 0.0f, 0.0f)), glm::vec3(1.0f));
     scene->Add<Sphere>("Green Sphere", glm::vec3(-2.0f, 1.0f, 2.0f), CreateS<Lambertian>(glm::vec3(0.0f, 0.5f, 0.0f)), 1.0f);
@@ -138,7 +138,7 @@ S<Scene> SceneManager::LensTestScene() {
     camera->SetPosition(glm::vec3(0.0f, 0.0f, -2.5f));
     camera->SetDirection(glm::vec3(0.0f, 0.0f, 1.0f));
     S<Scene> scene = CreateS<Scene>("Lens Test", glm::vec3(0.0f), camera);
-    scene->SetSkyColor(0.70, 0.80, 1.00);
+    scene->SetSkyColor(0.7f, 0.8f, 1.0f);
     scene->Add<Sphere>("Sphere 1", glm::vec3(0, 0, 0), CreateS<Lambertian>(glm::vec3(0.1f, 0.2f, 0.5f)), 1.0f);
     scene->Add<Sphere>("Ground", glm::vec3(0, -1001.0f, 0), CreateS<Lambertian>(glm::vec3(0.1f)), 1000.0f);
 
@@ -152,7 +152,7 @@ S<Scene> SceneManager::RandomLargeScene() {
     camera->SetDirection(glm::vec3(-13.0f, -2.0f, -3.0f));
 
     S<Scene> scene = CreateS<Scene>("Random Large", glm::vec3(0.0f), camera);
-    scene->SetSkyColor(0.70, 0.80, 1.00);
+    scene->SetSkyColor(0.7f, 0.8f, 1.0f);
 
     S<Lambertian> ground_material = CreateS<Lambertian>(glm::vec3(0.5f));
     // scene->Add(CreateU<Plane>("Ground", glm::vec3(0.0f), CreateS<Lambertian>(glm::vec3(0.5f)), glm::vec3(0, 1, 0)));
@@ -179,7 +179,7 @@ S<Scene> SceneManager::RandomLargeScene() {
                     scene->Add<Sphere>("Sphere", center, sphere_material, 0.2f);
                 } else {
                     // glass
-                    sphere_material = CreateS<Dielectric>(1.5);
+                    sphere_material = CreateS<Dielectric>(1.5f);
                     scene->Add<Sphere>("Sphere", center, sphere_material, 0.2f);
                 }
             }
@@ -256,7 +256,7 @@ S<Scene> SceneManager::BVHTest() {
     camera->speed = 0.05f;
 
     S<Scene> scene = CreateS<Scene>("BVH Test", glm::vec3(0.0f), camera);
-    scene->SetSkyColor(0.70, 0.80, 1.00);
+    scene->SetSkyColor(0.7f, 0.8f, 1.0f);
 
     S<Lambertian> red = CreateS<Lambertian>(glm::vec3(1.0f, 0.0f, 0.0f));
     S<Lambertian> green = CreateS<Lambertian>(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -278,7 +278,7 @@ S<Scene> SceneManager::RectTest() {
     camera->speed = 0.05f;
 
     S<Scene> scene = CreateS<Scene>("Rect Test", glm::vec3(0.0f), camera);
-    scene->SetSkyColor(0.70, 0.80, 1.00);
+    scene->SetSkyColor(0.7f, 0.8f, 1.0f);
 
     S<Lambertian> grey = CreateS<Lambertian>(glm::vec3(0.5f));
 

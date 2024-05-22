@@ -24,7 +24,7 @@ class UI {
     static bool s_DirtyFlag;
 
    public:
-    static void Init();
+    static void Init(float scale);
     static void PreRender();
     static void Render();
 

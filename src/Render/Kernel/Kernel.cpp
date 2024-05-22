@@ -17,7 +17,7 @@ KernelLibrary::~KernelLibrary() {
 void KernelLibrary::AddKernel(S<Kernel> kernel) {
     m_KernelList.emplace_back(kernel);
     m_CurrentKernel = kernel;
-    m_CurrentKernelIndex = m_KernelList.size() - 1;
+    m_CurrentKernelIndex = (uint32_t)m_KernelList.size() - 1;
 }
 
 void KernelLibrary::SetCurrentKernel(uint32_t index) {

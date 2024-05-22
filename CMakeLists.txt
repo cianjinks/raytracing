@@ -76,7 +76,7 @@ if(WIN32)
 endif()
 
 # Symlink Resources
-add_custom_command(TARGET raytracing PRE_BUILD COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:raytracing>/resources)
+add_custom_command(TARGET raytracing PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:raytracing>/resources)
 
 # Testing
 if (RT_ENABLE_TESTING)

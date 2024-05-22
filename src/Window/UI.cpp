@@ -8,13 +8,22 @@ namespace raytracing {
 
 bool UI::s_DirtyFlag = false;
 
-void UI::Init() {
+void UI::Init(float scale) {
     RT_PROFILE_FUNC;
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    ImGui::StyleColorsDark();
 
+    // Font
+    ImGuiIO& io = ImGui::GetIO();
+    std::string font_file_path = Resources::GetFonts() + "ProggyClean.ttf";
+    io.Fonts->AddFontFromFileTTF(font_file_path.c_str(), glm::floor(13.0f * scale));
+
+    // Style
+    ImGui::StyleColorsDark();
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.ScaleAllSizes(scale);
+
+    // GLFW & OpenGL Backend
     ImGui_ImplGlfw_InitForOpenGL(Application::GetWindow()->GetGLFWWindow(),
                                  true);
     ImGui_ImplOpenGL3_Init("#version 460 core");

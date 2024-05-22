@@ -30,7 +30,7 @@ void ImageCamera::OnEvent(Event &event) {
 
     dispatcher.Dispatch<MouseScrollEvent>(
         EventType::MOUSE_SCROLL, [this](auto &event) {
-            Zoom(event.GetYOffset());
+            Zoom((float)event.GetYOffset());
         },
         false);
 

@@ -17,12 +17,12 @@ ImageView::ImageView(uint32_t window_width, uint32_t window_height,
                      uint32_t image_width, uint32_t image_height)
     : m_WindowWidth(window_width),
       m_WindowHeight(window_height),
-      m_FWindowWidth(window_width),
-      m_FWindowHeight(window_height),
+      m_FWindowWidth((float)window_width),
+      m_FWindowHeight((float)window_height),
       m_ImageWidth(image_width),
       m_ImageHeight(image_height),
-      m_FImageWidth(image_width),
-      m_FImageHeight(image_height) {
+      m_FImageWidth((float)image_width),
+      m_FImageHeight((float)image_height) {
     RT_PROFILE_FUNC_N("ImageView Init");
 
     // clang-format off

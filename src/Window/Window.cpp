@@ -144,4 +144,10 @@ void Window::ReleaseCursor() {
     m_CursorCaptured = false;
 }
 
+float Window::GetContentScale() {
+    float xscale = 1.0f;
+    glfwGetWindowContentScale(m_Window, &xscale, nullptr);
+    return xscale;
+}
+
 }  // namespace raytracing
