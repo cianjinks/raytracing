@@ -27,6 +27,7 @@ class UI {
     static void Init(float scale);
     static void PreRender();
     static void Render();
+    static void Shutdown();
 
     static bool WantInput();
 

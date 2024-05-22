@@ -186,7 +186,7 @@ S<Scene> SceneManager::RandomLargeScene() {
         }
     }
 
-    S<Dielectric> material1 = CreateS<Dielectric>(1.5);
+    S<Dielectric> material1 = CreateS<Dielectric>(1.5f);
     scene->Add<Sphere>("Sphere", glm::vec3(0.0f, 1.0f, 0.0f), material1, 1.0f);
 
     S<Lambertian> material2 = CreateS<Lambertian>(glm::vec3(0.4f, 0.2f, 0.1f));

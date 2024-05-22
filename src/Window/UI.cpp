@@ -44,6 +44,12 @@ void UI::Render() {
     s_DirtyFlag = false;
 }
 
+void UI::Shutdown() {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+}
+
 bool UI::WantInput() {
     RT_PROFILE_FUNC;
     ImGuiIO& io = ImGui::GetIO();

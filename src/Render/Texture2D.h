@@ -52,7 +52,7 @@ class Texture2D {
     void Clear() {
         RT_PROFILE_FUNC;
 
-        std::fill_n(m_Data, m_ElementCount, 0);
+        std::fill_n(m_Data, m_ElementCount, T(0));
     }
 
     void Fill(glm::vec<N, T> val) {

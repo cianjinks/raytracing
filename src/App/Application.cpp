@@ -24,7 +24,9 @@ Application::Application(ApplicationInfo app_info) : AppInfo(app_info) {
     RT_LOG("Application Initialised");
 }
 
-Application::~Application() {}
+Application::~Application() {
+    UI::Shutdown();
+}
 
 void Application::Run() {
     RT_PROFILE_FUNC;
