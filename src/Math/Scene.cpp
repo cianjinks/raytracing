@@ -53,8 +53,8 @@ SceneManager::SceneManager() {
     m_SceneList.emplace_back(bvh_test);
     m_SceneList.emplace_back(rect_test);
 
-    m_CurrentScene = rect_test;
-    m_CurrentSceneIndex = 7;
+    m_CurrentScene = cornell_box;
+    m_CurrentSceneIndex = 5;
 };
 
 void SceneManager::UI() {

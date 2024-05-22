@@ -20,7 +20,7 @@ class LearnKernel : public Kernel {
     LearnKernel();
     ~LearnKernel();
 
-    glm::vec3 Exec(const S<Texture2D3u8>& texture, uint32_t x, uint32_t y, uint32_t s) override;
+    glm::vec3 Exec(const S<Texture2D3u8>& texture, uint32_t x, uint32_t y, uint32_t s, uint32_t& seed) override;
     bool OnUpdate() override;
     void OnEvent(Event& event) override;
     void UI() override;

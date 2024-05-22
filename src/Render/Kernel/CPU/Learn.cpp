@@ -11,10 +11,8 @@ LearnKernel::LearnKernel() : Kernel("Learn") {
 
 LearnKernel::~LearnKernel() {}
 
-glm::vec3 LearnKernel::Exec(const S<Texture2D3u8>& texture, uint32_t x, uint32_t y, uint32_t s) {
+glm::vec3 LearnKernel::Exec(const S<Texture2D3u8>& texture, uint32_t x, uint32_t y, uint32_t s, uint32_t& seed) {
     RT_PROFILE_FUNC;
-
-    uint32_t seed = (x + 1) * (y + 1) * (s + 1);
 
     const Scene& scene = m_SceneManager->GetScene();
     const Camera& camera = scene.GetCamera();
@@ -53,8 +51,6 @@ glm::vec3 LearnKernel::RayColor(const Scene& scene, const Ray& ray, uint32_t dep
     if (depth <= 0) return glm::vec3(0.0f);
 
     if (scene.Hit(ray, 0.001f, Constant::FInfinity, result)) {
-        seed += depth;
-
         Ray scattered;
         glm::vec3 attenuation;
         glm::vec3 emitted = result.material->emitted();

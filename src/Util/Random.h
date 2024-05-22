@@ -17,6 +17,7 @@ class FastRandom {
     static glm::vec3 InUnitDisk(uint32_t& seed);
 
    private:
+    // https://www.reedbeta.com/blog/hash-functions-for-gpu-rendering/
     static inline uint32_t PCGHash(uint32_t& seed);
 };
 

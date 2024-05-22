@@ -136,10 +136,11 @@ void CPUDevice::ExecuteSingleRT() {
 
 void CPUDevice::AccumulateSection(uint32_t x, uint32_t y, uint32_t s, uint32_t width, uint32_t height, std::atomic<bool>& stop) {
     RT_PROFILE_FUNC;
-
+    // TODO: Is this loop the correct way around for optimal cache access?
     for (uint32_t w = x; w < (x + width); w++) {
         for (uint32_t h = y; h < (y + height); h++) {
-            m_AccumulationBuffer->at(w, h) += m_Kernels.GetCurrentKernel()->Exec(m_Texture, w, h, s);
+            uint32_t seed = (s * m_Texture->GetWidth() * m_Texture->GetHeight()) + (h * m_Texture->GetWidth()) + w;
+            m_AccumulationBuffer->at(w, h) += m_Kernels.GetCurrentKernel()->Exec(m_Texture, w, h, s, seed);
             glm::vec3 val = glm::sqrt(m_AccumulationBuffer->at(w, h) / float(s + 1));
             m_Texture->at(w, h) = glm::u8vec3(glm::clamp(val, 0.0f, 0.999f) * 256.0f);
             if (stop) {
