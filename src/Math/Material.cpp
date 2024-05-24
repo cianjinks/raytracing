@@ -18,7 +18,7 @@ bool Lambertian::scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, g
     }
 
     scattered.direction = target;
-    attenuation = albedo;
+    attenuation = texture->sample(hit.uv.x, hit.uv.y, hit.position);
     return true;
 }
 

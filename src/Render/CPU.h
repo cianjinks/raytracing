@@ -1,7 +1,7 @@
 #pragma once
 
 #include "RenderDevice.h"
-#include "Texture2D.h"
+#include "Image.h"
 #include "Util/Thread.h"
 
 namespace raytracing {
@@ -16,8 +16,8 @@ class CPUDevice : public RenderDevice {
     uint32_t m_NumTilesY = 4;
 
     /* Execution targets */
-    S<Texture2D3u8> m_Texture;
-    U<Texture2D3f> m_AccumulationBuffer;
+    S<Image2D3u8> m_Texture;
+    U<Image2D3f> m_AccumulationBuffer;
 
     /* Execution utilities */
     U<ThreadPool> m_ThreadPool;

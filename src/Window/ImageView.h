@@ -2,7 +2,7 @@
 
 #include "Event.h"
 #include "ImageCamera.h"
-#include "Render/Texture2D.h"
+#include "Render/Image.h"
 
 /**
  * @brief ImageView
@@ -24,7 +24,7 @@ class ImageView {
     float m_FImageWidth;
     float m_FImageHeight;
 
-    S<Texture2D3u8> m_Image;
+    S<Image2D3u8> m_Image;
     U<ImageCamera> m_Camera;
 
     uint32_t m_ShaderProgramID;
@@ -42,7 +42,7 @@ class ImageView {
     void ResizeWindow(uint32_t width, uint32_t height);
     void ResizeImage(uint32_t width, uint32_t height);
 
-    S<Texture2D3u8> GetTexture() const { return m_Image; }
+    S<Image2D3u8> GetImage() const { return m_Image; }
 
    private:
     /* Get the pixel coordinates of the Image currently moused over. */

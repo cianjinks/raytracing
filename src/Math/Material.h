@@ -5,6 +5,7 @@
 
 #include "Math/Math.h"
 #include "Object.h"
+#include "Texture.h"
 
 namespace raytracing {
 
@@ -19,9 +20,10 @@ class Material {
 
 class Lambertian : public Material {
    public:
-    glm::vec3 albedo;
+    S<Texture> texture = nullptr;
 
-    Lambertian(const glm::vec3 albedo) : albedo(albedo) {}
+    Lambertian(const glm::vec3 albedo) : texture(CreateS<SingleColorTexture>(albedo)) {}
+    Lambertian(S<Texture> texture) : texture(texture) {}
     virtual bool scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const override;
 };
 

@@ -67,6 +67,7 @@ class SceneManager {
     S<Scene> CornellBox();
     S<Scene> BVHTest();
     S<Scene> RectTest();
+    S<Scene> TextureTest();
 };
 
 }  // namespace raytracing

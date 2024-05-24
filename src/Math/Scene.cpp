@@ -43,6 +43,7 @@ SceneManager::SceneManager() {
     S<Scene> cornell_box = CornellBox();
     S<Scene> bvh_test = BVHTest();
     S<Scene> rect_test = RectTest();
+    S<Scene> texture_test = TextureTest();
 
     m_SceneList.emplace_back(first_scene);
     m_SceneList.emplace_back(mat_test_scene);
@@ -52,9 +53,10 @@ SceneManager::SceneManager() {
     m_SceneList.emplace_back(cornell_box);
     m_SceneList.emplace_back(bvh_test);
     m_SceneList.emplace_back(rect_test);
+    m_SceneList.emplace_back(texture_test);
 
-    m_CurrentScene = cornell_box;
-    m_CurrentSceneIndex = 5;
+    m_CurrentScene = texture_test;
+    m_CurrentSceneIndex = 8;
 };
 
 void SceneManager::UI() {
@@ -154,9 +156,11 @@ S<Scene> SceneManager::RandomLargeScene() {
     S<Scene> scene = CreateS<Scene>("Random Large", glm::vec3(0.0f), camera);
     scene->SetSkyColor(0.7f, 0.8f, 1.0f);
 
-    S<Lambertian> ground_material = CreateS<Lambertian>(glm::vec3(0.5f));
+    S<Texture> ground_texture = CreateS<CheckerTexture>(0.32f, glm::vec3(0.2f, 0.3f, 0.1f), glm::vec3(0.9f));
+    S<Lambertian> ground_material = CreateS<Lambertian>(ground_texture);
+    // S<Lambertian> ground_material = CreateS<Lambertian>(glm::vec3(0.5f));
     // scene->Add(CreateU<Plane>("Ground", glm::vec3(0.0f), CreateS<Lambertian>(glm::vec3(0.5f)), glm::vec3(0, 1, 0)));
-    scene->Add<Sphere>("Ground", glm::vec3(0, -1000.0f, 0), CreateS<Lambertian>(glm::vec3(0.5f)), 1000.0f);
+    scene->Add<Sphere>("Ground", glm::vec3(0, -1000.0f, 0), ground_material, 1000.0f);
 
     uint32_t seed = 12395u;
     for (int a = -11; a < 11; a++) {
@@ -284,6 +288,25 @@ S<Scene> SceneManager::RectTest() {
 
     scene->Add<Rectangle>("Ground", glm::vec3(-2, -1, -2), grey, glm::vec3(4, 0, 0), glm::vec3(0, 0, 4));
     scene->Add<Rectangle>("Wall", glm::vec3(0, -1, -2), grey, glm::vec3(0, 0, 4), glm::vec3(0, 4, 0));
+
+    scene->BuildBVH();
+    return scene;
+}
+
+S<Scene> SceneManager::TextureTest() {
+    S<Camera> camera = CreateS<Camera>();
+    camera->SetPosition(glm::vec3(0, 0, -2));
+    camera->SetDirection(glm::vec3(0, 0, 1));
+    camera->speed = 0.05f;
+
+    S<Scene> scene = CreateS<Scene>("Texture Test", glm::vec3(0.0f), camera);
+    scene->SetSkyColor(0.7f, 0.8f, 1.0f);
+
+    std::string earth_filepath = Resources::GetImages() + "earthmap.jpg";
+    S<Image2D3f> earth_image = CreateS<Image2D3f>(earth_filepath.c_str());
+    S<Texture> sphere_texture = CreateS<ImageTexture>(earth_image);
+    S<Lambertian> sphere_material = CreateS<Lambertian>(sphere_texture);
+    scene->Add<Sphere>("Sphere", glm::vec3(0, 0, 0), sphere_material, 1.0f);
 
     scene->BuildBVH();
     return scene;

@@ -11,7 +11,7 @@ LearnKernel::LearnKernel() : Kernel("Learn") {
 
 LearnKernel::~LearnKernel() {}
 
-glm::vec3 LearnKernel::Exec(const S<Texture2D3u8>& texture, uint32_t x, uint32_t y, uint32_t s, uint32_t& seed) {
+glm::vec3 LearnKernel::Exec(const S<Image2D3u8>& texture, uint32_t x, uint32_t y, uint32_t s, uint32_t& seed) {
     RT_PROFILE_FUNC;
 
     const Scene& scene = m_SceneManager->GetScene();

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Render/Texture2D.h"
+#include "Render/Image.h"
 #include "Window/Event.h"
 
 /**
  * @brief Kernel
  * Not to be confused with OpenCL kernels.
  * A Kernel represents an algorithm to be ran on a device. The algorithm updates
- * a Texture2D in the device manager. Ths allows me to have multiple algorithms for multiple devices for
+ * a Image2D in the device manager. Ths allows me to have multiple algorithms for multiple devices for
  * learning.
  */
 
@@ -21,7 +21,7 @@ class Kernel {
     Kernel(std::string name);
     virtual ~Kernel() = default;
 
-    virtual glm::vec3 Exec(const S<Texture2D3u8>& texture, uint32_t x, uint32_t y, uint32_t s, uint32_t& seed) = 0;
+    virtual glm::vec3 Exec(const S<Image2D3u8>& texture, uint32_t x, uint32_t y, uint32_t s, uint32_t& seed) = 0;
 
     /* A kernel may want to do something every frame. Return true if it did. */
     virtual bool OnUpdate() = 0;

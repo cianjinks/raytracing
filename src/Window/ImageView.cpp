@@ -121,7 +121,7 @@ ImageView::ImageView(uint32_t window_width, uint32_t window_height,
     m_CameraUniformID =
         glGetUniformLocation(m_ShaderProgramID, "u_ProjectionMatrix");
 
-    m_Image = CreateS<Texture2D3u8>(m_ImageWidth, m_ImageHeight);
+    m_Image = CreateS<Image2D3u8>(m_ImageWidth, m_ImageHeight);
     m_Image->Randomize();
 
     RT_LOG("Image View Initialised");

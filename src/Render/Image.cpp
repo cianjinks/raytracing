@@ -1,4 +1,4 @@
-#include "Texture2D.h"
+#include "Image.h"
 
 namespace raytracing {
 

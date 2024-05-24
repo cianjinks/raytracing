@@ -14,6 +14,7 @@ class HitResult {
    public:
     glm::vec3 position;
     glm::vec3 normal;
+    glm::vec2 uv;
     S<Material> material;
     float t;
 };

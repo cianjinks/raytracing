@@ -14,8 +14,8 @@ CPUDevice::CPUDevice() : RenderDevice("CPU") {
     m_Kernels.AddKernel(CreateS<LearnKernel>());
 
     // CPU writes to ImageView's cpu texture buffer
-    m_Texture = Application::GetImageView()->GetTexture();
-    m_AccumulationBuffer = CreateU<Texture2D3f>(m_Texture->GetWidth(), m_Texture->GetHeight());
+    m_Texture = Application::GetImageView()->GetImage();
+    m_AccumulationBuffer = CreateU<Image2D3f>(m_Texture->GetWidth(), m_Texture->GetHeight());
 
     m_ThreadPool = CreateU<ThreadPool>(m_NumThreads);
 }

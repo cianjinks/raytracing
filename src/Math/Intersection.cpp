@@ -26,6 +26,9 @@ bool Intersection::RaySphere(const Ray& ray, const Sphere& sphere, float t_min,
     hit.normal = (hit.position - sphere.position) / sphere.radius;
     hit.normal = EnsureNormal(ray, hit.normal);
 
+    hit.uv.x = (glm::atan(-hit.normal.z, hit.normal.x) + glm::pi<float>()) / (2.0f * glm::pi<float>());
+    hit.uv.y = glm::acos(-hit.normal.y) / glm::pi<float>();
+
     return true;
 }
 
@@ -72,6 +75,7 @@ bool Intersection::RayBox(const Ray& ray, const Box& box, float t_min,
     hit.normal = -glm::sign(ray.direction) * glm::step(t1_shuffle1, tminv) *
                  glm::step(t1_shuffle2, tminv);
     hit.normal = EnsureNormal(ray, hit.normal);
+    hit.uv = glm::vec2(0.0f);
 
     return true;
 }
@@ -90,6 +94,7 @@ bool Intersection::RayPlane(const Ray& ray, const Plane& plane, float t_min,
     hit.position = ray.At(hit.t);
     hit.normal = plane.normal;
     hit.normal = EnsureNormal(ray, hit.normal);
+    hit.uv = glm::vec2(0.0f);
     return true;
 }
 
@@ -139,6 +144,7 @@ bool Intersection::RayRectangle(const Ray& ray, const Rectangle& rect, float t_m
             hit.position = ray.At(hit.t);
             hit.normal = normal;
             hit.normal = EnsureNormal(ray, hit.normal);
+            hit.uv = glm::vec2(0.0f);
             return true;
         }
     }
