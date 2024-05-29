@@ -50,7 +50,7 @@ glm::vec3 LearnKernel::RayColor(const Scene& scene, const Ray& ray, uint32_t dep
 
     if (depth <= 0) return glm::vec3(0.0f);
 
-    if (scene.Hit(ray, 0.001f, Constant::FInfinity, result)) {
+    if (scene.Hit(ray, seed, 0.001f, Constant::FInfinity, result)) {
         Ray scattered;
         glm::vec3 attenuation;
         glm::vec3 emitted = result.material->emitted();

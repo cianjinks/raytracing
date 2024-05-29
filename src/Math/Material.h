@@ -47,6 +47,15 @@ class Dielectric : public Material {
     static float reflectance(float cosine, float ref_idx);
 };
 
+class Isotropic : public Material {
+   public:
+    S<Texture> texture = nullptr;
+
+    Isotropic(const glm::vec3 albedo) : texture(CreateS<SingleColorTexture>(albedo)) {}
+    Isotropic(S<Texture> texture) : texture(texture) {}
+    virtual bool scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const override;
+};
+
 class DiffuseLight : public Material {
    public:
     glm::vec3 color;

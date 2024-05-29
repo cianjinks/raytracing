@@ -49,7 +49,7 @@ bool BBox::Pad() {
     return padded;
 }
 
-bool BBox::Hit(const Ray& ray, float t_min, float t_max) const {
+bool BBox::Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max) const {
     return Intersection::Slabs(ray, t_min, t_max, m_Min, m_Max);
 }
 

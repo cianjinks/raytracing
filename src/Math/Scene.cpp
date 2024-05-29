@@ -12,10 +12,10 @@ Scene::~Scene() {
     m_Objects.clear();
 }
 
-bool Scene::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const {
+bool Scene::Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max, HitResult& hit) const {
     RT_PROFILE_FUNC;
 
-    return m_BVH->Hit(ray, t_min, t_max, hit);
+    return m_BVH->Hit(ray, seed, t_min, t_max, hit);
 
     // HitResult temp_hr;
     // bool any_hit = false;
@@ -44,6 +44,7 @@ SceneManager::SceneManager() {
     S<Scene> bvh_test = BVHTest();
     S<Scene> rect_test = RectTest();
     S<Scene> texture_test = TextureTest();
+    S<Scene> volume_cornell_box = VolumeCornellBox();
 
     m_SceneList.emplace_back(first_scene);
     m_SceneList.emplace_back(mat_test_scene);
@@ -54,9 +55,10 @@ SceneManager::SceneManager() {
     m_SceneList.emplace_back(bvh_test);
     m_SceneList.emplace_back(rect_test);
     m_SceneList.emplace_back(texture_test);
+    m_SceneList.emplace_back(volume_cornell_box);
 
-    m_CurrentScene = texture_test;
-    m_CurrentSceneIndex = 8;
+    m_CurrentScene = volume_cornell_box;
+    m_CurrentSceneIndex = 9;
 };
 
 void SceneManager::UI() {
@@ -307,6 +309,47 @@ S<Scene> SceneManager::TextureTest() {
     S<Texture> sphere_texture = CreateS<ImageTexture>(earth_image);
     S<Lambertian> sphere_material = CreateS<Lambertian>(sphere_texture);
     scene->Add<Sphere>("Sphere", glm::vec3(0, 0, 0), sphere_material, 1.0f);
+
+    scene->BuildBVH();
+    return scene;
+}
+
+S<Scene> SceneManager::VolumeCornellBox() {
+    S<Camera> camera = CreateS<Camera>();
+    camera->SetPosition(glm::vec3(0, 256, -600));
+    camera->SetDirection(glm::vec3(0, 0, 1));
+    camera->vfov = 75.0f;
+    camera->speed = 10.0f;
+
+    S<Scene> scene = CreateS<Scene>("Cornell Box", glm::vec3(0.0f), camera);
+
+    S<Lambertian> red = CreateS<Lambertian>(glm::vec3(0.65f, 0.05f, 0.05f));
+    S<Lambertian> white = CreateS<Lambertian>(glm::vec3(0.73f));
+    S<Lambertian> green = CreateS<Lambertian>(glm::vec3(0.12f, 0.45f, 0.15f));
+    S<DiffuseLight> light = CreateS<DiffuseLight>(glm::vec3(1.0f), 15.0f);
+
+    scene->Add<Rectangle>("Floor", glm::vec3(-256, 0, -256), white, glm::vec3(0, 0, 512), glm::vec3(512, 0, 0));
+    scene->Add<Rectangle>("Ceiling", glm::vec3(-256, 512, -256), white, glm::vec3(0, 0, 512), glm::vec3(512, 0, 0));
+    scene->Add<Rectangle>("Back Wall", glm::vec3(-256, 0, 256), white, glm::vec3(0, 512, 0), glm::vec3(512, 0, 0));
+    scene->Add<Rectangle>("Left Wall", glm::vec3(256, 0, -256), green, glm::vec3(0, 512, 0), glm::vec3(0, 0, 512));
+    scene->Add<Rectangle>("Right Wall", glm::vec3(-256, 0, -256), red, glm::vec3(0, 512, 0), glm::vec3(0, 0, 512));
+
+    S<Isotropic> box_black = CreateS<Isotropic>(glm::vec3(0.0f));
+    S<Isotropic> box_white = CreateS<Isotropic>(glm::vec3(1.0f));
+    S<Box> box1 = CreateS<Box>("Box 1", glm::vec3(70, 150.0f, 0), box_black, glm::vec3(80.0f, 150.0f, 80.0f));
+    S<Box> box2 = CreateS<Box>("Box 2", glm::vec3(-100, 70, -120), box_white, glm::vec3(70.0f));
+    S<ConstantMedium> mbox1 = scene->Add<ConstantMedium>(box1, 0.01f);
+    S<ConstantMedium> mbox2 = scene->Add<ConstantMedium>(box2, 0.01f);
+
+    // TODO: Support transforms for ConstantMedium
+    // S<Transform> t1 = scene->Add<Transform>(mbox1);
+    // S<Transform> t2 = scene->Add<Transform>(mbox1);
+    // t1->rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f);
+    // t1->rotationAngle = 24.0f;
+    // t2->rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f);
+    // t2->rotationAngle = -28.0f;
+
+    scene->Add<Rectangle>("Light", glm::vec3(-64, 511.999, -64), light, glm::vec3(0, 0, 128), glm::vec3(128, 0, 0));
 
     scene->BuildBVH();
     return scene;

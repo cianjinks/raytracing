@@ -42,13 +42,13 @@ BVHNode::BVHNode(const std::vector<S<Hittable>>& objects, uint64_t start, uint64
     bbox = BBox(left->BoundingBox(), right->BoundingBox());
 }
 
-bool BVHNode::Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const {
-    if (!bbox.Hit(ray, t_min, t_max)) {
+bool BVHNode::Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max, HitResult& hit) const {
+    if (!bbox.Hit(ray, seed, t_min, t_max)) {
         return false;
     }
 
-    bool hit_left = left->Hit(ray, t_min, t_max, hit);
-    bool hit_right = right->Hit(ray, t_min, hit_left ? hit.t : t_max, hit);
+    bool hit_left = left->Hit(ray, seed, t_min, t_max, hit);
+    bool hit_right = right->Hit(ray, seed, t_min, hit_left ? hit.t : t_max, hit);
 
     return hit_left || hit_right;
 }

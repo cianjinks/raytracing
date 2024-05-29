@@ -23,7 +23,7 @@ class Hittable {
    public:
     virtual ~Hittable() = default;
 
-    virtual bool Hit(const Ray& ray, float t_min, float t_max,
+    virtual bool Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max,
                      HitResult& hit) const = 0;
 
     virtual BBox BoundingBox() const = 0;
@@ -52,7 +52,7 @@ class Transform : public Hittable {
     Transform(S<Object> object) : object(object) {}
     virtual ~Transform() = default;
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
+    bool Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max, HitResult& hit) const override;
 
     BBox BoundingBox() const override { return object->BoundingBox(); }
 
@@ -76,7 +76,7 @@ class Sphere : public Object {
     }
     ~Sphere() = default;
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
+    bool Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max, HitResult& hit) const override;
 };
 
 class Box : public Object {
@@ -90,7 +90,7 @@ class Box : public Object {
     }
     ~Box() = default;
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
+    bool Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max, HitResult& hit) const override;
 };
 
 class Plane : public Object {
@@ -104,7 +104,7 @@ class Plane : public Object {
     }
     ~Plane() = default;
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
+    bool Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max, HitResult& hit) const override;
 };
 
 class Cylinder : public Object {
@@ -119,7 +119,7 @@ class Cylinder : public Object {
     }
     ~Cylinder() = default;
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
+    bool Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max, HitResult& hit) const override;
 };
 
 class Torus : public Object {
@@ -135,7 +135,7 @@ class Torus : public Object {
     }
     ~Torus() = default;
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
+    bool Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max, HitResult& hit) const override;
 };
 
 class Rectangle : public Object {
@@ -153,9 +153,27 @@ class Rectangle : public Object {
     }
     ~Rectangle() = default;
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
+    bool Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max, HitResult& hit) const override;
 
     virtual void UI() override;
+};
+
+class ConstantMedium : public Hittable {
+   public:
+    // TODO: Does material always need to be isotropic?
+    ConstantMedium(S<Object> object, float density) 
+        : object(object), negative_inverse_density(-1.0f / density) {}
+    virtual ~ConstantMedium() = default;
+
+    bool Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max, HitResult& hit) const override;
+
+    BBox BoundingBox() const override { return object->BoundingBox(); }
+
+   public:
+    float negative_inverse_density = 0.0f;
+
+   private:
+    S<Object> object;
 };
 
 }  // namespace raytracing

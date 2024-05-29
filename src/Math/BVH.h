@@ -16,7 +16,7 @@ class BVHNode : public Hittable {
     BVHNode(const std::vector<S<Hittable>>& objects, uint64_t start, uint64_t end);
     virtual ~BVHNode() = default;
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
+    bool Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max, HitResult& hit) const override;
 
     BBox BoundingBox() const override { return bbox; }
 

@@ -24,7 +24,7 @@ class Scene : public Object {
         return std::dynamic_pointer_cast<T>(m_Objects.emplace_back(CreateS<T>(std::forward<Args>(args)...)));
     }
 
-    bool Hit(const Ray& ray, float t_min, float t_max, HitResult& hit) const override;
+    bool Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max, HitResult& hit) const override;
 
     void BuildBVH();
 
@@ -68,6 +68,7 @@ class SceneManager {
     S<Scene> BVHTest();
     S<Scene> RectTest();
     S<Scene> TextureTest();
+    S<Scene> VolumeCornellBox();
 };
 
 }  // namespace raytracing

@@ -20,7 +20,7 @@ class BBox {
 
     bool Pad();
 
-    bool Hit(const Ray& ray, float t_min, float t_max) const;
+    bool Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max) const;
 
     bool Empty() const { return m_Empty; };
 
