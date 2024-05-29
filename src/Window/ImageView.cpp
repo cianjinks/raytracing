@@ -122,7 +122,7 @@ ImageView::ImageView(uint32_t window_width, uint32_t window_height,
         glGetUniformLocation(m_ShaderProgramID, "u_ProjectionMatrix");
 
     m_Image = CreateS<Image2D3u8>(m_ImageWidth, m_ImageHeight);
-    m_Image->Randomize();
+    m_Image->Randomize(FastRandom::GetTimeSeed());
 
     RT_LOG("Image View Initialised");
 }
@@ -226,7 +226,7 @@ void ImageView::ResizeImage(uint32_t width, uint32_t height) {
     glBufferSubData(GL_ARRAY_BUFFER, 0, 20 * sizeof(float), vertices);
 
     m_Image->Resize(width, height);
-    m_Image->Randomize();
+    m_Image->Randomize(FastRandom::GetTimeSeed());
 }
 
 glm::uvec2 ImageView::GetMousePixel() {

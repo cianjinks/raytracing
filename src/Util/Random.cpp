@@ -24,6 +24,11 @@ glm::vec3 FastRandom::Vec3(uint32_t& seed, float min, float max) {
     return glm::vec3(Float(seed, min, max), Float(seed, min, max), Float(seed, min, max));
 }
 
+uint8_t FastRandom::U8(uint32_t& seed) {
+    // TODO: Is this uniformly distributed? Also how does C++ handle cast from 32 bit to 8 bit integer?
+    return (uint8_t)PCGHash(seed);
+}
+
 glm::vec3 FastRandom::InSphere(uint32_t& seed) {
     while (true) {
         glm::vec3 p = Vec3(seed, -1.0f, 1.0f);
@@ -48,6 +53,11 @@ glm::vec3 FastRandom::InUnitDisk(uint32_t& seed) {
         if ((l * l) >= 1) continue;
         return p;
     }
+}
+
+uint32_t FastRandom::GetTimeSeed() {
+    // TODO: Probably not good practice but works for now.
+    return (uint32_t)std::clock();
 }
 
 uint32_t FastRandom::PCGHash(uint32_t& seed) {

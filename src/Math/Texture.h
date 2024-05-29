@@ -41,7 +41,7 @@ class CheckerTexture : public Texture {
 class ImageTexture : public Texture {
    public:
     // TODO: If the image class was run-time polymorphic we could support arbitrary image formats
-    //       Or maybe it's better to force every image to be 3f?
+    //       Or maybe it's better to force every image to be Image2Du8 instead of 3f?
     ImageTexture(S<Image2D3f> image) : m_Image(image) {}
 
     glm::vec3 sample(float u, float v, const glm::vec3& p) const override;

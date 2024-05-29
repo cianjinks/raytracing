@@ -7,6 +7,43 @@
 
 namespace raytracing {
 
+class Image2DHelper {
+   public:
+    // Cast pixels from one type to another, necessary to save and load images
+    template<typename FromType, typename ToType>
+    static ToType CastPixel(FromType from) {
+        /* Cast in the general case. Also see specializations below. */
+        return (ToType)from;
+    }
+
+    // Generate a random pixel value for a given type
+    template<typename T>
+    static T RandomPixel(uint32_t& seed) {
+        static_assert(false, "Image2DHelper::RandomPixel is not implemented in the general case.");
+        return T(0);
+    }
+};
+
+template<>
+inline float Image2DHelper::CastPixel(uint8_t from) {
+    return (float)from / 255.0f;
+}
+
+template<>
+inline uint8_t Image2DHelper::CastPixel(float from) {
+    return (uint8_t)(from * 255.0f);
+}
+
+template<>
+inline float Image2DHelper::RandomPixel(uint32_t& seed) {
+    return FastRandom::Float(seed);
+}
+
+template<>
+inline uint8_t Image2DHelper::RandomPixel(uint32_t& seed) {
+    return FastRandom::U8(seed);
+}
+
 template <typename T, unsigned int N>
 class Image2D {
    private:
@@ -17,20 +54,28 @@ class Image2D {
 
     T* m_Data = nullptr;
 
+   private:
+    void Invalidate() {
+        if (IsValid()) {
+            delete[] m_Data;
+            m_Width = 0;
+            m_Height = 0;
+            m_PixelCount = 0;
+            m_ElementCount = 0;
+            m_Data = nullptr;
+        }
+    }
+
    public:
-    Image2D(uint32_t width, uint32_t height)
-        : m_Width(width), m_Height(height) {
-        m_PixelCount = width * height;
-        m_ElementCount = m_PixelCount * N;
-        m_Data = new T[m_ElementCount];
-        Clear();
+    Image2D(uint32_t width, uint32_t height) {
+        Resize(width, height);
     };
 
     Image2D(const char* filepath) {
-        this->Load(filepath);
+        Load(filepath);
     }
 
-    ~Image2D() { delete[] m_Data; }
+    ~Image2D() { Invalidate(); }
 
     T* GetData() { return m_Data; }
     uint32_t GetWidth() { return m_Width; }
@@ -39,15 +84,19 @@ class Image2D {
     uint32_t GetPixelCount() { return m_PixelCount; }
     uint32_t GetElementCount() { return m_ElementCount; }
 
+    bool IsValid() {
+        return m_Data != nullptr;
+    }
+
     void Resize(uint32_t width, uint32_t height) {
         RT_PROFILE_FUNC;
+
+        Invalidate();
 
         m_Width = width;
         m_Height = height;
         m_PixelCount = width * height;
         m_ElementCount = m_PixelCount * N;
-
-        delete[] m_Data;
         m_Data = new T[m_ElementCount];
 
         Clear();
@@ -59,7 +108,7 @@ class Image2D {
         std::fill_n(m_Data, m_ElementCount, T(0));
     }
 
-    void Fill(glm::vec<N, T> val) {
+    void Fill(const glm::vec<N, T>& val) {
         RT_PROFILE_FUNC;
 
         for (uint32_t i = 0; i < m_ElementCount; i += N) {
@@ -69,9 +118,12 @@ class Image2D {
         }
     }
 
-    void Randomize() {
-        /* Do nothing in the general case for now. See specializations below. */
-        RT_ERROR("Image2D::Randomize does not work for this image type");
+    void Randomize(uint32_t&& seed) {
+        for (uint32_t e = 0; e < m_ElementCount; e += N) {
+            for (uint32_t n = 0; n < N; n++) {
+                m_Data[e + n] = Image2DHelper::RandomPixel<T>(seed);
+            }
+        }
     }
 
     void PerPixel(
@@ -87,13 +139,52 @@ class Image2D {
     }
 
     void Load(const char* filepath) {
-        /* Do nothing in the general case for now. See specializations below. */
-        RT_ERROR("Image2D::Load does not work for this image type");
+        stbi_set_flip_vertically_on_load(true);
+        int32_t width = 0, height = 0, num_channels = 0;
+        stbi_uc* data = stbi_load(filepath, &width, &height, &num_channels, 3);
+        if (data) {
+            RT_LOG("Loaded image: {}, width = {}, height = {}, num_channels = {}", filepath, width, height, num_channels);
+            // Resize
+            Resize(width, height);
+            // Fill in data
+            for (int32_t y = 0; y < height; y++) {
+                for (int32_t x = 0; x < width; x++) {
+                    int32_t index = ((y * width) + x) * N;
+                    for (uint32_t n = 0; n < N; n++) {
+                        m_Data[index + n] = Image2DHelper::CastPixel<uint8_t, float>(data[index + n]);
+                    }
+                }
+            }
+            // Free
+            stbi_image_free(data);
+        } else {
+            RT_ERROR("Failed to load image: {}", filepath);
+        }
     }
 
     void Save(const char* filepath) {
-        /* Do nothing in the general case for now. See specializations below. */
-        RT_ERROR("Image2D::Save does not work for this image type");
+        stbi_flip_vertically_on_write(true);
+
+        // Copy image data to temporary uint8_t format buffer
+        // TODO: It would be nice if we didn't have to do this. Maybe can use `stbi_write_png_to_func`?
+        uint8_t* temp_image_data = new uint8_t[m_ElementCount];
+        for (uint32_t e = 0; e < m_ElementCount; e += N) {
+            for (uint32_t n = 0; n < N; n++) {
+                temp_image_data[e + n] = Image2DHelper::CastPixel<T, uint8_t>(m_Data[e + n]);
+            }
+        }
+
+        // Save Image
+        int stride_in_bytes = m_Width * sizeof(uint8_t) * N; /* Size of a row in bytes. */
+        int result = stbi_write_png(filepath, (int)m_Width, (int)m_Height, N, temp_image_data, stride_in_bytes);
+        if (result) {
+            RT_LOG("Image has been saved to: {}", filepath);
+        } else {
+            RT_ERROR("Failed to save image to: {}", filepath);
+        }
+
+        // Delete temporary buffer
+        delete[] temp_image_data;
     }
 
     glm::vec<N, T>& at(uint32_t w, uint32_t h) {
@@ -112,53 +203,5 @@ class Image2D {
 typedef Image2D<float, 3> Image2D3f;
 typedef Image2D<uint8_t, 3> Image2D3u8;
 //
-
-template <>
-inline void Image2D3f::Load(const char* filepath) {
-    stbi_set_flip_vertically_on_load(true);
-    int32_t width = 0, height = 0, num_channels = 0;
-    stbi_uc* data = stbi_load(filepath, &width, &height, &num_channels, 3);
-    if (data) {
-        RT_LOG("Loaded image: {}, width = {}, height = {}, num_channels = {}", filepath, width, height, num_channels);
-        // Resize
-        this->Resize(width, height);
-        // Fill in data
-        for (int32_t y = 0; y < height; y++) {
-            for (int32_t x = 0; x < width; x++) {
-                int32_t index = ((y * width) + x) * 3;
-                m_Data[index + 0] = (float)data[index + 0] / 255.0f;
-                m_Data[index + 1] = (float)data[index + 1] / 255.0f;
-                m_Data[index + 2] = (float)data[index + 2] / 255.0f;
-            }
-        }
-        // Free
-        stbi_image_free(data);
-    } else {
-        RT_ERROR("Failed to load image: {}", filepath);
-    }
-}
-
-template <>
-inline void Image2D3u8::Randomize() {
-    uint8_t v = std::rand() % 256;
-    for (uint32_t e = 0; e < m_ElementCount; e += 3) {
-        m_Data[e + 0] = v;
-        m_Data[e + 1] = v;
-        m_Data[e + 2] = v;
-        v = std::rand() % 256;
-    }
-}
-
-template <>
-inline void Image2D3u8::Save(const char* filepath) {
-    stbi_flip_vertically_on_write(true);
-    int stride_in_bytes = m_Width * sizeof(uint8_t) * 3; /* Size of a row in bytes. */
-    int result = stbi_write_png(filepath, (int)m_Width, (int)m_Height, 3, m_Data, stride_in_bytes);
-    if (result) {
-        RT_LOG("Image has been saved to: {}", filepath);
-    } else {
-        RT_ERROR("Failed to save image to: {}", filepath);
-    }
-}
 
 }  // namespace raytracing

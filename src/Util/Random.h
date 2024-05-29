@@ -11,10 +11,14 @@ class FastRandom {
     static float Float(uint32_t& seed, float min, float max);
     static glm::vec3 Vec3(uint32_t& seed);
     static glm::vec3 Vec3(uint32_t& seed, float min, float max);
+    static uint8_t U8(uint32_t& seed);
 
     static glm::vec3 InSphere(uint32_t& seed);
     static glm::vec3 InHemisphere(uint32_t& seed, const glm::vec3& normal);
     static glm::vec3 InUnitDisk(uint32_t& seed);
+
+    // Use system time to generate a seed.
+    static uint32_t GetTimeSeed();
 
    private:
     // https://www.reedbeta.com/blog/hash-functions-for-gpu-rendering/
@@ -47,6 +51,7 @@ class Random {
     static std::uniform_int_distribution<uint32_t> IntDist();
     static std::uniform_real_distribution<double> DoubleDist(double min, double max);
     static std::uniform_real_distribution<float> FloatDist(float min, float max);
+    // TODO: Shouldn't this signature be uint32_t?`
     static std::uniform_int_distribution<uint32_t> IntDist(int min, int max);
 };
 

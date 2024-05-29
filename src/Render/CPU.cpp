@@ -176,7 +176,7 @@ void CPUDevice::SettingsUI() {
 
     ImGui::SameLine();
     if (UI::Button("Clear")) {
-        m_Texture->Randomize();
+        m_Texture->Randomize(FastRandom::GetTimeSeed());
     }
 
     if (disabled) {
