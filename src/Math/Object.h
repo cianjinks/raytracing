@@ -49,21 +49,42 @@ class Object : public Hittable {
 
 class Transform : public Hittable {
    public:
-    Transform(S<Object> object) : object(object) {}
+    Transform(S<Hittable> hittable);
+    Transform(S<Hittable> hittable, const glm::vec3& object_position); // See comment in `Hit` function.
     virtual ~Transform() = default;
 
     bool Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max, HitResult& hit) const override;
 
-    BBox BoundingBox() const override { return object->BoundingBox(); }
+    BBox BoundingBox() const override { return m_Hittable->BoundingBox(); }
 
-   public:
-    glm::vec3 translation = glm::vec3(0.0f);
-    float rotationAngle = 0.0f;
-    glm::vec3 rotationAxis = glm::vec3(1.0f, 0.0f, 0.0f);
-    glm::vec3 scale = glm::vec3(1.0f);
+    void SetTranslation(const glm::vec3&& translation) {
+        m_Translation = translation;
+        Recalculate();
+    };
+    void SetRotation(float angle, const glm::vec3&& axis) {
+        m_RotationAngle = angle;
+        m_RotationAxis = axis;
+        Recalculate();
+    }
+    void SetScale(const glm::vec3&& scale) {
+        m_Scale = scale;
+        Recalculate();
+    }
 
    private:
-    S<Object> object;
+    void Recalculate();
+
+   private:
+    S<Hittable> m_Hittable = nullptr;
+
+    glm::vec3 m_ObjectPosition = glm::vec3(0.0f);
+    glm::vec3 m_Translation = glm::vec3(0.0f);
+    float m_RotationAngle = 0.0f;
+    glm::vec3 m_RotationAxis = glm::vec3(1.0f, 0.0f, 0.0f);
+    glm::vec3 m_Scale = glm::vec3(1.0f);
+
+    glm::mat4 m_TransformWS = glm::mat4(1.0f);
+    glm::mat4 m_TransformOS = glm::mat4(1.0f);
 };
 
 class Sphere : public Object {
@@ -161,7 +182,7 @@ class Rectangle : public Object {
 class ConstantMedium : public Hittable {
    public:
     // TODO: Does material always need to be isotropic?
-    ConstantMedium(S<Object> object, float density) 
+    ConstantMedium(S<Object> object, float density)
         : object(object), negative_inverse_density(-1.0f / density) {}
     virtual ~ConstantMedium() = default;
 

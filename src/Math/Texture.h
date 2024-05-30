@@ -9,7 +9,7 @@ namespace raytracing {
 class Texture {
    public:
     virtual ~Texture() = default;
-    
+
     virtual glm::vec3 sample(float u, float v, const glm::vec3& p) const = 0;
 };
 
@@ -25,7 +25,7 @@ class SingleColorTexture : public Texture {
 
 class CheckerTexture : public Texture {
    public:
-    CheckerTexture(float scale, S<Texture> c1, S<Texture> c2) 
+    CheckerTexture(float scale, S<Texture> c1, S<Texture> c2)
         : m_InvScale(1.0f / scale), m_C1(c1), m_C2(c2) {}
     CheckerTexture(float scale, const glm::vec3& c1, const glm::vec3& c2)
         : m_InvScale(1.0f / scale), m_C1(CreateS<SingleColorTexture>(c1)), m_C2(CreateS<SingleColorTexture>(c2)) {}

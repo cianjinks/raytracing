@@ -64,9 +64,9 @@ float Dielectric::reflectance(float cosine, float ref_idx) {
 
 bool Isotropic::scatter(const Ray& ray, uint32_t& seed, const HitResult& hit, glm::vec3& attenuation, Ray& scattered) const {
     RT_PROFILE_FUNC;
-    
+
     scattered.origin = hit.position;
-    scattered.direction = FastRandom::Vec3(seed);
+    scattered.direction = FastRandom::InSphere(seed);
     attenuation = texture->sample(hit.uv.x, hit.uv.y, hit.position);
     return true;
 }
