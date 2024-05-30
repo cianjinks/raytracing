@@ -57,8 +57,8 @@ SceneManager::SceneManager() {
     m_SceneList.emplace_back(texture_test);
     m_SceneList.emplace_back(volume_cornell_box);
 
-    m_CurrentScene = volume_cornell_box;
-    m_CurrentSceneIndex = 9;
+    m_CurrentScene = texture_test;
+    m_CurrentSceneIndex = 8;
 };
 
 void SceneManager::UI() {
@@ -302,9 +302,14 @@ S<Scene> SceneManager::TextureTest() {
     S<Scene> scene = CreateS<Scene>("Texture Test", glm::vec3(0.0f), camera);
     scene->SetSkyColor(0.7f, 0.8f, 1.0f);
 
-    std::string earth_filepath = Resources::GetImages() + "earthmap.jpg";
-    S<Image2D3f> earth_image = CreateS<Image2D3f>(earth_filepath.c_str());
-    S<Texture> sphere_texture = CreateS<ImageTexture>(earth_image);
+    // ImageTexture
+    // std::string earth_filepath = Resources::GetImages() + "earthmap.jpg";
+    // S<Image2D3f> earth_image = CreateS<Image2D3f>(earth_filepath.c_str());
+    // S<Texture> sphere_texture = CreateS<ImageTexture>(earth_image);
+
+    // NoiseTexture
+    S<Texture> sphere_texture = CreateS<PerlinNoiseTexture2D>(0.1f, glm::vec2(0.0f), 0.0f);
+
     S<Lambertian> sphere_material = CreateS<Lambertian>(sphere_texture);
     scene->Add<Sphere>("Sphere", glm::vec3(0, 0, 0), sphere_material, 1.0f);
 

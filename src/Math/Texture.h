@@ -50,4 +50,16 @@ class ImageTexture : public Texture {
     S<Image2D3f> m_Image = nullptr;
 };
 
+class PerlinNoiseTexture2D : public Texture {
+   public:
+    PerlinNoiseTexture2D(float scale, const glm::vec2& period, float alpha) : m_Scale(scale), m_Period(period), m_Alpha(alpha) {}
+
+    glm::vec3 sample(float u, float v, const glm::vec3& p) const override;
+
+   private:
+    float m_Scale = 1.0f;
+    glm::vec2 m_Period;
+    float m_Alpha;
+};
+
 } // namespace raytracing

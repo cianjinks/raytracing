@@ -144,7 +144,7 @@ bool Intersection::RayRectangle(const Ray& ray, const Rectangle& rect, float t_m
             hit.position = ray.At(hit.t);
             hit.normal = normal;
             hit.normal = EnsureNormal(ray, hit.normal);
-            hit.uv = glm::vec2(0.0f);
+            hit.uv = glm::vec2(xw_s / w_l, xh_s / h_l);
             return true;
         }
     }
