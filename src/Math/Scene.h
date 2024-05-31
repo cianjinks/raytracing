@@ -69,6 +69,7 @@ class SceneManager {
     S<Scene> RectTest();
     S<Scene> TextureTest();
     S<Scene> VolumeCornellBox();
+    S<Scene> RTNWFinalScene();
 };
 
 }  // namespace raytracing

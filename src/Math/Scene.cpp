@@ -45,6 +45,7 @@ SceneManager::SceneManager() {
     S<Scene> rect_test = RectTest();
     S<Scene> texture_test = TextureTest();
     S<Scene> volume_cornell_box = VolumeCornellBox();
+    S<Scene> rtnw_final_scene = RTNWFinalScene();
 
     m_SceneList.emplace_back(first_scene);
     m_SceneList.emplace_back(mat_test_scene);
@@ -56,9 +57,10 @@ SceneManager::SceneManager() {
     m_SceneList.emplace_back(rect_test);
     m_SceneList.emplace_back(texture_test);
     m_SceneList.emplace_back(volume_cornell_box);
+    m_SceneList.emplace_back(rtnw_final_scene);
 
-    m_CurrentScene = texture_test;
-    m_CurrentSceneIndex = 8;
+    m_CurrentScene = rtnw_final_scene;
+    m_CurrentSceneIndex = 10;
 };
 
 void SceneManager::UI() {
@@ -350,6 +352,91 @@ S<Scene> SceneManager::VolumeCornellBox() {
     t2->SetRotation(-28.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
     scene->Add<Rectangle>("Light", glm::vec3(-128, 511.999, -128), light, glm::vec3(0, 0, 256), glm::vec3(256, 0, 0));
+
+    scene->BuildBVH();
+    return scene;
+}
+
+S<Scene> SceneManager::RTNWFinalScene() {
+    S<Camera> camera = CreateS<Camera>();
+    camera->SetPosition(glm::vec3(478, 278, -600));
+    camera->SetDirection(glm::vec3(-200, 0, 600)); // TODO: Normalize
+    camera->vfov = 40.0f;
+    camera->speed = 10.0f;
+
+    S<Scene> scene = CreateS<Scene>("RTNW Final Scene", glm::vec3(0.0f), camera);
+    scene->SetSkyColor(0.0f, 0.0f, 0.0f);
+
+    // Ground
+    S<Lambertian> ground_material = CreateS<Lambertian>(glm::vec3(0.48f, 0.83f, 0.53f));
+    uint32_t boxes_per_side = 20;
+    for (uint32_t i = 0; i < boxes_per_side; i++) {
+        for (uint32_t j = 0; j < boxes_per_side; j++) {
+            float w = 100.0f;
+            float x0 = -1000.0f + i*w;
+            float z0 = -1000.0f + j*w;
+            float y0 = 0.0f;
+            float x1 = x0 + w;
+            float y1 = Random::Float(1.0f, 101.0f);
+            float z1 = z0 + w;
+
+            glm::vec3 box_c1 = glm::vec3(x0, y0, z0);
+            glm::vec3 box_c2 = glm::vec3(x1, y1, z1);
+            glm::vec3 box_scale = (box_c2 - box_c1) / 2.0f;
+            glm::vec3 box_position = box_c1 + box_scale;
+
+            scene->Add<Box>("Ground Box", box_position, ground_material, box_scale);
+        }
+    }
+
+    // Light
+    S<DiffuseLight> light_material = CreateS<DiffuseLight>(glm::vec3(1.0f), 7.0f);
+    scene->Add<Rectangle>("Light", glm::vec3(123, 554, 147), light_material, glm::vec3(300.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 265.0f));
+
+    // Diffuse Sphere
+    S<Lambertian> diffuse_sphere_material = CreateS<Lambertian>(glm::vec3(0.7f, 0.3f, 0.1f));
+    scene->Add<Sphere>("Diffuse Sphere", glm::vec3(400, 400, 200), diffuse_sphere_material, 50.0f);
+
+    // Dielectric Sphere
+    S<Dielectric> dielectric_sphere_material = CreateS<Dielectric>(1.5f);
+    scene->Add<Sphere>("Dielectric Sphere", glm::vec3(260, 150, 45), dielectric_sphere_material, 50.0f);
+
+    // Metal Sphere
+    S<Metal> metal_sphere_material = CreateS<Metal>(glm::vec3(0.8f, 0.8f, 0.9f), 1.0f);
+    scene->Add<Sphere>("Metal Sphere", glm::vec3(0, 150, 145), metal_sphere_material, 50.0f);
+
+    // Blue Sphere?
+    // S<Dielectric> other_sphere_material = CreateS<Dielectric>(1.5f);
+    // scene->Add<Sphere>("Other Sphere", glm::vec3(360,150,145), other_sphere_material, 70.0f);
+
+    // S<Isotropic> isotropic_material = CreateS<Isotropic>(glm::vec3(1.0f));
+    // S<Sphere> isotropic_sphere = CreateS<Sphere>("Isotropic Sphere", glm::vec3(360,150,145), isotropic_material, 70.0f);
+    // S<ConstantMedium> isotropic_medium = CreateS<ConstantMedium>(isotropic_sphere, 0.2f);
+    // scene->Add<Transform>(isotropic_medium, isotropic_sphere->position);
+
+    // Boundary Fog?
+    // S<Isotropic> boundary_material = CreateS<Isotropic>(glm::vec3(1.0f));
+    // S<Sphere> boundary = CreateS<Sphere>("Boundary2", glm::vec3(0.0f), boundary_material, 5000.0f);
+    // scene->Add<ConstantMedium>(boundary, 0.0001f);
+
+    // Earth Sphere
+    std::string earth_filepath = Resources::GetImages() + "earthmap.jpg";
+    S<Image2D3f> earth_image = CreateS<Image2D3f>(earth_filepath.c_str());
+    S<Texture> earth_sphere_texture = CreateS<ImageTexture>(earth_image);
+    S<Lambertian> earth_sphere_material = CreateS<Lambertian>(earth_sphere_texture);
+    scene->Add<Sphere>("Earth Sphere", glm::vec3(400,200,400), earth_sphere_material, 100.0f);
+
+    // Perlin Noise Sphere
+    S<Texture> ps_sphere_texture = CreateS<PerlinNoiseTexture2D>(0.2f, glm::vec2(0.0f), 0.0f);
+    S<Lambertian> ps_sphere_material = CreateS<Lambertian>(ps_sphere_texture);
+    scene->Add<Sphere>("Perlin Noise Sphere", glm::vec3(220,280,300), ps_sphere_material, 80.0f);
+
+    // Cube of Spheres
+    S<Lambertian> sphere_material = CreateS<Lambertian>(glm::vec3(0.73f, 0.73f, 0.73f));
+    for (uint32_t s = 0; s < 1000; s++) {
+        // TODO: WE would like to rotate all of these spheres around the same centre point but its not possible!
+        scene->Add<Sphere>("Sphere", glm::vec3(-100,270,395) + Random::Vec3(0.0f, 165.0f), sphere_material, 10.0f);
+    }
 
     scene->BuildBVH();
     return scene;
