@@ -2,7 +2,6 @@
 
 [![Build status](https://github.com/glfw/glfw/actions/workflows/build.yml/badge.svg)](https://github.com/glfw/glfw/actions)
 [![Build status](https://ci.appveyor.com/api/projects/status/0kf0ct9831i5l6sp/branch/master?svg=true)](https://ci.appveyor.com/project/elmindreda/glfw)
-[![Coverity Scan](https://scan.coverity.com/projects/4884/badge.svg)](https://scan.coverity.com/projects/glfw-glfw)
 
 ## Introduction
 
@@ -11,15 +10,15 @@ application development.  It provides a simple, platform-independent API for
 creating windows, contexts and surfaces, reading input, handling events, etc.
 
 GLFW natively supports Windows, macOS and Linux and other Unix-like systems.  On
-Linux both X11 and Wayland are supported.
+Linux both Wayland and X11 are supported.
 
 GLFW is licensed under the [zlib/libpng
 license](https://www.glfw.org/license.html).
 
 You can [download](https://www.glfw.org/download.html) the latest stable release
-as source or Windows binaries, or fetch the `latest` branch from GitHub.  Each
-release starting with 3.0 also has a corresponding [annotated
-tag](https://github.com/glfw/glfw/releases) with source and binary archives.
+as source or Windows binaries.  Each release starting with 3.0 also has
+a corresponding [annotated tag](https://github.com/glfw/glfw/releases) with
+source and binary archives.
 
 The [documentation](https://www.glfw.org/docs/latest/) is available online and is
 included in all source and binary archives.  See the [release
@@ -47,18 +46,19 @@ features or fixing bugs.
 
 ## Compiling GLFW
 
-GLFW itself requires only the headers and libraries for your OS and window
-system.  It does not need the headers for any context creation API (WGL, GLX,
-EGL, NSGL, OSMesa) or rendering API (OpenGL, OpenGL ES, Vulkan) to enable
-support for them.
+GLFW is written primarily in C99, with parts of macOS support being written in
+Objective-C.  GLFW itself requires only the headers and libraries for your OS
+and window system.  It does not need any additional headers for context creation
+APIs (WGL, GLX, EGL, NSGL, OSMesa) or rendering APIs (OpenGL, OpenGL ES, Vulkan)
+to enable support for them.
 
-GLFW supports compilation on Windows with Visual C++ 2010 and later, MinGW and
+GLFW supports compilation on Windows with Visual C++ (2013 and later) and
 MinGW-w64, on macOS with Clang and on Linux and other Unix-like systems with GCC
 and Clang.  It will likely compile in other environments as well, but this is
 not regularly tested.
 
-There are [pre-compiled Windows binaries](https://www.glfw.org/download.html)
-available for all supported compilers.
+There are [pre-compiled binaries](https://www.glfw.org/download.html) available
+for all supported compilers on Windows and macOS.
 
 See the [compilation guide](https://www.glfw.org/docs/latest/compile.html) for
 more information about how to compile GLFW yourself.
@@ -79,7 +79,7 @@ more information.
 
 ## System requirements
 
-GLFW supports Windows XP and later and macOS 10.8 and later.  Linux and other
+GLFW supports Windows 7 and later and macOS 10.11 and later.  Linux and other
 Unix-like systems running the X Window System are supported even without
 a desktop environment or modern extensions, although some features require
 a running window or clipboard manager.  The OSMesa backend requires Mesa 6.3.
@@ -90,10 +90,8 @@ in the documentation for more information.
 
 ## Dependencies
 
-GLFW itself depends only on the headers and libraries for your window system.
-
-The (experimental) Wayland backend also depends on the `extra-cmake-modules`
-package, which is used to generate Wayland protocol headers.
+GLFW itself needs only CMake 3.16 or later and the headers and libraries for your
+OS and window system.
 
 The examples and test programs depend on a number of tiny libraries.  These are
 located in the `deps/` directory.
@@ -121,35 +119,35 @@ guide](https://github.com/glfw/glfw/blob/master/docs/CONTRIBUTING.md) for
 information on what to include when reporting a bug.
 
 
-## Changelog
+## Changelog since 3.4
 
- - [Win32] Bugfix: A window created maximized and undecorated would cover the whole
-   monitor (#1806)
- - [Win32] Bugfix: The default restored window position was lost when creating a maximized
-   window
- - [Win32] Bugfix: `glfwMaximizeWindow` would make a hidden window visible
- - [Cocoa] Bugfix: `kUTTypeURL` was deprecated in macOS 12.0 (#2003)
- - [X11] Bugfix: Dynamic loading on OpenBSD failed due to soname differences
- - [X11] Bugfix: Waiting for events would fail if file descriptor was too large
-   (#2024)
- - [X11] Bugfix: Joystick events could lead to busy-waiting (#1872)
- - [X11] Bugfix: `glfwWaitEvents*` did not continue for joystick events
- - [X11] Bugfix: `glfwPostEmptyEvent` could be ignored due to race condition
-   (#379,#1281,#1285,#2033)
- - [X11] Bugfix: Dynamic loading on NetBSD failed due to soname differences
- - [X11] Bugfix: Left shift of int constant relied on undefined behavior (#1951)
- - [Wayland] Added support for key names via xkbcommon
- - [Wayland] Bugfix: Key repeat could lead to a race condition (#1710)
- - [Wayland] Bugfix: Activating a window would emit two input focus events
- - [Wayland] Bugfix: Disable key repeat mechanism when window loses input focus
- - [Wayland] Bugfix: Window hiding and showing did not work (#1492,#1731)
- - [Wayland] Bugfix: A key being repeated was not released when window lost focus
- - [Wayland] Bugfix: Showing a hidden window did not emit a window refresh event
- - [Wayland] Bugfix: Full screen window creation did not ignore `GLFW_VISIBLE`
- - [Wayland] Bugfix: Some keys were reported as wrong key or `GLFW_KEY_UNKNOWN`
- - [Wayland] Bugfix: Text input did not repeat along with key repeat
- - [Wayland] Bugfix: `glfwPostEmptyEvent` sometimes had no effect (#1520,#1521)
- - [GLX] Bugfix: Context creation failed if GLX 1.4 was not exported by GLX library
+ - Added `GLFW_UNLIMITED_MOUSE_BUTTONS` input mode that allows mouse buttons beyond
+   the limit of the mouse button tokens to be reported (#2423)
+ - Updated minimum CMake version to 3.16 (#2541)
+ - Removed support for building with original MinGW (#2540)
+ - [Win32] Removed support for Windows XP and Vista (#2505)
+ - [Cocoa] Added `QuartzCore` framework as link-time dependency
+ - [Cocoa] Removed support for OS X 10.10 Yosemite and earlier (#2506)
+ - [Wayland] Bugfix: The fractional scaling related objects were not destroyed
+ - [Wayland] Bugfix: `glfwInit` would segfault on compositor with no seat (#2517)
+ - [Wayland] Bugfix: A drag entering a non-GLFW surface could cause a segfault
+ - [Wayland] Bugfix: Ignore key repeat events when no window has keyboard focus (#2727)
+ - [Wayland] Bugfix: Reset key repeat timer when window destroyed (#2741,#2727)
+ - [Wayland] Bugfix: Memory would leak if reading a data offer failed midway
+ - [Wayland] Bugfix: Retrieved cursor position would be incorrect when hovering over
+                     fallback decorations
+ - [Wayland] Bugfix: Fallback decorations would report scroll events
+ - [Wayland] Bugfix: Keyboard repeat events halted when any key is released (#2568)
+ - [Wayland] Bugfix: Fallback decorations would show menu at wrong position
+ - [Wayland] Bugfix: The cursor was not updated when clicking through from
+   a modal to a fallback decoration
+ - [Wayland] Bugfix: The cursor position was not updated when clicking through
+   from a modal to the content area
+ - [X11] Bugfix: Running without a WM could trigger an assert (#2593,#2601,#2631)
+ - [Null] Added Vulkan 'window' surface creation via `VK_EXT_headless_surface`
+ - [Null] Added EGL context creation on Mesa via `EGL_MESA_platform_surfaceless`
+ - [EGL] Allowed native access on Wayland with `GLFW_CONTEXT_CREATION_API` set to
+   `GLFW_NATIVE_CONTEXT_API` (#2518)
 
 
 ## Contact
@@ -158,13 +156,12 @@ On [glfw.org](https://www.glfw.org/) you can find the latest version of GLFW, as
 well as news, documentation and other information about the project.
 
 If you have questions related to the use of GLFW, we have a
-[forum](https://discourse.glfw.org/), and the `#glfw` IRC channel on
-[Libera.Chat](https://libera.chat/).
+[forum](https://discourse.glfw.org/).
 
 If you have a bug to report, a patch to submit or a feature you'd like to
 request, please file it in the
 [issue tracker](https://github.com/glfw/glfw/issues) on GitHub.
 
 Finally, if you're interested in helping out with the development of GLFW or
-porting it to your favorite platform, join us on the forum, GitHub or IRC.
+porting it to your favorite platform, join us on the forum or GitHub.
 

@@ -47,7 +47,7 @@ bool Transform::Hit(const Ray& ray, uint32_t& seed, float t_min, float t_max, Hi
 }
 
 void Object::UI() {
-    ImGui::Text(name.c_str());
+    ImGui::Text("%s", name.c_str());
     UI::SliderFloat3("Position", &position.x, -10.0f, 10.0f);
 }
 

@@ -1,3 +1,4 @@
 .vscode
 imgui.ini
 build
+.direnv
